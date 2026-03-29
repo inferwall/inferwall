@@ -20,21 +20,62 @@ helm install inferwall ./helm/inferwall \
   --set env.IW_ADMIN_KEY=iwk_admin_yourkey
 ```
 
-### PyPI
+### From GitHub (now)
 
 ```bash
+# Lite profile — heuristic engine only (requires Rust toolchain)
+pip install git+https://github.com/inferwall/inferwall.git
+
+# Standard profile — adds ONNX classifier + FAISS semantic engine
+pip install "inferwall[standard] @ git+https://github.com/inferwall/inferwall.git"
+
+# Full profile — adds LLM-judge
+pip install "inferwall[full] @ git+https://github.com/inferwall/inferwall.git"
+
+# Or clone and install
+git clone https://github.com/inferwall/inferwall.git
+cd inferwall && pip install -e ".[dev]"
+```
+
+### Pre-built Wheels
+
+Download pre-built wheels from [GitHub Releases](https://github.com/inferwall/inferwall/releases):
+
+```bash
+pip install inferwall_core-*.whl inferwall-*.whl
+```
+
+### PyPI (coming soon)
+
+```bash
+# Lite profile — heuristic engine only, zero ML deps
 pip install inferwall
+
+# Standard profile
+pip install inferwall[standard]
+
+# Full profile
+pip install inferwall[full]
+```
+
+### Post-install Setup
+
+```bash
 inferwall admin setup
 source .env.local && inferwall serve
+
+# For Standard/Full profiles, download ML models:
+inferwall models download --profile standard
+inferwall models status
 ```
 
 ## Deployment Profiles
 
-| Profile | Engines | Latency | Dependencies |
-|---------|---------|---------|-------------|
-| **Lite** | Heuristic (Rust) | <0.3ms p99 | None |
-| **Standard** | + Classifier + Semantic | <80ms p99 | ONNX, FAISS |
-| **Full** | + LLM-Judge | <2s p99 | + llama-cpp |
+| Profile | Install | Engines | Latency | Dependencies |
+|---------|---------|---------|---------|-------------|
+| **Lite** | `pip install inferwall` | Heuristic (Rust) | <0.3ms p99 | None |
+| **Standard** | `pip install inferwall[standard]` | + Classifier (ONNX) + Semantic (FAISS) | <80ms p99 | onnxruntime, faiss-cpu |
+| **Full** | `pip install inferwall[full]` | + LLM-Judge | <2s p99 | + llama-cpp-python |
 
 ## Environment Variables
 

@@ -1,8 +1,14 @@
 # Signature Authoring Guide
 
+InferenceWall ships with **70 detection signatures** across 5 categories. Community-contributed signatures are licensed under **CC BY-SA 4.0** -- any modifications must be shared back under the same license.
+
 ## Signature Format
 
-Each signature is a single YAML file in the catalog directory.
+Each signature is a single YAML file in the catalog directory. Include the license header at the top of every community signature:
+
+```yaml
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+```
 
 ```yaml
 signature:

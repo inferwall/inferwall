@@ -85,3 +85,14 @@ System statistics.
 
 ### GET /v1/config
 Runtime configuration.
+
+## Model Management CLI
+
+These commands manage ML model downloads for the Standard and Full profiles.
+
+| Command | Description |
+|---------|-------------|
+| `inferwall models download` | Download models for the active profile |
+| `inferwall models download --profile standard` | Download Standard profile models (~730MB) |
+| `inferwall models list` | List available models |
+| `inferwall models status` | Show download status of all models |

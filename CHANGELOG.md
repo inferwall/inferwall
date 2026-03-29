@@ -25,9 +25,13 @@
 - Rate limiter, audit logger
 
 ### M2: ML Engines + Signatures
-- 40+ signatures across all categories
-- Classifier, semantic, composite engine stubs
+- 70 signatures across all categories (injection, content safety, data leakage, system prompt, agentic)
+- ML classifier engine: ONNX runtime (DeBERTa/DistilBERT models)
+- ML semantic engine: FAISS similarity search against reference embeddings
+- Model download manager: `inferwall models download`, `inferwall models list`, `inferwall models status`
+- Composite engine combining heuristic + ML signals
 - Signature catalog API: GET /v1/signatures, /v1/signatures/{id}
+- Dual licensing: Apache-2.0 for code, CC BY-SA 4.0 for community signatures
 
 ### M3: Advanced Engines + Operations
 - Rust session store: TTL, memory bounds, FIFO eviction
@@ -36,7 +40,7 @@
 - Policy API: GET /v1/policies
 - Auth API: login, logout, check (httpOnly cookies)
 - Config API: GET /v1/config
-- LLM-judge engine stub
+- LLM-judge engine (Full profile)
 
 ### M4: UI + Release
 - inferwall-ui: 10-page Next.js management console

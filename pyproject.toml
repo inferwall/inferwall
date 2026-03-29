@@ -13,6 +13,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+standard = [
+    "onnxruntime>=1.19",
+    "tokenizers>=0.20",
+    "numpy>=1.26",
+    "faiss-cpu>=1.8",
+]
+full = [
+    "inferwall[standard]",
+    "llama-cpp-python>=0.3",
+]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
@@ -52,7 +62,7 @@ module = ["inferwall_core.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = ["faiss", "llama_cpp", "onnxruntime"]
+module = ["faiss", "llama_cpp", "onnxruntime", "tokenizers", "numpy"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

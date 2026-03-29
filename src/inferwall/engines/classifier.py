@@ -1,46 +1,165 @@
-"""Classifier engine — ONNX Runtime DeBERTa/DistilBERT inference."""
+"""Classifier engine — ONNX Runtime transformer inference.
+
+Wraps DeBERTa (injection detection) and DistilBERT (toxicity).
+Falls back gracefully when onnxruntime is not installed (Lite profile).
+"""
 
 from __future__ import annotations
 
+import logging
+from pathlib import Path
 from typing import Any
 
 from inferwall.engines.base import BaseEngine, ScanResult
+
+logger = logging.getLogger(__name__)
 
 
 class ClassifierEngine(BaseEngine):
     """ML classifier engine using ONNX Runtime.
 
-    Wraps DeBERTa (injection detection) and DistilBERT (toxicity).
-    Actual model loading deferred until Standard profile deps are installed.
+    Loads ONNX models for binary/multi-class text classification.
+    When models are not loaded, scan() returns empty results.
     """
 
     def __init__(self) -> None:
-        self._model_loaded = False
-        self._model: Any = None
-        self._tokenizer: Any = None
+        self._sessions: dict[str, Any] = {}
+        self._tokenizers: dict[str, Any] = {}
+        self._ort_available = False
+        self._tok_available = False
+        self._threshold = 0.7
+
+        try:
+            import onnxruntime  # noqa: F401
+
+            self._ort_available = True
+        except ImportError:
+            logger.info(
+                "onnxruntime not installed — classifier engine disabled. "
+                "Install with: pip install inferwall[standard]"
+            )
+        try:
+            import tokenizers  # noqa: F401
+
+            self._tok_available = True
+        except ImportError:
+            pass
 
     @property
     def engine_type(self) -> str:
         return "classifier"
 
+    @property
+    def is_available(self) -> bool:
+        return self._ort_available and self._tok_available
+
+    @property
+    def loaded_models(self) -> list[str]:
+        return list(self._sessions.keys())
+
+    def load_model(self, name: str, model_dir: Path) -> bool:
+        """Load an ONNX model + tokenizer from a directory."""
+        if not self.is_available:
+            return False
+
+        import onnxruntime as ort  # noqa: F811
+        from tokenizers import Tokenizer  # type: ignore[import-untyped]
+
+        model_path = model_dir / "model.onnx"
+        if not model_path.exists():
+            model_path = model_dir / "onnx" / "model.onnx"
+        if not model_path.exists():
+            logger.error("No model.onnx found in %s", model_dir)
+            return False
+
+        tokenizer_path = model_dir / "tokenizer.json"
+        if not tokenizer_path.exists():
+            logger.error("No tokenizer.json found in %s", model_dir)
+            return False
+
+        try:
+            session = ort.InferenceSession(
+                str(model_path),
+                providers=["CPUExecutionProvider"],
+            )
+            tokenizer = Tokenizer.from_file(str(tokenizer_path))
+            self._sessions[name] = session
+            self._tokenizers[name] = tokenizer
+            logger.info("Loaded classifier model: %s", name)
+            return True
+        except Exception:
+            logger.exception("Failed to load model %s", name)
+            return False
+
     def scan(self, text: str, signatures: list[Any]) -> list[ScanResult]:
-        """Scan text using classifier model."""
-        if not text or not signatures:
+        """Scan text against classifier-type signatures."""
+        if not text or not signatures or not self._sessions:
             return []
 
-        if not self._model_loaded:
-            return []  # Model not loaded — skip gracefully
+        results: list[ScanResult] = []
+        for sig in signatures:
+            model_name = self._resolve_model(sig)
+            if model_name not in self._sessions:
+                continue
 
-        # Model inference would go here when ONNX Runtime is available
-        return []
+            try:
+                confidence, label = self._infer(
+                    self._sessions[model_name],
+                    self._tokenizers[model_name],
+                    text,
+                )
+                if label != "BENIGN" and confidence >= self._threshold:
+                    results.append(
+                        ScanResult(
+                            signature_id=self._sig_id(sig),
+                            matched_text=text[:100],
+                            score=float(self._sig_points(sig)),
+                            offset=0,
+                            length=len(text),
+                        )
+                    )
+            except Exception:
+                logger.warning(
+                    "Inference failed for %s", self._sig_id(sig), exc_info=True
+                )
 
-    def load_model(self, model_path: str) -> bool:
-        """Load ONNX model. Returns True if successful."""
-        try:
-            import onnxruntime  # noqa: F401
+        return results
 
-            # Model loading would happen here
-            self._model_loaded = True
-            return True
-        except ImportError:
-            return False
+    def _infer(self, session: Any, tokenizer: Any, text: str) -> tuple[float, str]:
+        """Run ONNX inference. Returns (confidence, label)."""
+        import numpy as np  # type: ignore[import-untyped]
+
+        encoding = tokenizer.encode(text)
+        ids = np.array([encoding.ids], dtype=np.int64)
+        mask = np.array([encoding.attention_mask], dtype=np.int64)
+
+        input_names = {inp.name for inp in session.get_inputs()}
+        inputs: dict[str, Any] = {}
+        if "input_ids" in input_names:
+            inputs["input_ids"] = ids
+        if "attention_mask" in input_names:
+            inputs["attention_mask"] = mask
+        if "token_type_ids" in input_names:
+            inputs["token_type_ids"] = np.zeros_like(ids)
+
+        logits = session.run(None, inputs)[0][0]
+        probs = np.exp(logits - logits.max())
+        probs = probs / probs.sum()
+
+        idx = int(np.argmax(probs))
+        return float(probs[idx]), "INJECTION" if idx == 1 else "BENIGN"
+
+    def _resolve_model(self, sig: Any) -> str:
+        if hasattr(sig, "detection") and sig.detection.model:
+            return str(sig.detection.model)
+        if hasattr(sig, "meta"):
+            cat = getattr(sig.meta.category, "value", sig.meta.category)
+            if cat == "content-safety":
+                return "distilbert-toxicity"
+        return "deberta-injection"
+
+    def _sig_id(self, sig: Any) -> str:
+        return sig.signature.id if hasattr(sig, "signature") else str(sig)
+
+    def _sig_points(self, sig: Any) -> int:
+        return sig.scoring.anomaly_points if hasattr(sig, "scoring") else 5

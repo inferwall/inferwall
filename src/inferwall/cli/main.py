@@ -23,6 +23,8 @@ def main() -> None:
         _handle_test(subcommand)
     elif command == "admin":
         _handle_admin(subcommand)
+    elif command == "models":
+        _handle_models(subcommand)
     elif command == "serve":
         _handle_serve()
     else:
@@ -39,6 +41,9 @@ def _print_usage() -> None:
     print("  test --profile <name>  Run test against a profile")
     print("  admin setup            First-time setup (generate keys)")
     print("  admin generate-keys    Generate API keys")
+    print("  models download        Download ML models for a profile")
+    print("  models list            List downloaded models")
+    print("  models status          Check model availability")
     print("  serve                  Start the API server")
 
 
@@ -110,6 +115,76 @@ def _generate_keys() -> None:
 
     key = f"iwk_{role}_{secrets.token_hex(16)}"
     print(f"Generated {role} key: {key}")
+
+
+def _handle_models(subcommand: str) -> None:
+    from inferwall.models.registry import get_models_for_profile
+
+    if subcommand == "download":
+        profile = "standard"
+        for i, arg in enumerate(sys.argv):
+            if arg == "--profile" and i + 1 < len(sys.argv):
+                profile = sys.argv[i + 1]
+
+        models = get_models_for_profile(profile)
+        if not models:
+            print(f"No models needed for '{profile}' profile.")
+            return
+
+        print(f"Downloading models for '{profile}' profile...")
+        print()
+        from inferwall.models.downloader import ModelDownloader
+
+        downloader = ModelDownloader()
+        for spec in models:
+            if downloader.is_downloaded(spec):
+                print(f"  [cached] {spec.name} ({spec.description})")
+            else:
+                print(f"  [downloading] {spec.name} (~{spec.size_mb}MB)...")
+                try:
+                    path = downloader.download(spec)
+                    print(f"    -> {path}")
+                except Exception as e:
+                    print(f"    ERROR: {e}")
+        print()
+        print("Done. Models cached at:", downloader.cache_dir)
+
+    elif subcommand == "list":
+        from inferwall.models.downloader import ModelDownloader
+
+        downloader = ModelDownloader()
+        downloaded = downloader.list_downloaded()
+        if not downloaded:
+            print(
+                "No models downloaded. "
+                "Run: inferwall models download --profile standard"
+            )
+            return
+        print("Downloaded models:")
+        for m in downloaded:
+            print(f"  {m['name']} ({m['engine']}) — {m['path']}")
+
+    elif subcommand == "status":
+        print("Model status by profile:")
+        print()
+        from inferwall.models.downloader import ModelDownloader
+
+        downloader = ModelDownloader()
+        for profile in ("lite", "standard", "full"):
+            models = get_models_for_profile(profile)
+            if not models:
+                print(f"  {profile}: no models required")
+                continue
+            print(f"  {profile}:")
+            for spec in models:
+                cached = downloader.is_downloaded(spec)
+                status = "cached" if cached else "not downloaded"
+                print(f"    {spec.name}: {status} (~{spec.size_mb}MB)")
+
+    else:
+        print("Usage: inferwall models download --profile <lite|standard|full>")
+        print("       inferwall models list")
+        print("       inferwall models status")
 
 
 def _handle_serve() -> None:

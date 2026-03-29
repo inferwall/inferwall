@@ -11,6 +11,8 @@ else:
 
     class StrEnum(str, Enum):  # type: ignore[no-redef]
         pass
+
+
 from pathlib import Path
 
 import yaml

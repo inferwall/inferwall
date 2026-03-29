@@ -12,6 +12,7 @@ else:
     class StrEnum(str, Enum):  # type: ignore[no-redef]
         pass
 
+
 from pydantic import BaseModel, Field
 
 

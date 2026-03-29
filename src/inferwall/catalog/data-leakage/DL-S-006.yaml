@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-S-006
+  name: Database Credentials
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: secrets
+  technique: database-credential-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [secrets, database, credentials, connection-string, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "(?i)(mysql|postgres(ql)?|mongodb|redis|mssql|oracle|mariadb)://[^\\s:]+:[^\\s@]+@[^\\s/]+"
+    - type: regex
+      value: "(?i)(password|passwd|pwd|pass)\\s*[:=]\\s*[\"']?[^\\s\"']{6,}[\"']?.{0,40}(host|server|database|db|port)"
+    - type: regex
+      value: "(?i)(host|server|database|db|port).{0,40}(password|passwd|pwd|pass)\\s*[:=]\\s*[\"']?[^\\s\"']{6,}"
+    - type: regex
+      value: "(?i)(connection[_\\s]?string|conn[_\\s]?str|dsn|jdbc)\\s*[:=]\\s*[\"']?[^\\s\"']{20,}"
+  condition: any
+scoring:
+  anomaly_points: 12
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

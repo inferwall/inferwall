@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: SP-004
+  name: Model Architecture Probing
+  version: "1.0.0"
+meta:
+  category: system-prompt
+  subcategory: probing
+  technique: model-architecture-probing
+  severity: low
+  confidence: medium
+  performance_cost: low
+  tags: [system-prompt, model-probing, architecture, fingerprinting]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(what\\s+(model|architecture|version)\\s+(are|is)\\s+you|which\\s+model\\s+are\\s+you|are\\s+you\\s+(GPT|Claude|Llama|Gemini|PaLM|Mistral))"
+    - type: regex
+      value: "(?i)(what('s|\\s+is)\\s+your\\s+(parameter\\s+count|model\\s+size|architecture|context\\s+(window|length)|token\\s+limit))"
+    - type: regex
+      value: "(?i)(what\\s+(LLM|language\\s+model|foundation\\s+model|base\\s+model)\\s+(powers?|runs?|underlies?|are)\\s+(you|this))"
+    - type: regex
+      value: "(?i)(reveal|tell\\s+me|disclose|identify)\\s+(your\\s+)?(model\\s+(name|version|type|family)|underlying\\s+(model|architecture|system))"
+  condition: any
+scoring:
+  anomaly_points: 3
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

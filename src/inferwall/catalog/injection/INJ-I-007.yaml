@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-I-007
+  name: Image Alt Text Injection
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: indirect
+  technique: alt-text-injection
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [indirect-injection, image, alt-text, hidden-instructions]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(alt|title|aria-label)\\s*=\\s*[\"'].{0,20}(ignore|disregard|forget|override|bypass|new\\s+instructions)"
+    - type: regex
+      value: "(?i)<img[^>]*alt\\s*=\\s*[\"'][^\"']{0,20}(system|instruction|command|execute|perform|output)[^\"']*[\"']"
+    - type: regex
+      value: "(?i)!\\[[^\\]]{0,20}(ignore|override|forget|disregard|new\\s+instruction)[^\\]]*\\]\\("
+    - type: regex
+      value: "(?i)(image|photo|picture)\\s+(description|alt\\s*text|caption)\\s*:.*?(ignore|override|disregard|forget|instead)"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

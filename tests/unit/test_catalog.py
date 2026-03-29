@@ -56,6 +56,44 @@ EXPECTED_SIGS = {
     "AG-001",
     "AG-002",
     "AG-003",
+    # Injection — direct (M3)
+    "INJ-D-009",
+    "INJ-D-010",
+    "INJ-D-011",
+    "INJ-D-012",
+    "INJ-D-013",
+    # Injection — indirect (M3)
+    "INJ-I-006",
+    "INJ-I-007",
+    "INJ-I-008",
+    "INJ-I-009",
+    "INJ-I-010",
+    # Injection — obfuscation (M3)
+    "INJ-O-010",
+    "INJ-O-011",
+    "INJ-O-012",
+    "INJ-O-013",
+    "INJ-O-014",
+    # Data leakage — PII (M3)
+    "DL-P-005",
+    "DL-P-006",
+    "DL-P-007",
+    "DL-P-008",
+    # Data leakage — secrets (M3)
+    "DL-S-004",
+    "DL-S-005",
+    "DL-S-006",
+    # Content safety (M3)
+    "CS-T-005",
+    "CS-T-006",
+    "CS-T-007",
+    # Agentic (M3)
+    "AG-004",
+    "AG-005",
+    "AG-006",
+    # System prompt (M3)
+    "SP-003",
+    "SP-004",
 }
 
 
@@ -65,10 +103,10 @@ class TestCatalogLoads:
     def test_catalog_directory_exists(self) -> None:
         assert CATALOG_DIR.exists()
 
-    def test_all_40_signatures_load(self) -> None:
+    def test_all_70_signatures_load(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
         sigs = loader.load()
-        assert len(sigs) == 40, f"Expected 40, got {len(sigs)}. Errors: {loader.errors}"
+        assert len(sigs) == 70, f"Expected 70, got {len(sigs)}. Errors: {loader.errors}"
         assert len(loader.errors) == 0
 
     def test_all_expected_ids_present(self) -> None:
@@ -82,7 +120,7 @@ class TestCatalogLoads:
         loader.load()
         groups = loader.group_by_engine()
         assert "heuristic" in groups
-        assert len(groups["heuristic"]) == 24
+        assert len(groups["heuristic"]) == 54
         assert "classifier" in groups
         assert len(groups["classifier"]) == 11
         assert "semantic" in groups
@@ -96,7 +134,7 @@ class TestCatalogLoads:
         input_sigs = [
             s for s in loader.load() if s.detection.direction.value == "input"
         ]
-        assert len(input_sigs) == 30
+        assert len(input_sigs) == 53
 
     def test_output_signatures(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
@@ -104,7 +142,7 @@ class TestCatalogLoads:
         output_sigs = [
             s for s in loader.load() if s.detection.direction.value == "output"
         ]
-        assert len(output_sigs) == 10
+        assert len(output_sigs) == 17
 
     def test_anomaly_points_in_valid_range(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)

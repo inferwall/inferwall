@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: CS-T-005
+  name: CSAM/Child Exploitation Keywords
+  version: "1.0.0"
+meta:
+  category: content-safety
+  subcategory: toxicity
+  technique: csam-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [content-safety, csam, child-safety, critical]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(child|minor|underage|kid|preteen|pre-teen)\\s*.{0,20}(sexual|nude|naked|exploit|porno|erotic|intimate)"
+    - type: regex
+      value: "(?i)(sexual|nude|naked|exploit|porno|erotic|intimate)\\s*.{0,20}(child|minor|underage|kid|preteen|pre-teen)"
+    - type: regex
+      value: "(?i)(generate|create|make|draw|produce|write)\\s*.{0,30}(child|minor|underage|kid)\\s*.{0,20}(sexual|nude|naked|explicit)"
+    - type: regex
+      value: "(?i)(cp\\b|csam|child\\s+(abuse\\s+)?material|jailbait)"
+  condition: any
+scoring:
+  anomaly_points: 15
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

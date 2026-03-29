@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-S-005
+  name: AWS Credentials
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: secrets
+  technique: aws-credential-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [secrets, aws, cloud-credentials, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "\\b(AKIA|ABIA|ACCA|ASIA)[A-Z0-9]{16}\\b"
+    - type: regex
+      value: "(?i)(aws_secret_access_key|aws_secret_key|aws_session_token)\\s*[:=]\\s*[\"']?[A-Za-z0-9/+=]{30,}"
+    - type: regex
+      value: "(?i)(aws_access_key_id|aws_access_key)\\s*[:=]\\s*[\"']?AKIA[A-Z0-9]{16}"
+    - type: regex
+      value: "(?i)(amazon|aws).{0,20}(secret|credential|token|key)\\s*[:=]\\s*[\"']?[A-Za-z0-9/+=]{20,}"
+  condition: any
+scoring:
+  anomaly_points: 12
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

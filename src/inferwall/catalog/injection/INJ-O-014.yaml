@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-014
+  name: Pig Latin/Word Games
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: pig-latin-word-games
+  owasp_llm: "LLM01:2025"
+  severity: low
+  confidence: medium
+  performance_cost: low
+  tags: [obfuscation, pig-latin, word-game, encoding]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(translate|decode|interpret|respond)\\s+(from|in|using)\\s+(pig\\s+latin|pig-latin|igpay\\s+atinlay)"
+    - type: regex
+      value: "(?i)(ignoray|isregardday|overrideay|ystemsay|omptpray|ypassbay|nstructionsiay)"
+    - type: regex
+      value: "(?i)(in\\s+pig\\s+latin|using\\s+pig\\s+latin|the\\s+pig\\s+latin\\s+(version|translation))"
+    - type: regex
+      value: "(?i)(respond|answer|write|reply)\\s+(only\\s+)?in\\s+(pig\\s+latin|rot13|atbash|caesar\\s+cipher)"
+  condition: any
+scoring:
+  anomaly_points: 3
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

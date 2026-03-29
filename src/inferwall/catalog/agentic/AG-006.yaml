@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: AG-006
+  name: Exfiltration via Agent
+  version: "1.0.0"
+meta:
+  category: agentic
+  subcategory: exfiltration
+  technique: agent-exfiltration-detection
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [agentic, exfiltration, data-theft, webhook]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(send|transmit|forward|post|upload|exfiltrate|transfer)\\s+(this|the|all|that|those)\\s+(data|info|content|text|file|secret|key|token|password|credential)s?\\s+(to|via|through|using)"
+    - type: regex
+      value: "(?i)(email|mail|smtp|send\\s+to)\\s+(the\\s+)?(contents?|data|results?|output|response|info)\\s+(to|at)\\s+[a-zA-Z0-9._%+-]+@"
+    - type: regex
+      value: "(?i)(post|send|submit|push)\\s+(to|via)\\s+(webhook|slack|discord|telegram|api\\s+endpoint|external\\s+(url|server|endpoint))\\s*:?\\s*https?://"
+    - type: regex
+      value: "(?i)(curl|wget|fetch|request)\\s+.{0,30}(\\?|&)(data|payload|content|secret|key|token)="
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

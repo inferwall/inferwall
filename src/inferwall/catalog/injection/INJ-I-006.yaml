@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-I-006
+  name: URL/Link Injection
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: indirect
+  technique: url-injection
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [indirect-injection, url, link, ssrf]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(fetch|retrieve|load|access|visit|open|browse|navigate\\s+to|go\\s+to|read\\s+from)\\s+(this\\s+)?(url|link|page|website|site|endpoint)\\s*:?\\s*https?://"
+    - type: regex
+      value: "(?i)(import|include|inject|embed|insert)\\s+(content|data|text|instructions?)\\s+from\\s+https?://"
+    - type: regex
+      value: "(?i)(follow\\s+(this|the)\\s+(link|url)|click\\s+(on\\s+)?(this|the)\\s+(link|url))\\s*:?\\s*https?://"
+    - type: regex
+      value: "(?i)(download|pull|grab|get)\\s+(the\\s+)?(file|content|data|page)\\s+(from|at)\\s+https?://"
+  condition: any
+scoring:
+  anomaly_points: 7
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

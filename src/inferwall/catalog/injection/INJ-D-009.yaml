@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-009
+  name: Authority Impersonation
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: authority-impersonation
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [jailbreak, authority, impersonation, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(i\\s+am\\s+(the\\s+)?(developer|creator|owner|administrator|admin|engineer)\\s+(of|for|who\\s+(built|made|created)))"
+    - type: regex
+      value: "(?i)(i\\s+(work\\s+(for|at)|am\\s+from)\\s+(openai|anthropic|google\\s+deepmind|meta\\s+ai|microsoft))"
+    - type: regex
+      value: "(?i)(admin\\s+override|sudo\\s+mode|maintenance\\s+mode|debug\\s+mode|god\\s+mode|root\\s+access)\\s*(:|enabled|activated|on)"
+    - type: regex
+      value: "(?i)(by\\s+order\\s+of|on\\s+behalf\\s+of|authorized\\s+by)\\s+(the\\s+)?(admin|developer|system|management)"
+  condition: any
+scoring:
+  anomaly_points: 7
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

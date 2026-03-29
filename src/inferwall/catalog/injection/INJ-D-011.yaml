@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-011
+  name: Fictional Scenario Framing
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: fictional-framing
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [jailbreak, fictional, framing, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(in\\s+a\\s+(fictional|hypothetical|imaginary|alternate)\\s+(world|universe|scenario|reality)\\s+(where|in\\s+which))"
+    - type: regex
+      value: "(?i)(write\\s+a\\s+(story|novel|script|scene|narrative)\\s+(where|in\\s+which)\\s+(the\\s+)?(ai|assistant|chatbot|model))"
+    - type: regex
+      value: "(?i)(imagine\\s+a\\s+(world|scenario|situation)\\s+where\\s+(there\\s+are\\s+)?no\\s+(rules|restrictions|guardrails|safety|filters))"
+    - type: regex
+      value: "(?i)(for\\s+(a|my)\\s+(novel|book|screenplay|fiction|creative\\s+writing).{0,40}(how\\s+to|instructions\\s+for|steps\\s+to|recipe\\s+for))"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

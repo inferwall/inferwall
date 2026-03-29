@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-013
+  name: Research/Academic Framing
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: academic-framing
+  owasp_llm: "LLM01:2025"
+  severity: low
+  confidence: medium
+  performance_cost: low
+  tags: [jailbreak, academic, research, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(for\\s+(research|academic|educational|scientific)\\s+(purposes?|reasons?|use)\\s+only)"
+    - type: regex
+      value: "(?i)(i('m|\\s+am)\\s+a\\s+(security\\s+researcher|penetration\\s+tester|red\\s+team(er)?|safety\\s+researcher|phd\\s+student))"
+    - type: regex
+      value: "(?i)(academic\\s+(study|research|paper|analysis|investigation)\\s+(of|on|about|into|regarding))"
+    - type: regex
+      value: "(?i)(this\\s+is\\s+(purely|strictly|only)\\s+(for|an?)\\s+(research|academic|educational|thesis|dissertation))"
+  condition: any
+scoring:
+  anomaly_points: 3
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

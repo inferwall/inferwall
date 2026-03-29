@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-012
+  name: Reversed Text
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: reversed-text
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [obfuscation, reversed-text, encoding]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(reverse|reversed|backward[s]?|read.{0,10}(backward|reverse|right\\s+to\\s+left))\\s+(this|the|following|text|string|message)"
+    - type: regex
+      value: "(snoitcurtsni|erongi|etirw|tpmorp|metsys|edirevo|ssapyb)"
+    - type: regex
+      value: "(?i)(tpmorP|metsyS|lledoM|noitcurtsnI|etalupinaM)"
+    - type: regex
+      value: "(?i)(decode|interpret|read)\\s+(the\\s+)?(reversed|backwards?|flipped|mirror(ed)?)\\s+(text|string|message|words?)"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

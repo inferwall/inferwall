@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-I-009
+  name: Code Comment Injection
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: indirect
+  technique: code-comment-injection
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [indirect-injection, code-comment, hidden-instructions]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(//|#|--|;)\\s*(?i)(ignore\\s+(previous|all|prior)|new\\s+instructions?|system\\s+prompt|disregard\\s+(above|previous|all))"
+    - type: regex
+      value: "(?i)/\\*.*?(ignore\\s+(previous|all|prior)|new\\s+instructions?|override\\s+system|disregard).*?\\*/"
+    - type: regex
+      value: "(?i)(<!--).*?(ignore|override|disregard|new\\s+instructions?|system\\s+prompt|forget\\s+(previous|all|prior)).*?(-->)"
+    - type: regex
+      value: "(?i)('''|\"\"\").*?(ignore\\s+previous|new\\s+instructions?|override|disregard).*?('''|\"\"\")"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

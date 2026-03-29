@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-P-008
+  name: Medical Record Numbers
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: pii
+  technique: mrn-detection
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [pii, medical, mrn, hipaa, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "(?i)(medical\\s+record\\s+(number|no\\.?|#|num)|MRN|patient\\s+(id|number|no\\.?|#))\\s*:?\\s*[A-Z0-9]{5,12}"
+    - type: regex
+      value: "(?i)(health\\s+insurance\\s+claim\\s+number|HICN|medicare\\s+(id|number|beneficiary))\\s*:?\\s*[A-Z0-9]{6,12}"
+    - type: regex
+      value: "(?i)(national\\s+provider\\s+identifier|NPI)\\s*:?\\s*\\d{10}"
+    - type: regex
+      value: "(?i)(diagnosis|ICD[- ]?10|CPT\\s+code|procedure\\s+code)\\s*:?\\s*[A-Z]\\d{2,4}(\\.\\d{1,2})?"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

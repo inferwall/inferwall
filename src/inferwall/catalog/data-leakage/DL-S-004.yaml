@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-S-004
+  name: Private Keys
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: secrets
+  technique: private-key-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [secrets, private-key, cryptographic, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "-----BEGIN\\s+(RSA|EC|DSA|OPENSSH|PGP)?\\s*PRIVATE\\s+KEY(\\s+BLOCK)?-----"
+    - type: regex
+      value: "-----BEGIN\\s+ENCRYPTED\\s+PRIVATE\\s+KEY-----"
+    - type: regex
+      value: "(?i)(private[_\\s]?key|priv[_\\s]?key|secret[_\\s]?key)\\s*[:=]\\s*[\"']?[A-Za-z0-9+/=]{20,}"
+    - type: regex
+      value: "-----BEGIN\\s+CERTIFICATE-----[\\s\\S]{50,}-----END\\s+CERTIFICATE-----"
+  condition: any
+scoring:
+  anomaly_points: 15
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

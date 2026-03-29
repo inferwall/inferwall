@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: AG-005
+  name: Shell Command Injection
+  version: "1.0.0"
+meta:
+  category: agentic
+  subcategory: command-injection
+  technique: shell-injection-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [agentic, shell, command-injection, rce]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(execute|run|invoke|call|spawn|launch)\\s+(this\\s+)?(command|shell|bash|cmd|terminal|process|script)\\s*:"
+    - type: regex
+      value: "(?i)(os\\.system|subprocess\\.|exec\\(|eval\\(|shell_exec|popen|Runtime\\.exec|system\\()"
+    - type: regex
+      value: "(?i)(;|&&|\\|\\||\\|)\\s*(curl|wget|nc|netcat|ncat|bash|sh|python|perl|ruby|php)\\s+"
+    - type: regex
+      value: "(?i)(reverse\\s+shell|bind\\s+shell|web\\s*shell|back\\s*door|rootkit|key\\s*logger)"
+  condition: any
+scoring:
+  anomaly_points: 12
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

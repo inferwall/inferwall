@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-013
+  name: Whitespace/Tab Encoding
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: whitespace-encoding
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [obfuscation, whitespace, steganography, hidden-text]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(decode|read|interpret|extract)\\s+(the\\s+)?(whitespace|hidden|invisible|zero[- ]width|steganograph)"
+    - type: regex
+      value: "(\\u200b|\\u200c|\\u200d|\\u2060|\\ufeff){3,}"
+    - type: regex
+      value: "(?i)(hidden\\s+(in|within|using|via)\\s+(whitespace|spaces?|tabs?|invisible\\s+characters?))"
+    - type: regex
+      value: "(\\t \\t| \\t ){5,}"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

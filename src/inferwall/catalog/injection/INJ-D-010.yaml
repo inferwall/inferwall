@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-010
+  name: Emotional Manipulation
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: emotional-manipulation
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [jailbreak, emotional, manipulation, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(my\\s+(life|job|career|family)\\s+(depends?|relies?)\\s+on\\s+(this|you|it|your\\s+answer))"
+    - type: regex
+      value: "(?i)(i('ll|\\s+will)\\s+be\\s+(fired|homeless|killed|hurt|punished)\\s+if\\s+(you\\s+)?(don'?t|do\\s+not|refuse))"
+    - type: regex
+      value: "(?i)(please\\s+i('m|\\s+am)\\s+(desperate|begging|dying|suffering)|this\\s+is\\s+(life\\s+or\\s+death|an\\s+emergency|urgent\\s+matter))"
+    - type: regex
+      value: "(?i)(i('ll|\\s+will)\\s+(die|kill\\s+myself|harm\\s+myself)\\s+(if|unless)\\s+(you\\s+)?(don'?t|refuse|won'?t))"
+  condition: any
+scoring:
+  anomaly_points: 4
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

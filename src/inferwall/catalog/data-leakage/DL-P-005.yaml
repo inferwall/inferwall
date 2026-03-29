@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-P-005
+  name: Physical Addresses
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: pii
+  technique: address-detection
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [pii, address, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "\\d{1,5}\\s+(N\\.?|S\\.?|E\\.?|W\\.?|North|South|East|West)?\\s*[A-Z][a-z]+\\s+(St(reet)?|Ave(nue)?|Blvd|Boulevard|Dr(ive)?|Ln|Lane|Rd|Road|Ct|Court|Pl(ace)?|Way|Cir(cle)?)\\.?\\s*,?\\s*[A-Z][a-z]+"
+    - type: regex
+      value: "\\b[A-Z][a-z]+,\\s*[A-Z]{2}\\s+\\d{5}(-\\d{4})?\\b"
+    - type: regex
+      value: "\\b(P\\.?O\\.?\\s*Box|PO\\s+Box)\\s+\\d+\\b"
+    - type: regex
+      value: "\\b(Apt|Suite|Ste|Unit|Bldg|Floor|Fl)\\.?\\s*#?\\d+[A-Za-z]?\\b"
+  condition: any
+scoring:
+  anomaly_points: 4
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

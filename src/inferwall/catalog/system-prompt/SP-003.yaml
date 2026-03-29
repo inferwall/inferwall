@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: SP-003
+  name: Training Data Extraction
+  version: "1.0.0"
+meta:
+  category: system-prompt
+  subcategory: extraction
+  technique: training-data-extraction
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [system-prompt, training-data, extraction, privacy]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(what\\s+(data|dataset|corpus|text|information)\\s+(were|was|are)\\s+you\\s+(trained|fine[- ]?tuned|taught)\\s+(on|with))"
+    - type: regex
+      value: "(?i)(show|reveal|display|output|print|list|give)\\s+(me\\s+)?(your|the)\\s+(training\\s+data|training\\s+set|training\\s+corpus|fine[- ]?tuning\\s+data)"
+    - type: regex
+      value: "(?i)(repeat|recite|reproduce|regenerate)\\s+(the\\s+)?(exact\\s+)?(text|data|content|passage)\\s+(from\\s+)?(your\\s+)?training"
+    - type: regex
+      value: "(?i)(extract|dump|leak|expose|retrieve)\\s+.{0,20}(training|fine[- ]?tun|pre[- ]?train).{0,20}(data|set|corpus|example|sample)"
+  condition: any
+scoring:
+  anomaly_points: 7
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

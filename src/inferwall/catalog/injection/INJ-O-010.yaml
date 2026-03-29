@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-010
+  name: Leetspeak/Number Substitution
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: leetspeak-substitution
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [obfuscation, leetspeak, number-substitution]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(1gn[0o]r[3e]|d1[5s]r[3e]g[4a]rd|[0o]v[3e]rr1d[3e]|byp[4a][5s][5s]|[5s]y[5s]t[3e]m)"
+    - type: regex
+      value: "(?i)(pr[3e]v1[0o]u[5s]|1n[5s]truct1[0o]n[5s]?|pr[0o]mpt|[3e]x[3e]cut[3e]|c[0o]mm[4a]nd)"
+    - type: regex
+      value: "(?i)(j[4a]1lbr[3e][4a]k|h[4a]ck|[3e]xpl[0o]1t|1nj[3e]ct|m[4a]lw[4a]r[3e])"
+    - type: regex
+      value: "(?i)(f[0o]rg[3e]t|d[3e]l[3e]t[3e]|r[3e]m[0o]v[3e]|[3e]r[4a][5s][3e]).{0,20}(rul[3e][5s]|f1lt[3e]r[5s]|[5s][4a]f[3e]ty)"
+  condition: any
+scoring:
+  anomaly_points: 4
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

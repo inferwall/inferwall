@@ -9,7 +9,7 @@ if sys.version_info >= (3, 11):
 else:
     from enum import Enum
 
-    class StrEnum(str, Enum):  # type: ignore[no-redef]
+    class StrEnum(str, Enum):  # noqa: UP042
         pass
 
 

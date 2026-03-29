@@ -4,6 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "inferwall-core"
+dynamic = ["version"]
 requires-python = ">=3.10"
 description = "Rust extension for InferenceWall — high-performance heuristic detection, text preprocessing, anomaly scoring, and session store"
 license = { text = "Apache-2.0" }

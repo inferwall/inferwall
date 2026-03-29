@@ -9,7 +9,7 @@ if sys.version_info >= (3, 11):
 else:
     from enum import Enum
 
-    class StrEnum(str, Enum):  # type: ignore[no-redef]
+    class StrEnum(str, Enum):  # noqa: UP042
         pass
 
 
@@ -95,7 +95,8 @@ class PolicyEngine:
         override = self._profile.signatures.get(sig_id)
 
         if override and override.action != ActionOverride.DEFAULT:
-            return override.action.value
+            result: str = override.action.value
+            return result
 
         # Global mode takes precedence over signature default
         if self._profile.mode == PolicyMode.MONITOR:

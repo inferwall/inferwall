@@ -12,8 +12,8 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-wheels:
-    name: Build wheels (${{ matrix.os }})
+  build-rust-wheels:
+    name: Build Rust wheel (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -33,8 +33,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - uses: astral-sh/setup-uv@v4
-
       - name: Build inferwall-core wheel
         uses: PyO3/maturin-action@v1
         with:
@@ -42,18 +40,32 @@ jobs:
           args: --release --out dist --manifest-path crates/inferwall-core/Cargo.toml -i python3.12
           manylinux: auto
 
-      - name: Build inferwall wheel
-        run: uv build --out-dir dist
-
-      - name: Upload wheels
+      - name: Upload wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.target }}
+          name: wheel-rust-${{ matrix.target }}
+          path: dist/*.whl
+
+  build-python-wheel:
+    name: Build Python wheel + sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - run: uv python install 3.12
+
+      - name: Build wheel and sdist
+        run: uv build --out-dir dist --wheel
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-python
           path: dist/*.whl
 
   publish-github:
     name: GitHub Release
-    needs: build-wheels
+    needs: [build-rust-wheels, build-python-wheel]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -64,7 +76,7 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: List wheels
+      - name: List artifacts
         run: ls -la dist/
 
       - name: Create GitHub Release
@@ -75,7 +87,7 @@ jobs:
 
   publish-pypi:
     name: Publish to PyPI
-    needs: build-wheels
+    needs: [build-rust-wheels, build-python-wheel]
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -86,6 +98,9 @@ jobs:
         with:
           path: dist
           merge-multiple: true
+
+      - name: List artifacts
+        run: ls -la dist/
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

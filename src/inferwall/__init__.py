@@ -6,7 +6,7 @@ from typing import Any
 
 from inferwall.core.pipeline import Pipeline, ScanResponse
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 # Global singleton
 _default_pipeline: Pipeline | None = None

@@ -63,7 +63,7 @@ class ClassifierEngine(BaseEngine):
             return False
 
         import onnxruntime as ort  # noqa: F811
-        from tokenizers import Tokenizer  # type: ignore[import-untyped]
+        from tokenizers import Tokenizer
 
         model_path = model_dir / "model.onnx"
         if not model_path.exists():
@@ -127,7 +127,7 @@ class ClassifierEngine(BaseEngine):
 
     def _infer(self, session: Any, tokenizer: Any, text: str) -> tuple[float, str]:
         """Run ONNX inference. Returns (confidence, label)."""
-        import numpy as np  # type: ignore[import-untyped]
+        import numpy as np
 
         encoding = tokenizer.encode(text)
         ids = np.array([encoding.ids], dtype=np.int64)

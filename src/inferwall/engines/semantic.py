@@ -58,7 +58,7 @@ class SemanticEngine(BaseEngine):
             return False
 
         import onnxruntime as ort  # noqa: F811
-        from tokenizers import Tokenizer  # type: ignore[import-untyped]
+        from tokenizers import Tokenizer
 
         model_path = model_dir / "model.onnx"
         if not model_path.exists():
@@ -104,7 +104,7 @@ class SemanticEngine(BaseEngine):
             return False
 
         import faiss  # noqa: F811
-        import numpy as np  # type: ignore[import-untyped]
+        import numpy as np
 
         embeddings = [self._embed(phrase) for phrase in phrases]
         matrix = np.array(embeddings, dtype=np.float32)
@@ -126,7 +126,7 @@ class SemanticEngine(BaseEngine):
         if not text or not signatures or not self.is_loaded:
             return []
 
-        import numpy as np  # type: ignore[import-untyped]
+        import numpy as np
 
         try:
             embedding = self._embed(text)
@@ -167,7 +167,7 @@ class SemanticEngine(BaseEngine):
 
     def _embed(self, text: str) -> list[float]:
         """Compute embedding for a text string."""
-        import numpy as np  # type: ignore[import-untyped]
+        import numpy as np
 
         encoding = self._tokenizer.encode(text)
         ids = np.array([encoding.ids], dtype=np.int64)
@@ -188,7 +188,8 @@ class SemanticEngine(BaseEngine):
         attention = mask[0].astype(np.float32)
         pooled = (token_embeddings * attention[:, None]).sum(axis=0)
         pooled = pooled / max(attention.sum(), 1)
-        return pooled.tolist()
+        result: list[float] = pooled.tolist()
+        return result
 
     def _sig_id(self, sig: Any) -> str:
         return sig.signature.id if hasattr(sig, "signature") else str(sig)

@@ -123,3 +123,17 @@ inferwall admin setup
 
 - **Engine code** (Rust, Python, CLI, API): [Apache-2.0](LICENSE)
 - **Community signatures** (catalog/): [CC BY-SA 4.0](src/inferwall/catalog/LICENSE-SIGNATURES) — modifications must be shared back
+- **Third-party models and libraries**: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+
+## Disclaimer
+
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THE USE OF THIS SOFTWARE.
+
+InferenceWall is a security tool designed to reduce risk, not eliminate it.
+No detection system is perfect — false negatives (missed threats) and false
+positives (benign content flagged) are expected. InferenceWall should be used
+as one layer in a defense-in-depth security strategy, not as the sole
+protection for your application. Users are responsible for evaluating detection
+accuracy for their specific use case and configuring policies accordingly.

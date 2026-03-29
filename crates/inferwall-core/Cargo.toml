@@ -1,6 +1,6 @@
 [package]
 name = "inferwall-core"
-version = "0.1.0-dev"
+version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
 description = "Rust extension for InferenceWall AI application firewall"

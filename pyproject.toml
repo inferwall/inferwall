@@ -1,6 +1,6 @@
 [project]
 name = "inferwall"
-version = "0.1.0-dev"
+version = "0.1.0"
 requires-python = ">=3.12"
 description = "Signature-based AI application firewall"
 license = { text = "Apache-2.0" }

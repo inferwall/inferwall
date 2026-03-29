@@ -1,9 +1,12 @@
 [package]
 name = "inferwall-core"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "Apache-2.0"
-description = "Rust extension for InferenceWall AI application firewall"
+description = "Rust extension for InferenceWall — high-performance heuristic detection, text preprocessing, anomaly scoring, and session store. Installed automatically with inferwall."
+repository = "https://github.com/inferwall/inferwall"
+keywords = ["ai", "llm", "security", "firewall"]
+categories = ["text-processing"]
 
 [lib]
 name = "inferwall_core"

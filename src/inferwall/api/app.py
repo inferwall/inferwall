@@ -12,7 +12,7 @@ from inferwall.api.deps import get_pipeline, verify_scan_auth
 app = FastAPI(
     title="InferenceWall",
     description="Signature-based AI application firewall",
-    version="0.1.0",
+    version="0.1.1",
 )
 
 # Register routers
@@ -56,7 +56,7 @@ def health() -> HealthResponse:
     pipeline = get_pipeline()
     return HealthResponse(
         status="healthy",
-        version="0.1.0",
+        version="0.1.1",
         signature_count=pipeline.signature_count,
     )
 

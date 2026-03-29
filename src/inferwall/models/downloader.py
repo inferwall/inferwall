@@ -57,10 +57,7 @@ class ModelDownloader:
 
         if spec.filename:
             # Download a single file (e.g., GGUF)
-            url = (
-                f"{HF_DOWNLOAD_BASE}/{spec.repo_id}"
-                f"/resolve/main/{spec.filename}"
-            )
+            url = f"{HF_DOWNLOAD_BASE}/{spec.repo_id}/resolve/main/{spec.filename}"
             dest = path / spec.filename
             if not dest.exists():
                 self._download_file(url, dest)
@@ -75,10 +72,7 @@ class ModelDownloader:
                 "onnx/model.onnx",
             ]
             for filename in files_to_download:
-                url = (
-                    f"{HF_DOWNLOAD_BASE}/{spec.repo_id}"
-                    f"/resolve/main/{filename}"
-                )
+                url = f"{HF_DOWNLOAD_BASE}/{spec.repo_id}/resolve/main/{filename}"
                 dest = path / filename
                 if not dest.exists():
                     dest.parent.mkdir(parents=True, exist_ok=True)

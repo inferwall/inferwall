@@ -130,14 +130,14 @@ class TestAuthEndpoints:
             json={"text": "hello"},
             headers={"Authorization": "Bearer invalid_key"},
         )
-        assert response.status_code == 701
+        assert response.status_code == 401
 
     def test_missing_key_rejected(self, auth_client: TestClient) -> None:
         response = auth_client.post(
             "/v1/scan/input",
             json={"text": "hello"},
         )
-        assert response.status_code == 701
+        assert response.status_code == 401
 
     def test_health_no_auth_needed(self, auth_client: TestClient) -> None:
         """Health endpoints should work without auth."""

@@ -39,11 +39,11 @@ htmlcov/
 .env
 .env.local
 
-# Models (large files)
+# Models (large binary files, not src/inferwall/models/ package)
 *.onnx
 *.gguf
 *.bin
-models/
+/models/
 
 # Logs
 *.log

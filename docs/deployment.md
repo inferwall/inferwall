@@ -20,42 +20,27 @@ helm install inferwall ./helm/inferwall \
   --set env.IW_ADMIN_KEY=iwk_admin_yourkey
 ```
 
-### From GitHub (now)
-
-```bash
-# Lite profile — heuristic engine only (requires Rust toolchain)
-pip install git+https://github.com/inferwall/inferwall.git
-
-# Standard profile — adds ONNX classifier + FAISS semantic engine
-pip install "inferwall[standard] @ git+https://github.com/inferwall/inferwall.git"
-
-# Full profile — adds LLM-judge
-pip install "inferwall[full] @ git+https://github.com/inferwall/inferwall.git"
-
-# Or clone and install
-git clone https://github.com/inferwall/inferwall.git
-cd inferwall && pip install -e ".[dev]"
-```
-
-### Pre-built Wheels
-
-Download pre-built wheels from [GitHub Releases](https://github.com/inferwall/inferwall/releases):
-
-```bash
-pip install inferwall_core-*.whl inferwall-*.whl
-```
-
-### PyPI (coming soon)
+### From PyPI
 
 ```bash
 # Lite profile — heuristic engine only, zero ML deps
 pip install inferwall
 
-# Standard profile
+# Standard profile — adds ONNX classifier + FAISS semantic engine
 pip install inferwall[standard]
 
-# Full profile
+# Full profile — adds LLM-judge
 pip install inferwall[full]
+```
+
+Pre-built wheels are available for Linux x86_64, Linux aarch64, macOS arm64, and Windows x86_64.
+Requires Python >= 3.10.
+
+### From Source (development)
+
+```bash
+git clone https://github.com/inferwall/inferwall.git
+cd inferwall && pip install -e ".[dev]"
 ```
 
 ### Post-install Setup

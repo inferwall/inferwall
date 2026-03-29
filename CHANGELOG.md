@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.4 (2026-03-29)
+
+### Release
+- Published to PyPI: `pip install inferwall` now works out of the box
+- `inferwall` package auto-installs `inferwall-core` as a dependency
+- Pre-built wheels for Linux x86_64, Linux aarch64, macOS arm64, Windows x86_64
+- Python 3.10, 3.11, 3.12 support
+- Optional dependency groups: `inferwall[standard]` (ONNX + FAISS), `inferwall[full]` (+ llama-cpp)
+- 70 detection signatures across 5 categories
+- Graceful degradation when ML dependencies are not installed
+
 ## 0.1.0-dev (2026-03-29)
 
 ### M0: Foundation

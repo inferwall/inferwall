@@ -2,7 +2,7 @@
 
 ## Installation
 
-### Option 1: From PyPI (coming soon)
+### Option 1: From PyPI
 
 ```bash
 pip install inferwall                  # Lite — heuristic only
@@ -10,23 +10,10 @@ pip install inferwall[standard]        # + ML classifier + semantic
 pip install inferwall[full]            # + LLM-judge
 ```
 
-### Option 2: From GitHub
+Pre-built wheels are available for Linux x86_64, Linux aarch64, macOS arm64, and Windows x86_64.
+Requires Python >= 3.10.
 
-```bash
-# Requires Rust toolchain (https://rustup.rs)
-pip install git+https://github.com/inferwall/inferwall.git
-```
-
-### Option 3: Pre-built wheels from GitHub Releases
-
-Download wheels from [Releases](https://github.com/inferwall/inferwall/releases):
-
-```bash
-pip install inferwall_core-0.1.0-cp312-cp312-manylinux_2_17_x86_64.whl
-pip install inferwall-0.1.0-py3-none-any.whl
-```
-
-### Option 4: From source (development)
+### Option 2: From source (development)
 
 ```bash
 git clone https://github.com/inferwall/inferwall.git

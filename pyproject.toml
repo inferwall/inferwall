@@ -1,7 +1,7 @@
 [project]
 name = "inferwall"
-version = "0.1.2"
-requires-python = ">=3.12"
+version = "0.1.3"
+requires-python = ">=3.10"
 description = "Signature-based AI application firewall — protects LLM apps against prompt injection, jailbreaks, and data leakage"
 license = { text = "Apache-2.0" }
 readme = "README.md"
@@ -10,6 +10,8 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Rust",
     "Topic :: Security",
@@ -63,14 +65,14 @@ build-backend = "hatchling.build"
 packages = ["src/inferwall"]
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py310"
 src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.10"
 strict = true
 warn_return_any = true
 warn_unused_configs = true

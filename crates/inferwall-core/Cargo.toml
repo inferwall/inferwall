@@ -1,6 +1,6 @@
 [package]
 name = "inferwall-core"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 license = "Apache-2.0"
 description = "Rust extension for InferenceWall — high-performance heuristic detection, text preprocessing, anomaly scoring, and session store. Installed automatically with inferwall."

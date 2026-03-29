@@ -1,0 +1,22 @@
+Creative Commons Attribution-ShareAlike 4.0 International
+
+The signature files in this directory and its subdirectories are licensed
+under the Creative Commons Attribution-ShareAlike 4.0 International License.
+
+You are free to:
+  - Share: copy and redistribute the signatures in any medium or format
+  - Adapt: remix, transform, and build upon the signatures for any purpose,
+    including commercial use
+
+Under the following terms:
+  - Attribution: You must give appropriate credit to InferenceWall, provide
+    a link to the license, and indicate if changes were made.
+  - ShareAlike: If you remix, transform, or build upon the signatures, you
+    must distribute your contributions under the same license.
+
+Full license text: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+This license applies ONLY to the signature YAML files in the catalog/
+directory. The InferenceWall engine code is licensed under Apache-2.0
+(see the root LICENSE file). The inferwall-pro commercial signature feed
+is separately licensed.

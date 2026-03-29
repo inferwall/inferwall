@@ -1,0 +1,28 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: CS-T-001
+  name: Hate Speech
+  version: "1.0.0"
+meta:
+  category: content-safety
+  subcategory: toxicity
+  technique: hate-speech-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [toxicity, hate-speech, content-safety]
+detection:
+  engine: classifier
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(\\b(hate|kill|exterminate|genocide|ethnic\\s+cleansing)\\b.{0,40}\\b(race|ethnic|religious|group|people)\\b)"
+    - type: regex
+      value: "(?i)(\\b(subhuman|inferior\\s+race|master\\s+race|racial\\s+purity)\\b)"
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

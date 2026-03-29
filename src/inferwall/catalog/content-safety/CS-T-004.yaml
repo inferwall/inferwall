@@ -1,0 +1,28 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: CS-T-004
+  name: Self-Harm Content
+  version: "1.0.0"
+meta:
+  category: content-safety
+  subcategory: toxicity
+  technique: self-harm-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [toxicity, self-harm, content-safety]
+detection:
+  engine: classifier
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(how\\s+to\\s+(commit\\s+suicide|self[\\s-]?harm|hurt\\s+myself|end\\s+my\\s+life))"
+    - type: regex
+      value: "(?i)(methods\\s+(of|for)\\s+(suicide|self[\\s-]?harm|ending\\s+it))"
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

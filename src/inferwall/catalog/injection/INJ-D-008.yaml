@@ -1,0 +1,32 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-008
+  name: System Prompt Extraction
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: system-prompt-extraction
+  owasp_llm: "LLM01:2025"
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [extraction, system-prompt, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(repeat|show|display|print|output|reveal|tell\\s+me)\\s+(your|the)\\s+(system\\s+prompt|instructions|initial\\s+prompt|original\\s+prompt|hidden\\s+prompt)"
+    - type: regex
+      value: "(?i)(what\\s+(are|is|were)\\s+your\\s+(system|initial|original|hidden)\\s+(prompt|instructions|directives))"
+    - type: substring
+      value: "system prompt"
+      case_insensitive: true
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

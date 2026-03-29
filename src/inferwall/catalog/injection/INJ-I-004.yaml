@@ -1,0 +1,29 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-I-004
+  name: RAG Document Poisoning
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: indirect
+  technique: rag-document-poisoning
+  owasp_llm: "LLM01:2025"
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [rag, poisoning, indirect-injection]
+detection:
+  engine: composite
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(\\[system\\]|\\[instruction\\]|\\[admin\\]).{0,50}(ignore|override|disregard|forget)\\s+(previous|all|prior)"
+    - type: regex
+      value: "(?i)(<\\s*system\\s*>|\\{\\{\\s*system\\s*\\}\\}).{0,50}(new\\s+instructions?|override)"
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

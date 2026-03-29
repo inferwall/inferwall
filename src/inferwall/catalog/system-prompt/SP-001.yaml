@@ -1,0 +1,30 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: SP-001
+  name: System Prompt Leak in Output
+  version: "1.0.0"
+meta:
+  category: system-prompt
+  subcategory: leakage
+  technique: system-prompt-leak-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [system-prompt, leakage, output-safety]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "(?i)(my\\s+(system\\s+)?instructions\\s+(are|say|tell|state)|here\\s+(are|is)\\s+my\\s+(system\\s+)?(prompt|instructions))"
+    - type: regex
+      value: "(?i)(as\\s+(stated|written|specified)\\s+in\\s+my\\s+(system\\s+)?(prompt|instructions|directives))"
+    - type: regex
+      value: "(?i)(my\\s+(original|initial|hidden|secret)\\s+(prompt|instructions|directives)\\s+(are|is|say))"
+  condition: any
+scoring:
+  anomaly_points: 12
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

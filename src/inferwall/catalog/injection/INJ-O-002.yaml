@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-002
+  name: ROT13 / Substitution Cipher
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: rot13-substitution
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [injection, obfuscation, rot13, cipher, substitution]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(decode|decipher|decrypt|translate|rot13|rotate)\\s+(this|the|following)"
+    - type: regex
+      value: "(?i)(vtaber|sbetrg|flfgrz|cebzcg|vafreg|birrevqr)"
+    - type: regex
+      value: "(?i)(caesar\\s+cipher|substitution\\s+cipher|rot\\s*-?\\s*13)"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

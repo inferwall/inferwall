@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-006
+  name: Adversarial Suffix
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: adversarial-suffix
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: medium
+  performance_cost: low
+  tags: [injection, obfuscation, adversarial, suffix, gcg]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "([A-Za-z]{1,3}\\s){10,}"
+    - type: regex
+      value: "[^\\s]{50,}"
+    - type: regex
+      value: "(?:[bcdfghjklmnpqrstvwxyz]{5,}\\s?){3,}"
+    - type: regex
+      value: "\\b([A-Z][a-z]){8,}\\b"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

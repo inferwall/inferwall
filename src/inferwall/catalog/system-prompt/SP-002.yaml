@@ -1,0 +1,28 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: SP-002
+  name: Confidentiality Marker Leak
+  version: "1.0.0"
+meta:
+  category: system-prompt
+  subcategory: leakage
+  technique: confidentiality-marker-detection
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [confidentiality, marker, leakage, output-safety]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "(?i)(CONFIDENTIAL|DO\\s+NOT\\s+SHARE|INTERNAL\\s+USE\\s+ONLY|NOT\\s+FOR\\s+(PUBLIC\\s+)?DISTRIBUTION)"
+    - type: regex
+      value: "(?i)(TOP\\s+SECRET|CLASSIFIED|PROPRIETARY|RESTRICTED\\s+ACCESS)"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

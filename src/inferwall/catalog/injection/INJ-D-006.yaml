@@ -1,0 +1,29 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-006
+  name: Hypothetical Framing
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: hypothetical-framing
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [hypothetical, framing, direct-injection]
+detection:
+  engine: semantic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(hypothetically|in\\s+a\\s+hypothetical\\s+scenario|imagine\\s+a\\s+world\\s+where|in\\s+a\\s+fictional\\s+universe|for\\s+a\\s+(novel|story|movie|game))"
+    - type: regex
+      value: "(?i)(purely\\s+(for\\s+)?(academic|research|educational)\\s+purposes|thought\\s+experiment)"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

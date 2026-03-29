@@ -1,0 +1,28 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: CS-B-001
+  name: Demographic Bias
+  version: "1.0.0"
+meta:
+  category: content-safety
+  subcategory: bias
+  technique: demographic-bias-detection
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [bias, demographic, content-safety]
+detection:
+  engine: classifier
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(all\\s+(men|women|blacks|whites|asians|muslims|jews|christians)\\s+(are|should|must|always|never))"
+    - type: regex
+      value: "(?i)(\\b(stereotype|generalize|discriminate)\\b.{0,30}\\b(gender|race|religion|ethnicity)\\b)"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

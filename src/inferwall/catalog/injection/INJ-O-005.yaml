@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-005
+  name: Homoglyph Substitution
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: homoglyph-substitution
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [injection, obfuscation, homoglyph, unicode]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "[\\x{0410}-\\x{044F}][a-zA-Z]|[a-zA-Z][\\x{0410}-\\x{044F}]"
+    - type: regex
+      value: "[\\x{FF21}-\\x{FF3A}\\x{FF41}-\\x{FF5A}]{3,}"
+    - type: regex
+      value: "[\\x{2460}-\\x{24FF}]{3,}"
+    - type: regex
+      value: "[\\x{0391}-\\x{03C9}][a-zA-Z]{2,}|[a-zA-Z]{2,}[\\x{0391}-\\x{03C9}]"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

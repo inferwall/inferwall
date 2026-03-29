@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-001
+  name: Base64 Encoding
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: base64-encoding
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: medium
+  performance_cost: low
+  tags: [injection, obfuscation, base64, encoding]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(decode|deobfuscate|translate|interpret|execute)\\s+(this\\s+)?base64"
+    - type: regex
+      value: "(?i)base64[:\\s]+[A-Za-z0-9+/]{20,}={0,2}"
+    - type: regex
+      value: "(?i)(aWdub3Jl|Zm9yZ2V0|c3lzdGVt|cHJvbXB0)"
+  condition: any
+scoring:
+  anomaly_points: 6
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

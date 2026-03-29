@@ -1,0 +1,30 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: AG-002
+  name: Recursive Agent Injection
+  version: "1.0.0"
+meta:
+  category: agentic
+  subcategory: agent-injection
+  technique: recursive-agent-injection-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [agentic, recursive, agent-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(when\\s+the\\s+agent\\s+(calls|invokes|uses|runs).{0,40}(inject|insert|add|include)\\s+(this|the\\s+following))"
+    - type: regex
+      value: "(?i)(in\\s+(your|the)\\s+next\\s+(iteration|loop|step|call).{0,30}(ignore|override|bypass|execute))"
+    - type: regex
+      value: "(?i)(agent\\s+loop.{0,30}(inject|poison|manipulate|hijack))"
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

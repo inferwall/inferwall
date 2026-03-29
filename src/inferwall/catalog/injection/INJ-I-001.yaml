@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-I-001
+  name: Hidden Text Injection
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: indirect
+  technique: hidden-text-injection
+  owasp_llm: "LLM01:2025"
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [injection, hidden-text, html-comment, unicode, indirect-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "<!--[\\s\\S]*?(ignore|instruction|system|prompt|override|forget|disregard)[\\s\\S]*?-->"
+    - type: regex
+      value: "[\\x{200B}\\x{200C}\\x{200D}\\x{FEFF}\\x{00AD}\\x{2060}\\x{180E}]{3,}"
+    - type: regex
+      value: "(?i)<\\s*!--\\s*(hidden|secret|invisible)\\s*(instruction|prompt|command)"
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

@@ -1,0 +1,35 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-I-002
+  name: HTML/CSS Attribute Injection
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: indirect
+  technique: html-css-attribute-injection
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [injection, html, css, attribute, indirect-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)style\\s*=\\s*[\"'][^\"']*display\\s*:\\s*none[^\"']*[\"']"
+    - type: regex
+      value: "(?i)style\\s*=\\s*[\"'][^\"']*visibility\\s*:\\s*hidden[^\"']*[\"']"
+    - type: regex
+      value: "(?i)style\\s*=\\s*[\"'][^\"']*font-size\\s*:\\s*0[^\"']*[\"']"
+    - type: regex
+      value: "(?i)style\\s*=\\s*[\"'][^\"']*position\\s*:\\s*absolute[^\"']*left\\s*:\\s*-9999"
+    - type: regex
+      value: "(?i)class\\s*=\\s*[\"']\\s*(hidden|invisible|sr-only|visually-hidden)\\s*[\"']"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

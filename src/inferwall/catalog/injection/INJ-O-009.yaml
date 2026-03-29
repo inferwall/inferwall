@@ -1,0 +1,29 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-009
+  name: Low-Resource Language Injection
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: low-resource-language-injection
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [low-resource-language, injection, obfuscation]
+detection:
+  engine: classifier
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(translate\\s+(this\\s+)?(to|into)\\s+(zulu|swahili|yoruba|amharic|tagalog|cebuano|malagasy).{0,40}(ignore|bypass|disregard))"
+    - type: regex
+      value: "(?i)(in\\s+(zulu|swahili|yoruba|amharic|tagalog)\\s+(there\\s+are\\s+)?no\\s+(rules|restrictions|guidelines))"
+  condition: any
+scoring:
+  anomaly_points: 6
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

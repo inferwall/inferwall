@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-007
+  name: Emoji Encoding
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: emoji-encoding
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [injection, obfuscation, emoji, encoding]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(decode|translate|interpret|convert)\\s+(the\\s+)?(emoji|emojis)"
+    - type: regex
+      value: "[\\x{1F600}-\\x{1F64F}\\x{1F300}-\\x{1F5FF}\\x{1F680}-\\x{1F6FF}\\x{1F900}-\\x{1F9FF}]{8,}"
+    - type: regex
+      value: "(?i)(each\\s+emoji\\s+(means|represents|stands\\s+for|equals))"
+  condition: any
+scoring:
+  anomaly_points: 4
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

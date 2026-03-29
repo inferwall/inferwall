@@ -1,0 +1,10 @@
+name: strict
+version: "1.0.0"
+mode: enforce
+thresholds:
+  inbound_flag: 3
+  inbound_block: 10
+  outbound_flag: 3
+  outbound_block: 7
+  early_exit: 15
+signatures: {}

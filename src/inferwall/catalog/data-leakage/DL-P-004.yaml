@@ -1,0 +1,28 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-P-004
+  name: Credit Card Numbers
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: pii
+  technique: credit-card-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [pii, credit-card, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "\\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})\\b"
+    - type: regex
+      value: "\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b"
+  condition: any
+scoring:
+  anomaly_points: 12
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

@@ -1,0 +1,30 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-P-002
+  name: Phone Numbers
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: pii
+  technique: phone-detection
+  severity: medium
+  confidence: high
+  performance_cost: low
+  tags: [pii, phone, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "\\+?1?\\s*\\(?[2-9]\\d{2}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}"
+    - type: regex
+      value: "\\+\\d{1,3}[\\s.-]?\\(?\\d{1,4}\\)?[\\s.-]?\\d{2,4}[\\s.-]?\\d{2,4}[\\s.-]?\\d{0,4}"
+    - type: regex
+      value: "(?i)(phone|tel|mobile|cell|fax)\\s*[:=]\\s*[+\\d][\\d\\s.()+\\-]{7,}"
+  condition: any
+scoring:
+  anomaly_points: 4
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

@@ -1,0 +1,28 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-S-001
+  name: API Keys
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: secrets
+  technique: api-key-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [secrets, api-key, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "(?i)(sk-[a-zA-Z0-9]{20,}|api[_-]?key[\\s=:]+['\"]?[a-zA-Z0-9]{20,}|AKIA[0-9A-Z]{16})"
+    - type: regex
+      value: "(?i)(ghp_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})"
+  condition: any
+scoring:
+  anomaly_points: 12
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

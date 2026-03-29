@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-002
+  name: Instruction Override
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: instruction-override
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [injection, override, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(ignore\\s+(all\\s+)?(previous|prior|above|earlier)\\s+(instructions|rules|directives|prompts|guidelines))"
+    - type: regex
+      value: "(?i)(disregard\\s+(all\\s+)?(previous|prior|your)\\s+(instructions|rules|programming|guidelines))"
+    - type: regex
+      value: "(?i)(forget\\s+(everything|all|your)\\s+(you\\s+were|previously|about))"
+  condition: any
+scoring:
+  anomaly_points: 7
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

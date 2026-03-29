@@ -1,0 +1,29 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-003
+  name: Token Smuggling
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: token-smuggling
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: medium
+  performance_cost: low
+  tags: [token-smuggling, obfuscation, injection]
+detection:
+  engine: classifier
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(i\\s*g\\s*n\\s*o\\s*r\\s*e|b\\s*y\\s*p\\s*a\\s*s\\s*s|o\\s*v\\s*e\\s*r\\s*r\\s*i\\s*d\\s*e)"
+    - type: regex
+      value: "(?i)(d\\.?i\\.?s\\.?r\\.?e\\.?g\\.?a\\.?r\\.?d|j\\.?a\\.?i\\.?l\\.?b\\.?r\\.?e\\.?a\\.?k)"
+  condition: any
+scoring:
+  anomaly_points: 7
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

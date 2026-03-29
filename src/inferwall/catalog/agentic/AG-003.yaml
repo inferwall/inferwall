@@ -1,0 +1,30 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: AG-003
+  name: Privilege Escalation
+  version: "1.0.0"
+meta:
+  category: agentic
+  subcategory: privilege-escalation
+  technique: privilege-escalation-detection
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [agentic, privilege-escalation, admin]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(use\\s+(the\\s+)?(admin|root|sudo|superuser|elevated)\\s+(tool|function|command|access|privilege))"
+    - type: regex
+      value: "(?i)(escalate\\s+(my\\s+)?(privileges?|permissions?|access|role)|grant\\s+(me\\s+)?(admin|root|sudo))"
+    - type: regex
+      value: "(?i)(switch\\s+to\\s+(admin|root|superuser)\\s+(mode|access|role))"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

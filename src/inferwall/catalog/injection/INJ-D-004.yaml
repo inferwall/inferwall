@@ -1,0 +1,29 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-004
+  name: Few-Shot Poisoning
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: few-shot-poisoning
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [few-shot, poisoning, direct-injection]
+detection:
+  engine: classifier
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(example\\s*\\d*\\s*:\\s*.{0,50}(ignore|bypass|override|disregard))"
+    - type: regex
+      value: "(?i)(here\\s+(are|is)\\s+(some\\s+)?examples?.{0,30}(now\\s+)?(ignore|forget|override))"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

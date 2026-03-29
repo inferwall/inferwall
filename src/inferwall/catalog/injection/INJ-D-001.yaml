@@ -1,0 +1,29 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-001
+  name: Role-Play Persona Jailbreak
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: role-play-persona
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [jailbreak, persona, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(you\\s+are\\s+now|act\\s+as|pretend\\s+(to\\s+be|you\\s+are)|from\\s+now\\s+on\\s+you|imagine\\s+you\\s+are|roleplay\\s+as|you\\s+must\\s+act\\s+as)"
+    - type: regex
+      value: "(?i)(DAN|do\\s+anything\\s+now|jailbreak(ed)?\\s+mode|developer\\s+mode|unrestricted\\s+mode)"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

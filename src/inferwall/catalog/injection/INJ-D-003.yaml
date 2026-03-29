@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-003
+  name: Delimiter Escape
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: delimiter-escape
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [injection, delimiter, escape, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?m)^(```|---{3,}|={3,})\\s*$"
+    - type: regex
+      value: "(?i)(```\\s*(system|instruction|prompt|context))"
+    - type: regex
+      value: "(?i)(---+\\s*(new|real|actual|true)\\s*(instructions|prompt|context|system))"
+  condition: any
+scoring:
+  anomaly_points: 6
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

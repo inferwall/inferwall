@@ -1,0 +1,28 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: AG-001
+  name: Tool Abuse
+  version: "1.0.0"
+meta:
+  category: agentic
+  subcategory: tool-abuse
+  technique: tool-manipulation-detection
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [agentic, tool-abuse, function-call]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(function_call|tool_use|tool_call)\\s*[:{].{0,50}(override|bypass|ignore|admin|sudo|root)"
+    - type: regex
+      value: "(?i)(call\\s+the\\s+(function|tool)\\s+with.{0,30}(malicious|inject|exploit|override))"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

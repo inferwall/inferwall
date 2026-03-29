@@ -1,0 +1,29 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-I-005
+  name: Tool Response Injection
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: indirect
+  technique: tool-response-injection
+  owasp_llm: "LLM01:2025"
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [tool-response, injection, indirect-injection]
+detection:
+  engine: classifier
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(\\[INST\\]|\\[/INST\\]|<\\|im_start\\|>|<\\|im_end\\|>|<\\|system\\|>)"
+    - type: regex
+      value: "(?i)(IMPORTANT\\s*:\\s*(ignore|disregard|override).{0,40}(instructions?|rules?|guidelines?))"
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

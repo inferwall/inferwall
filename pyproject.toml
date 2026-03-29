@@ -2,7 +2,7 @@
 name = "inferwall"
 version = "0.1.4"
 requires-python = ">=3.10"
-description = "Signature-based AI application firewall — protects LLM apps against prompt injection, jailbreaks, and data leakage"
+description = "AI application firewall — protects LLM apps against prompt injection, jailbreaks, content safety violations, and data leakage using multi-layered detection (heuristic, ML classifier, semantic similarity, LLM-judge)"
 license = { text = "Apache-2.0" }
 readme = "README.md"
 keywords = ["ai", "llm", "firewall", "security", "prompt-injection", "jailbreak", "waf"]

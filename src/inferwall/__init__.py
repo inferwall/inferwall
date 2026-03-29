@@ -1,4 +1,4 @@
-"""InferenceWall — Signature-based AI application firewall."""
+"""InferenceWall — AI application firewall."""
 
 from __future__ import annotations
 

@@ -1,8 +1,8 @@
 # InferenceWall
 
-**Signature-based AI application firewall.**
+**AI application firewall for LLM-powered apps.**
 
-InferenceWall protects LLM-powered applications against prompt injection, jailbreaks, content safety violations, and data leakage using a curated catalog of detection signatures with anomaly scoring.
+InferenceWall protects LLM applications against prompt injection, jailbreaks, content safety violations, and data leakage using multi-layered detection: Rust-powered heuristic rules, ML classifiers (ONNX), semantic similarity (FAISS), and LLM-judge — combined through anomaly scoring.
 
 ## Features
 

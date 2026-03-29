@@ -11,7 +11,7 @@ from inferwall.api.deps import get_pipeline, verify_scan_auth
 
 app = FastAPI(
     title="InferenceWall",
-    description="Signature-based AI application firewall",
+    description="AI application firewall",
     version="0.1.4",
 )
 

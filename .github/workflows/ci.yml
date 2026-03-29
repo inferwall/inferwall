@@ -75,3 +75,28 @@ jobs:
         run: uv run maturin develop --manifest-path crates/inferwall-core/Cargo.toml
       - name: Run tests
         run: uv run pytest tests/ -x --cov=inferwall --cov-report=term-missing
+
+  build-wheel:
+    name: Build wheel (Linux x86_64)
+    runs-on: ubuntu-latest
+    needs: [test-rust, test-python]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - run: uv python install 3.12
+
+      - name: Build inferwall-core wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          args: --release --out dist --manifest-path crates/inferwall-core/Cargo.toml
+          manylinux: auto
+
+      - name: Build inferwall wheel
+        run: uv build --out-dir dist
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-x86_64
+          path: dist/*.whl
+          retention-days: 30

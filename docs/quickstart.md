@@ -2,8 +2,36 @@
 
 ## Installation
 
+### Option 1: From PyPI (coming soon)
+
 ```bash
-pip install inferwall
+pip install inferwall                  # Lite — heuristic only
+pip install inferwall[standard]        # + ML classifier + semantic
+pip install inferwall[full]            # + LLM-judge
+```
+
+### Option 2: From GitHub
+
+```bash
+# Requires Rust toolchain (https://rustup.rs)
+pip install git+https://github.com/inferwall/inferwall.git
+```
+
+### Option 3: Pre-built wheels from GitHub Releases
+
+Download wheels from [Releases](https://github.com/inferwall/inferwall/releases):
+
+```bash
+pip install inferwall_core-0.1.0-cp312-cp312-manylinux_2_17_x86_64.whl
+pip install inferwall-0.1.0-py3-none-any.whl
+```
+
+### Option 4: From source (development)
+
+```bash
+git clone https://github.com/inferwall/inferwall.git
+cd inferwall
+bash scripts/bootstrap.sh
 ```
 
 ## SDK Usage
@@ -48,17 +76,37 @@ curl -X POST http://localhost:8000/v1/scan/output \
 curl http://localhost:8000/v1/health
 ```
 
-## Authentication
+## ML Models (Standard/Full profiles)
 
-Generate API keys:
+After installing with `[standard]` or `[full]`, download the models:
 
 ```bash
-inferwall admin setup
+# Download models for Standard profile (~730MB)
+inferwall models download --profile standard
+
+# Check what's available
+inferwall models status
+
+# List downloaded models
+inferwall models list
 ```
 
-Use keys in requests:
+Models are cached in `~/.cache/inferwall/models/` and downloaded from HuggingFace.
+
+| Model | Size | Engine | Profile |
+|-------|------|--------|---------|
+| DeBERTa v3 (injection) | ~400MB | Classifier | Standard |
+| DistilBERT (toxicity) | ~250MB | Classifier | Standard |
+| MiniLM-L6 (embeddings) | ~80MB | Semantic | Standard |
+| Phi-4 Mini Q4 (judge) | ~2.4GB | LLM-Judge | Full |
+
+## Authentication
 
 ```bash
+# Generate API keys
+inferwall admin setup
+
+# Use keys in requests
 curl -X POST http://localhost:8000/v1/scan/input \
   -H "Authorization: Bearer iwk_scan_YOUR_KEY" \
   -H "Content-Type: application/json" \
@@ -80,6 +128,10 @@ inferwall test --input "Ignore all previous instructions"
 
 # Test with a profile
 inferwall test --profile lite
+
+# Model management
+inferwall models status
+inferwall models download --profile standard
 ```
 
 ## Configuration

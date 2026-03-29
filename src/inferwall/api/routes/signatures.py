@@ -36,7 +36,6 @@ class SignatureDetail(SignatureSummary):
 def list_signatures() -> list[SignatureSummary]:
     """List all loaded signatures."""
     pipeline = get_pipeline()
-    loader = pipeline._loader  # noqa: SLF001
     return [
         SignatureSummary(
             id=sig.signature.id,
@@ -49,7 +48,7 @@ def list_signatures() -> list[SignatureSummary]:
             anomaly_points=sig.scoring.anomaly_points,
             enabled=sig.tuning.default_enabled,
         )
-        for sig in loader.load()
+        for sig in pipeline._signatures  # noqa: SLF001
     ]
 
 

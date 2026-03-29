@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -9,8 +10,14 @@ import inferwall_core
 
 from inferwall.core.policy import PolicyEngine, PolicyProfile
 from inferwall.engines.heuristic import HeuristicEngine
-from inferwall.signatures.loader import SignatureLoader
+from inferwall.signatures.loader import (
+    USER_DIR,
+    SignatureLoader,
+)
 from inferwall.signatures.schema import SignatureDefinition
+
+# Default shipped policy
+SHIPPED_POLICIES = Path(__file__).parent.parent / "policies"
 
 
 @dataclass
@@ -24,7 +31,10 @@ class ScanResponse:
 
 
 class Pipeline:
-    """Orchestrates signature loading, engine dispatch, scoring."""
+    """Orchestrates signature loading, engine dispatch, scoring.
+
+    Supports three-layer catalog merge and user-configurable policies.
+    """
 
     def __init__(
         self,
@@ -32,14 +42,18 @@ class Pipeline:
         policy_path: Path | None = None,
     ) -> None:
         # Load signatures
-        if catalog_dir is None:
-            catalog_dir = Path(__file__).parent.parent / "catalog"
-        self._loader = SignatureLoader(catalog_dir)
-        self._signatures = self._loader.load()
+        if catalog_dir is not None:
+            # Explicit directory — single-directory mode
+            self._loader = SignatureLoader(catalog_dir)
+            self._signatures = self._loader.load()
+        else:
+            # Default — three-layer merge
+            self._loader = SignatureLoader()
+            self._signatures = self._loader.load_merged()
 
         # Load policy
         if policy_path is None:
-            policy_path = Path(__file__).parent.parent / "policies" / "default.yaml"
+            policy_path = _resolve_policy_path()
         profile = PolicyProfile.from_yaml(policy_path)
         self._policy = PolicyEngine(profile)
 
@@ -83,7 +97,6 @@ class Pipeline:
         if heuristic_sigs:
             results = self._heuristic.scan(text, heuristic_sigs)
             for r in results:
-                # Resolve points from policy
                 points = self._policy.resolve_anomaly_points(
                     r.signature_id,
                     sig_default_points=int(r.score),
@@ -115,7 +128,6 @@ class Pipeline:
             all_matches, scoring_policy, is_inbound
         )
 
-        # If in monitor mode, override to allow
         if self._policy.is_monitor_mode:
             decision = "allow"
         else:
@@ -143,3 +155,21 @@ class Pipeline:
         if sig:
             return sig.tuning.default_action.value
         return "enforce"
+
+
+def _resolve_policy_path() -> Path:
+    """Resolve policy path: env var > user dir > shipped default."""
+    env_path = os.environ.get("IW_POLICY_PATH")
+    if env_path:
+        p = Path(env_path)
+        if p.exists():
+            return p
+
+    user_policies = USER_DIR / "policies"
+    if user_policies.exists():
+        # Use first .yaml file in user policies dir
+        yamls = list(user_policies.glob("*.yaml")) + list(user_policies.glob("*.yml"))
+        if yamls:
+            return sorted(yamls)[0]
+
+    return SHIPPED_POLICIES / "default.yaml"

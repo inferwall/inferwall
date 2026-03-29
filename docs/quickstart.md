@@ -131,3 +131,83 @@ Environment variables:
 - `IW_HOST` — Server host (default: 0.0.0.0)
 - `IW_PORT` — Server port (default: 8000)
 - `IW_TLS` — TLS mode: auto, off, or path to cert
+- `IW_SIGNATURES_DIR` — Path to custom signatures directory
+- `IW_POLICY_PATH` — Path to custom policy file
+
+## Customization
+
+InferenceWall uses a **three-layer catalog merge** system that lets you customize signatures and policies without modifying the shipped package.
+
+### Custom Signatures
+
+Place custom signature YAML files in `~/.inferwall/signatures/`. These are merged with the shipped catalog at startup:
+
+1. **Shipped catalog** (read-only, inside the pip package) — the built-in 70 signatures
+2. **Custom signatures** (`~/.inferwall/signatures/`) — your additions and overrides
+3. **Override by ID** — a custom signature with the same ID as a shipped one replaces it entirely
+
+To override the environment default, set `IW_SIGNATURES_DIR` to point at any directory:
+
+```bash
+export IW_SIGNATURES_DIR=/opt/inferwall/my-signatures
+```
+
+#### Example: Creating a Custom Signature
+
+```bash
+mkdir -p ~/.inferwall/signatures
+cat > ~/.inferwall/signatures/custom-block-internal.yaml << 'EOF'
+# Custom signature — block references to internal project names
+signature:
+  id: INJ-D-100
+  name: Internal Project Name Leak
+  version: "1.0.0"
+
+meta:
+  category: data-leakage
+  subcategory: S
+  technique: keyword-match
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [internal, custom]
+
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: substring
+      value: "Project Nightingale"
+    - type: substring
+      value: "Project Falcon"
+  condition: any
+
+scoring:
+  anomaly_points: 10
+
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce
+EOF
+```
+
+After adding the file, restart the server or SDK — the new signature is picked up automatically.
+
+### Custom Policies
+
+Copy and modify a policy to tune thresholds and per-signature overrides:
+
+```bash
+mkdir -p ~/.inferwall/policies
+cp $(python -c "import inferwall; print(inferwall.__path__[0])")/policies/default.yaml \
+   ~/.inferwall/policies/my-policy.yaml
+```
+
+Edit `~/.inferwall/policies/my-policy.yaml` to change thresholds, mode, or per-signature overrides. The pipeline auto-discovers policies from `~/.inferwall/policies/`.
+
+To point at a specific policy file, set `IW_POLICY_PATH`:
+
+```bash
+export IW_POLICY_PATH=~/.inferwall/policies/my-policy.yaml
+```

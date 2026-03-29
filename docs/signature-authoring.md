@@ -63,6 +63,31 @@ tuning:
 - **encoding**: Detect encoded content (base64, rot13, hex)
 - **unicode**: Detect Unicode obfuscation
 
+## Where to Put Custom Signatures
+
+InferenceWall resolves signatures through a **three-layer catalog merge**:
+
+| Layer | Location | Writable | Purpose |
+|-------|----------|----------|---------|
+| **Shipped catalog** | Inside the pip package (`inferwall/catalog/`) | Read-only | The built-in 70 signatures |
+| **Custom signatures** | `~/.inferwall/signatures/` | Yes | Your additions and overrides |
+
+### Override by ID
+
+If a custom signature file contains a signature with the **same ID** as a shipped one, the custom version completely replaces the shipped version. This lets you tune severity, patterns, or scoring without forking the package.
+
+For example, to lower the anomaly points for `INJ-D-001`, create `~/.inferwall/signatures/inj-d-001-override.yaml` with `id: INJ-D-001` and your modified fields. The filename does not matter — only the `id` inside the YAML is used for matching.
+
+### IW_SIGNATURES_DIR
+
+By default, custom signatures are loaded from `~/.inferwall/signatures/`. Override this with the `IW_SIGNATURES_DIR` environment variable:
+
+```bash
+export IW_SIGNATURES_DIR=/opt/inferwall/team-signatures
+```
+
+All `.yaml` files in the specified directory are loaded and merged with the shipped catalog.
+
 ## Testing
 
 Every signature must have 3+ true positive and 3+ true negative test cases.

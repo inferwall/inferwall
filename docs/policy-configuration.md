@@ -62,3 +62,49 @@ signatures:
 3. Configure allowlists for false positives
 4. Flip high-confidence signatures to enforce individually
 5. Switch global mode to enforce
+
+## Custom Policies
+
+The pipeline auto-discovers policy files from `~/.inferwall/policies/`. To create a custom policy:
+
+### 1. Copy the default policy
+
+```bash
+mkdir -p ~/.inferwall/policies
+cp $(python -c "import inferwall; print(inferwall.__path__[0])")/policies/default.yaml \
+   ~/.inferwall/policies/my-policy.yaml
+```
+
+### 2. Modify thresholds, overrides, or mode
+
+Edit `~/.inferwall/policies/my-policy.yaml`:
+
+```yaml
+name: my-policy
+version: "1.0.0"
+mode: monitor                   # Start in monitor mode
+
+thresholds:
+  inbound_flag: 8               # Raise flag threshold to reduce noise
+  inbound_block: 20             # Raise block threshold
+  outbound_flag: 5
+  outbound_block: 10
+  early_exit: 25
+
+signatures:
+  INJ-D-001:
+    action: enforce             # Force-enforce this signature even in monitor mode
+    anomaly_points: 12          # Increase weight
+  CS-T-003:
+    action: monitor             # Demote to monitor-only
+```
+
+### 3. Use IW_POLICY_PATH
+
+To explicitly select a policy file (instead of relying on auto-discovery), set the `IW_POLICY_PATH` environment variable:
+
+```bash
+export IW_POLICY_PATH=~/.inferwall/policies/my-policy.yaml
+```
+
+This is useful in CI/CD pipelines or container deployments where you want deterministic policy selection.

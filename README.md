@@ -119,6 +119,24 @@ inferwall admin setup
 - [Deployment Guide](docs/deployment.md)
 - [Contributing](CONTRIBUTING.md)
 
+## Customization
+
+InferenceWall supports a three-layer catalog merge for signatures and auto-discovery for policies. Override shipped defaults without modifying the package:
+
+```
+~/.inferwall/
+  signatures/          # Custom signatures (merged with shipped catalog)
+    my-custom-sig.yaml
+  policies/            # Custom policies (auto-discovered)
+    my-policy.yaml
+```
+
+- **Custom signatures** in `~/.inferwall/signatures/` are merged at startup. A custom signature with the same ID as a shipped one replaces it.
+- **Custom policies** in `~/.inferwall/policies/` are auto-discovered by the pipeline.
+- Use `IW_SIGNATURES_DIR` and `IW_POLICY_PATH` environment variables to override the default paths.
+
+See [Signature Authoring](docs/signature-authoring.md) and [Policy Configuration](docs/policy-configuration.md) for details.
+
 ## License
 
 - **Engine code** (Rust, Python, CLI, API): [Apache-2.0](LICENSE)

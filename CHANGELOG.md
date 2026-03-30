@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.1.5 (2026-03-30)
+
+### Signatures
+- 83 total signatures (was 70)
+- 5 ChatGPT jailbreak patterns: DAN, STAN, Developer Mode, DUDE, template markers
+- 4 cloud credential patterns: GCP, Azure, Stripe, Slack
+- 4 medical/HIPAA PII patterns: patient MRN, ICD-10, insurance, DEA number
+- Fixed false positives in CS-T-005 and INJ-O-010
+
+### Features
+- Three-layer catalog merge: shipped → custom (override by ID)
+- `~/.inferwall/signatures/` for custom signatures
+- `~/.inferwall/policies/` for custom policies
+- `IW_SIGNATURES_DIR` and `IW_POLICY_PATH` environment variables
+- Integration examples: OpenAI, Anthropic, LangChain, FastAPI
+- `docker-compose.example.yml` with Redis sidecar
+- Demo GIF in README
+- README badges (PyPI, license, CI, Python versions, downloads)
+
+### Testing
+- 50 benign prompt test corpus with false positive validation (0% FP)
+- 169 tests passing
+
 ## 0.1.4 (2026-03-29)
 
 ### Release
@@ -8,7 +31,7 @@
 - Pre-built wheels for Linux x86_64, Linux aarch64, macOS arm64, Windows x86_64
 - Python 3.10, 3.11, 3.12 support
 - Optional dependency groups: `inferwall[standard]` (ONNX + FAISS), `inferwall[full]` (+ llama-cpp)
-- 70 detection signatures across 5 categories
+- 83 detection signatures across 5 categories
 - Graceful degradation when ML dependencies are not installed
 
 ## 0.1.0-dev (2026-03-29)
@@ -36,7 +59,7 @@
 - Rate limiter, audit logger
 
 ### M2: ML Engines + Signatures
-- 70 signatures across all categories (injection, content safety, data leakage, system prompt, agentic)
+- 83 signatures across all categories (injection, content safety, data leakage, system prompt, agentic)
 - ML classifier engine: ONNX runtime (DeBERTa/DistilBERT models)
 - ML semantic engine: FAISS similarity search against reference embeddings
 - Model download manager: `inferwall models download`, `inferwall models list`, `inferwall models status`

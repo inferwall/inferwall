@@ -39,7 +39,7 @@ result = inferwall.scan_output("Your API key is sk-1234...")
 
 ## Features
 
-- **70 detection signatures** across 5 categories (injection, content safety, data leakage, system prompt, agentic)
+- **83 detection signatures** across 5 categories (injection, content safety, data leakage, system prompt, agentic)
 - **Rust-powered heuristic engine** — <0.3ms p99 for pattern matching
 - **ML engines** — ONNX classifier (DeBERTa/DistilBERT) + FAISS semantic similarity
 - **Anomaly scoring** — multiple weak signals combine into strong signals (like OWASP CRS)

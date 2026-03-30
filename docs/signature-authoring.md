@@ -1,6 +1,6 @@
 # Signature Authoring Guide
 
-InferenceWall ships with **70 detection signatures** across 5 categories. Community-contributed signatures are licensed under **CC BY-SA 4.0** -- any modifications must be shared back under the same license.
+InferenceWall ships with **83 detection signatures** across 5 categories. Community-contributed signatures are licensed under **CC BY-SA 4.0** -- any modifications must be shared back under the same license.
 
 ## Signature Format
 

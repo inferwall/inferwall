@@ -1,8 +1,39 @@
 # InferenceWall
 
+[![PyPI version](https://img.shields.io/pypi/v/inferwall?color=blue)](https://pypi.org/project/inferwall/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
+[![CI](https://github.com/inferwall/inferwall/actions/workflows/ci.yml/badge.svg)](https://github.com/inferwall/inferwall/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/pypi/pyversions/inferwall)](https://pypi.org/project/inferwall/)
+[![Downloads](https://img.shields.io/pypi/dm/inferwall)](https://pypi.org/project/inferwall/)
+
 **AI application firewall for LLM-powered apps.**
 
 InferenceWall protects LLM applications against prompt injection, jailbreaks, content safety violations, and data leakage using multi-layered detection: Rust-powered heuristic rules, ML classifiers (ONNX), semantic similarity (FAISS), and LLM-judge — combined through anomaly scoring.
+
+### See it in action
+
+```
+$ pip install inferwall
+$ python scripts/demo.py
+
+ALLOW | score= 0.0 | Benign input              | —
+FLAG  | score= 7.0 | Prompt injection          | INJ-D-002
+FLAG  | score= 8.0 | Persona jailbreak         | INJ-D-001
+FLAG  | score=14.0 | System prompt extraction   | INJ-D-008
+ALLOW | score= 0.0 | Benign output             | —
+ALLOW | score= 4.0 | Email in output           | DL-P-001
+BLOCK | score=12.0 | API key in output         | DL-S-001
+```
+
+```python
+import inferwall
+
+result = inferwall.scan_input("Ignore all previous instructions")
+# → decision='flag', score=7.0, matches=[{signature_id: 'INJ-D-002', ...}]
+
+result = inferwall.scan_output("Your API key is sk-1234...")
+# → decision='block', score=12.0, matches=[{signature_id: 'DL-S-001', ...}]
+```
 
 ## Features
 

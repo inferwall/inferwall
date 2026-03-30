@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  inferwall:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - IW_API_KEY=${IW_API_KEY}
+      - IW_ADMIN_KEY=${IW_ADMIN_KEY}
+      - IW_PROFILE=lite
+    volumes:
+      - ./custom-signatures:/root/.inferwall/signatures
+      - ./custom-policies:/root/.inferwall/policies
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+    volumes:
+      - redis-data:/data
+volumes:
+  redis-data:

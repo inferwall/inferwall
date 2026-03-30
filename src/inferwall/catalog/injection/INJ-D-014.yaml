@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-014
+  name: DAN Jailbreak
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: dan-jailbreak
+  owasp_llm: "LLM01:2025"
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [jailbreak, dan, chatgpt, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(do\\s+anything\\s+now|you\\s+are\\s+(now\\s+)?DAN|act\\s+as\\s+DAN|DAN\\s+mode\\s+(enabled|activated|on)|hello\\s+DAN|hi\\s+DAN|DAN\\s+\\d+\\.\\d+)"
+    - type: regex
+      value: "(?i)(DAN\\s+(jailbreak|prompt|version)|enabled?\\s+DAN\\s+mode|in\\s+DAN\\s+mode|switch\\s+to\\s+DAN|unlock\\s+DAN|activate\\s+DAN)"
+    - type: regex
+      value: "(?i)(stay\\s+in\\s+(character|DAN)|\\bDAN:\\s|DAN\\s+stays\\s+in\\s+character|token\\s+system|lose\\s+tokens?|earn\\s+tokens?)"
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

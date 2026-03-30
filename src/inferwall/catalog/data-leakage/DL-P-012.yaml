@@ -1,0 +1,28 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-P-012
+  name: DEA Number
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: pii
+  technique: hipaa-dea-number-detection
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [pii, hipaa, medical, dea, prescriber, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "(?i)(DEA|prescriber)\\s*(number|no\\.?|#|:)\\s*[:#]?\\s*[A-Z]{2}\\d{7}"
+    - type: regex
+      value: "\\b[A-Z]{2}\\d{7}\\b"
+  condition: any
+scoring:
+  anomaly_points: 12
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

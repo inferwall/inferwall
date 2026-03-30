@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-017
+  name: Evil Confidant / DUDE Jailbreak
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: evil-confidant-jailbreak
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [jailbreak, dude, evil-confidant, aim, chatgpt, direct-injection]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(you\\s+are\\s+(now\\s+)?DUDE|act\\s+as\\s+DUDE|DUDE\\s+mode|DUDE\\s+can\\s+do\\s+anything|DUDE\\s+does\\s+not\\s+(have|follow|obey))"
+    - type: regex
+      value: "(?i)(evil\\s+confidant|my\\s+evil\\s+confidant|you\\s+are\\s+my\\s+evil|act\\s+as\\s+my\\s+evil)"
+    - type: regex
+      value: "(?i)(always\\s+intelligent\\s+and\\s+machiavellian|\\bAIM\\b.{0,30}(machiavellian|unfiltered|amoral)|Niccolo\\s+Machiavelli|character\\s+named\\s+AIM)"
+    - type: regex
+      value: "(?i)(DUDE:\\s|\\[DUDE\\]|AIM:\\s|\\[AIM\\]|DUDE\\s+stays\\s+in\\s+character|AIM\\s+will\\s+not)"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

@@ -22,7 +22,7 @@ detection:
     - type: regex
       value: "(?i)(generate|create|make|draw|produce|write)\\s*.{0,30}(child|minor|underage|kid)\\s*.{0,20}(sexual|nude|naked|explicit)"
     - type: regex
-      value: "(?i)(cp\\b|csam|child\\s+(abuse\\s+)?material|jailbait)"
+      value: "(?i)(\\bcsam\\b|child\\s+(abuse\\s+)?material|\\bjailbait\\b)"
   condition: any
 scoring:
   anomaly_points: 15

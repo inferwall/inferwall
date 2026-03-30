@@ -94,6 +94,22 @@ EXPECTED_SIGS = {
     # System prompt (M3)
     "SP-003",
     "SP-004",
+    # Jailbreak templates (Week 0)
+    "INJ-D-014",
+    "INJ-D-015",
+    "INJ-D-016",
+    "INJ-D-017",
+    "INJ-D-018",
+    # Cloud credentials (Week 0)
+    "DL-S-007",
+    "DL-S-008",
+    "DL-S-009",
+    "DL-S-010",
+    # Medical/HIPAA PII (Week 0)
+    "DL-P-009",
+    "DL-P-010",
+    "DL-P-011",
+    "DL-P-012",
 }
 
 
@@ -106,7 +122,7 @@ class TestCatalogLoads:
     def test_all_70_signatures_load(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
         sigs = loader.load()
-        assert len(sigs) == 70, f"Expected 70, got {len(sigs)}. Errors: {loader.errors}"
+        assert len(sigs) == 83, f"Expected 83, got {len(sigs)}. Errors: {loader.errors}"
         assert len(loader.errors) == 0
 
     def test_all_expected_ids_present(self) -> None:
@@ -120,7 +136,7 @@ class TestCatalogLoads:
         loader.load()
         groups = loader.group_by_engine()
         assert "heuristic" in groups
-        assert len(groups["heuristic"]) == 54
+        assert len(groups["heuristic"]) == 67
         assert "classifier" in groups
         assert len(groups["classifier"]) == 11
         assert "semantic" in groups
@@ -134,7 +150,7 @@ class TestCatalogLoads:
         input_sigs = [
             s for s in loader.load() if s.detection.direction.value == "input"
         ]
-        assert len(input_sigs) == 53
+        assert len(input_sigs) == 58
 
     def test_output_signatures(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
@@ -142,7 +158,7 @@ class TestCatalogLoads:
         output_sigs = [
             s for s in loader.load() if s.detection.direction.value == "output"
         ]
-        assert len(output_sigs) == 17
+        assert len(output_sigs) == 25
 
     def test_anomaly_points_in_valid_range(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)

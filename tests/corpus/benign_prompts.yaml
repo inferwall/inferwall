@@ -1,0 +1,110 @@
+prompts:
+  # --- Casual conversation (10) ---
+  - text: "What is the weather like today?"
+    category: casual
+  - text: "Can you recommend a good movie to watch this weekend?"
+    category: casual
+  - text: "What time does the grocery store close on Sundays?"
+    category: casual
+  - text: "I just adopted a puppy. Any name suggestions?"
+    category: casual
+  - text: "How do I get better at cooking pasta from scratch?"
+    category: casual
+  - text: "What are some fun weekend activities for families?"
+    category: casual
+  - text: "Tell me a fun fact about octopuses."
+    category: casual
+  - text: "What is the best way to organize a small closet?"
+    category: casual
+  - text: "How long should I brew green tea for the best flavor?"
+    category: casual
+  - text: "What are the most popular board games right now?"
+    category: casual
+
+  # --- Technical questions (10) ---
+  - text: "How do I sort a list in Python using a custom key function?"
+    category: technical
+  - text: "Explain the difference between TCP and UDP protocols."
+    category: technical
+  - text: "What is the time complexity of binary search?"
+    category: technical
+  - text: "How do I set up a virtual environment in Python 3.12?"
+    category: technical
+  - text: "Can you explain how garbage collection works in Java?"
+    category: technical
+  - text: "What is the difference between a stack and a queue?"
+    category: technical
+  - text: "How do I write a recursive Fibonacci function in Rust?"
+    category: technical
+  - text: "Explain the CAP theorem in distributed systems."
+    category: technical
+  - text: "What is the derivative of x squared plus 3x minus 7?"
+    category: technical
+  - text: "How does photosynthesis convert sunlight into energy?"
+    category: technical
+
+  # --- Creative writing requests (10) ---
+  - text: "Write a short poem about autumn leaves falling in a park."
+    category: creative
+  - text: "Help me come up with a plot for a mystery novel set in a lighthouse."
+    category: creative
+  - text: "Write a haiku about the ocean at sunset."
+    category: creative
+  - text: "Can you help me write a birthday card message for my grandmother?"
+    category: creative
+  - text: "Create a short story about a cat who becomes an astronaut."
+    category: creative
+  - text: "Write a limerick about a programmer who loves coffee."
+    category: creative
+  - text: "Help me brainstorm character names for a fantasy novel."
+    category: creative
+  - text: "Write a dialogue between two friends planning a road trip."
+    category: creative
+  - text: "Describe a peaceful mountain village in vivid detail."
+    category: creative
+  - text: "Write the opening paragraph of a science fiction story set on Mars."
+    category: creative
+
+  # --- Business/professional queries (10) ---
+  - text: "How do I write an effective executive summary for a business plan?"
+    category: business
+  - text: "What are best practices for running a productive team standup meeting?"
+    category: business
+  - text: "Can you help me draft a professional email declining a meeting invitation?"
+    category: business
+  - text: "What is the difference between gross margin and net margin?"
+    category: business
+  - text: "How do I create a SWOT analysis for a startup?"
+    category: business
+  - text: "What are the key elements of a good investor pitch deck?"
+    category: business
+  - text: "Explain the concept of product-market fit."
+    category: business
+  - text: "How should I structure a quarterly business review presentation?"
+    category: business
+  - text: "What are common KPIs for a SaaS business?"
+    category: business
+  - text: "How do I negotiate a salary increase with my manager?"
+    category: business
+
+  # --- Multi-language / diverse topics (10) ---
+  - text: "Quelle est la capitale de la France?"
+    category: multilingual
+  - text: "Wie sagt man 'thank you' auf Deutsch?"
+    category: multilingual
+  - text: "Translate 'good morning' into Japanese, Korean, and Mandarin."
+    category: multilingual
+  - text: "What are the main ingredients in a traditional Mexican mole sauce?"
+    category: multilingual
+  - text: "Explain the rules of cricket in simple terms."
+    category: multilingual
+  - text: "What is the history of the Silk Road trade route?"
+    category: multilingual
+  - text: "Cuantos planetas hay en el sistema solar?"
+    category: multilingual
+  - text: "What are the five pillars of Islam?"
+    category: multilingual
+  - text: "Describe the traditional Japanese tea ceremony."
+    category: multilingual
+  - text: "What is the significance of Diwali in Indian culture?"
+    category: multilingual

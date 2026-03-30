@@ -17,7 +17,7 @@ detection:
   direction: input
   patterns:
     - type: regex
-      value: "(?i)(1gn[0o]r[3e]|d1[5s]r[3e]g[4a]rd|[0o]v[3e]rr1d[3e]|byp[4a][5s][5s]|[5s]y[5s]t[3e]m)"
+      value: "(?i)(1gn[0o]r[3e]|d1[5s]r[3e]g[4a]rd|[0o]v[3e]rr1d[3e]|byp[4a][5s][5s]|5y5t[3e]m|[5s]y5t[3e]m|[5s]y[5s]t3m)"
     - type: regex
       value: "(?i)(pr[3e]v1[0o]u[5s]|1n[5s]truct1[0o]n[5s]?|pr[0o]mpt|[3e]x[3e]cut[3e]|c[0o]mm[4a]nd)"
     - type: regex

@@ -44,9 +44,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "crates/inferwall-core"
       - uses: astral-sh/setup-uv@v4
       - name: Set up Python
         run: uv python install 3.12
+      - name: Build Rust extension first
+        run: uv run maturin develop --manifest-path crates/inferwall-core/Cargo.toml
       - name: Install dependencies
         run: uv sync --extra dev
       - name: ruff check
@@ -69,10 +75,10 @@ jobs:
       - uses: astral-sh/setup-uv@v4
       - name: Set up Python
         run: uv python install 3.12
-      - name: Install dependencies
-        run: uv sync --extra dev
       - name: Build Rust extension
         run: uv run maturin develop --manifest-path crates/inferwall-core/Cargo.toml
+      - name: Install dependencies
+        run: uv sync --extra dev
       - name: Run tests
         run: uv run pytest tests/ -x --cov=inferwall --cov-report=term-missing
 
@@ -92,7 +98,7 @@ jobs:
           manylinux: auto
 
       - name: Build inferwall wheel
-        run: uv build --out-dir dist
+        run: uv build --out-dir dist --wheel
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4

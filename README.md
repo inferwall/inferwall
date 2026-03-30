@@ -12,6 +12,8 @@ InferenceWall protects LLM applications against prompt injection, jailbreaks, co
 
 ### See it in action
 
+![InferenceWall Demo](assets/demo.gif)
+
 ```
 $ pip install inferwall
 $ python scripts/demo.py

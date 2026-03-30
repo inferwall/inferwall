@@ -141,6 +141,15 @@ inferwall admin setup
 | **Standard** | + Classifier + Semantic | <80ms p99 | `pip install inferwall[standard]` |
 | **Full** | + LLM-Judge | <2s p99 | `pip install inferwall[full]` |
 
+## Integration Examples
+
+- [OpenAI SDK](examples/openai_guard.py) — wrap `openai.chat.completions.create()` with scanning
+- [Anthropic SDK](examples/anthropic_guard.py) — wrap `anthropic.messages.create()` with scanning
+- [LangChain](examples/langchain_middleware.py) — callback handler + wrapper function
+- [FastAPI middleware](examples/fastapi_middleware.py) — automatic HTTP request/response scanning
+
+See [examples/README.md](examples/README.md) for details.
+
 ## Documentation
 
 - [Quickstart](docs/quickstart.md)

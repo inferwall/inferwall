@@ -60,6 +60,7 @@ class Pipeline:
         # Initialize engines
         self._heuristic = HeuristicEngine()
         self._classifier = self._init_classifier()
+        self._llm_judge = self._init_llm_judge()
 
     def _init_classifier(self) -> object | None:
         """Try to initialize classifier engine with downloaded models."""
@@ -79,6 +80,23 @@ class Pipeline:
                     engine.load_model(model_name, downloader.model_path(spec))
 
             return engine if engine.loaded_models else None
+        except Exception:
+            return None
+
+    def _init_llm_judge(self) -> object | None:
+        """Try to initialize LLM judge engine with downloaded model."""
+        try:
+            from inferwall.engines.llm_judge import LLMJudgeEngine
+            from pathlib import Path
+
+            judge_dir = Path.home() / ".cache" / "inferwall" / "models" / "llm-judge"
+            if not judge_dir.exists():
+                return None
+
+            engine = LLMJudgeEngine()
+            if engine.load_model(judge_dir):
+                return engine
+            return None
         except Exception:
             return None
 
@@ -167,6 +185,23 @@ class Pipeline:
                             score=float(points),
                             offset=r.offset,
                             length=r.length,
+                        )
+                    )
+
+        # LLM-Judge (Full profile) — only for ambiguous scores
+        if self._llm_judge is not None:
+            current_score = sum(m.score for m in all_matches)
+            if self._llm_judge.should_invoke(current_score):  # type: ignore[union-attr]
+                judge_results = self._llm_judge.scan(text, [])  # type: ignore[union-attr]
+                for r in judge_results:
+                    all_matches.append(
+                        inferwall_core.Match(
+                            signature_id=r.signature_id,
+                            engine="llm-judge",
+                            matched_text=r.matched_text,
+                            score=r.score,
+                            offset=0,
+                            length=len(text),
                         )
                     )
 

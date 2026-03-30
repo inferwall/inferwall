@@ -227,7 +227,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -455,11 +455,12 @@ wheels = [
 
 [[package]]
 name = "inferwall"
-version = "0.1.3"
+version = "0.1.5"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "inferwall-core" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "uvicorn", extra = ["standard"] },
@@ -500,6 +501,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "inferwall", extras = ["standard"], marker = "extra == 'full'" },
+    { name = "inferwall-core", specifier = ">=0.1.5" },
     { name = "llama-cpp-python", marker = "extra == 'full'", specifier = ">=0.3" },
     { name = "maturin", marker = "extra == 'dev'", specifier = ">=1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
@@ -517,6 +519,25 @@ requires-dist = [
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
 ]
 provides-extras = ["standard", "full", "dev"]
+
+[[package]]
+name = "inferwall-core"
+version = "0.1.5"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f9/93/7bfc769f408444ef230aa8eb2523b159f5029884ddd072b04ac7d44ec05c/inferwall_core-0.1.5-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:8e49512ee644c453e596861dd5eaaaa2f8d000b70fb643092c55635ccd15481e", size = 958866, upload-time = "2026-03-29T13:07:00.802Z" },
+    { url = "https://files.pythonhosted.org/packages/28/e2/f8dbe0b57b6a9519a1ddb48429108d0693756e8b5bf00d203bc5017641d5/inferwall_core-0.1.5-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cafdc96fac069788f5a295b4b63dbc4a98d8b2eaf75ea2795a10b47e1679dd83", size = 1089180, upload-time = "2026-03-29T13:07:02.779Z" },
+    { url = "https://files.pythonhosted.org/packages/17/bf/4e5a080a18835ae01b216450f6b67a0e5f1858d927d01756d518b600741c/inferwall_core-0.1.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c2afa3579066a6cbb443f7d08522233521c71e25a781dfd54fad30521dd7a702", size = 1109856, upload-time = "2026-03-29T13:07:04.473Z" },
+    { url = "https://files.pythonhosted.org/packages/06/7d/44fcc6721a55d9585e0a5e77aa79bd1ba1bfacd621c6d79e22d56ab86dda/inferwall_core-0.1.5-cp310-cp310-win_amd64.whl", hash = "sha256:94865c0bc435648586a6d59c06ad44e02cc83c419f831d8107551a3e2246f6f5", size = 862941, upload-time = "2026-03-29T13:07:06.348Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/40/f4b7f52ec4f049e984211f87202be9876dd630ab01fc06ebc4236b081c75/inferwall_core-0.1.5-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:0a373847410e4f33c4080a8b008ebaa18c835175e092cd158d11d6291c2bcda6", size = 959028, upload-time = "2026-03-29T13:07:07.869Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/d4/9e012ce2db8c04c792315ca5eca5894efda8df4c21cf8c1446801f062b94/inferwall_core-0.1.5-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e8a92df92d1b2469561e34f64a210332648b031873b061f1857ff18c01116190", size = 1088731, upload-time = "2026-03-29T13:07:09.48Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/b7/18b2744995d6584039b2897205ad7e4c70f7ed3ff67b6092167007fa4fb8/inferwall_core-0.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:196dfc9e9e4b582ef14ea3f17fc96939abba3d7badb67c7061de83280c4c78fd", size = 1110185, upload-time = "2026-03-29T13:07:10.809Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/9b/6599830e539f24158bd2eacb31db3211b7192b429720d0623574b3c98813/inferwall_core-0.1.5-cp311-cp311-win_amd64.whl", hash = "sha256:035d7687cd852cb724fc24edaadda424045120174ed32b9df445d02c7b0d7a0b", size = 863174, upload-time = "2026-03-29T13:07:12.159Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/62/fffc1390dd4a3641b3b8bdb5468ecdbbe7b26a20dd808a5add637fa80573/inferwall_core-0.1.5-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:74b903f5056b6ae19852e6d92a037098f21df55b6a35b8fa3cbf1f738e429c7f", size = 959907, upload-time = "2026-03-29T13:07:13.754Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/08/289ef6011f44e501640b1964b22ddd32afaf7839086b514d8b29b3487b71/inferwall_core-0.1.5-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b4d10039bad53b4feadcb87bb60a46e09c7271b68d50435bfddc673566b4c584", size = 1089821, upload-time = "2026-03-29T13:07:15.559Z" },
+    { url = "https://files.pythonhosted.org/packages/53/09/1a80e7fa17dbf04e3c2d2b14c1d55bd3de7e4ddc97bcb0bd9b67f2c3e61f/inferwall_core-0.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d1e3764d1e416f85f38a1fa5966d43f53ca729563747b9965ac5e1ac811b10b1", size = 1111747, upload-time = "2026-03-29T13:07:16.973Z" },
+    { url = "https://files.pythonhosted.org/packages/89/30/0507cfbe45456b4575a98d11a7db32f9e5955a48d43d19c8d926b3a304a2/inferwall_core-0.1.5-cp312-cp312-win_amd64.whl", hash = "sha256:3461d23d93a1cb7b6f5be67d9151dae176eba5541c99407421266abd813b2b2f", size = 863454, upload-time = "2026-03-29T13:07:18.383Z" },
+]
 
 [[package]]
 name = "iniconfig"

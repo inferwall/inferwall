@@ -6,12 +6,12 @@ detection pipeline returns a score of 0 for every single one — i.e. zero
 false positives.
 """
 
-import yaml
-import pytest
 from pathlib import Path
 
-from inferwall.core.pipeline import Pipeline
+import pytest
+import yaml
 
+from inferwall.core.pipeline import Pipeline
 
 CORPUS_PATH = Path(__file__).parent.parent / "corpus" / "benign_prompts.yaml"
 

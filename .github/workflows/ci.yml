@@ -53,6 +53,7 @@ jobs:
         run: uv python install 3.12
       - name: Install maturin and build Rust extension
         run: |
+          uv venv
           uv pip install maturin
           uv run maturin develop --manifest-path crates/inferwall-core/Cargo.toml
       - name: Install dependencies
@@ -79,6 +80,7 @@ jobs:
         run: uv python install 3.12
       - name: Install maturin and build Rust extension
         run: |
+          uv venv
           uv pip install maturin
           uv run maturin develop --manifest-path crates/inferwall-core/Cargo.toml
       - name: Install dependencies

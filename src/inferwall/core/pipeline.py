@@ -59,6 +59,28 @@ class Pipeline:
 
         # Initialize engines
         self._heuristic = HeuristicEngine()
+        self._classifier = self._init_classifier()
+
+    def _init_classifier(self) -> object | None:
+        """Try to initialize classifier engine with downloaded models."""
+        try:
+            from inferwall.engines.classifier import ClassifierEngine
+            from inferwall.models.downloader import ModelDownloader
+            from inferwall.models.registry import get_model
+
+            engine = ClassifierEngine()
+            if not engine.is_available:
+                return None
+
+            downloader = ModelDownloader()
+            for model_name in ("deberta-injection", "distilbert-toxicity"):
+                spec = get_model(model_name)
+                if spec and downloader.is_downloaded(spec):
+                    engine.load_model(model_name, downloader.model_path(spec))
+
+            return engine if engine.loaded_models else None
+        except Exception:
+            return None
 
     @property
     def signature_count(self) -> int:
@@ -90,6 +112,11 @@ class Pipeline:
         heuristic_sigs = [
             s for s in active_sigs if s.detection.engine.value == "heuristic"
         ]
+        classifier_sigs = [
+            s
+            for s in active_sigs
+            if s.detection.engine.value == "classifier"
+        ]
 
         all_matches: list[inferwall_core.Match] = []
 
@@ -110,6 +137,32 @@ class Pipeline:
                         inferwall_core.Match(
                             signature_id=r.signature_id,
                             engine="heuristic",
+                            matched_text=r.matched_text,
+                            score=float(points),
+                            offset=r.offset,
+                            length=r.length,
+                        )
+                    )
+
+        # Classifier scan (Standard/Full profiles)
+        if classifier_sigs and self._classifier is not None:
+            results = self._classifier.scan(text, classifier_sigs)  # type: ignore[union-attr]
+            for r in results:
+                points = self._policy.resolve_anomaly_points(
+                    r.signature_id,
+                    sig_default_points=int(r.score),
+                )
+                action = self._policy.resolve_action(
+                    r.signature_id,
+                    sig_default_action=self._get_sig_default_action(
+                        r.signature_id
+                    ),
+                )
+                if action == "enforce":
+                    all_matches.append(
+                        inferwall_core.Match(
+                            signature_id=r.signature_id,
+                            engine="classifier",
                             matched_text=r.matched_text,
                             score=float(points),
                             offset=r.offset,

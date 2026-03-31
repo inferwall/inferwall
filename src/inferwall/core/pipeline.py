@@ -86,8 +86,9 @@ class Pipeline:
     def _init_llm_judge(self) -> object | None:
         """Try to initialize LLM judge engine with downloaded model."""
         try:
-            from inferwall.engines.llm_judge import LLMJudgeEngine
             from pathlib import Path
+
+            from inferwall.engines.llm_judge import LLMJudgeEngine
 
             judge_dir = Path.home() / ".cache" / "inferwall" / "models" / "llm-judge"
             if not judge_dir.exists():

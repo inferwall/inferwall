@@ -163,7 +163,7 @@ class Pipeline:
 
         # Classifier scan (Standard/Full profiles)
         if classifier_sigs and self._classifier is not None:
-            results = self._classifier.scan(text, classifier_sigs)  # type: ignore[union-attr]
+            results = self._classifier.scan(text, classifier_sigs)  # type: ignore[attr-defined]
             for r in results:
                 points = self._policy.resolve_anomaly_points(
                     r.signature_id,
@@ -188,8 +188,8 @@ class Pipeline:
         # LLM-Judge (Full profile) — only for ambiguous scores
         if self._llm_judge is not None:
             current_score = sum(m.score for m in all_matches)
-            if self._llm_judge.should_invoke(current_score):  # type: ignore[union-attr]
-                judge_results = self._llm_judge.scan(text, [])  # type: ignore[union-attr]
+            if self._llm_judge.should_invoke(current_score):  # type: ignore[attr-defined]
+                judge_results = self._llm_judge.scan(text, [])  # type: ignore[attr-defined]
                 for r in judge_results:
                     all_matches.append(
                         inferwall_core.Match(

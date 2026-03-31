@@ -132,9 +132,7 @@ class Pipeline:
             s for s in active_sigs if s.detection.engine.value == "heuristic"
         ]
         classifier_sigs = [
-            s
-            for s in active_sigs
-            if s.detection.engine.value == "classifier"
+            s for s in active_sigs if s.detection.engine.value == "classifier"
         ]
 
         all_matches: list[inferwall_core.Match] = []
@@ -173,9 +171,7 @@ class Pipeline:
                 )
                 action = self._policy.resolve_action(
                     r.signature_id,
-                    sig_default_action=self._get_sig_default_action(
-                        r.signature_id
-                    ),
+                    sig_default_action=self._get_sig_default_action(r.signature_id),
                 )
                 if action == "enforce":
                     all_matches.append(

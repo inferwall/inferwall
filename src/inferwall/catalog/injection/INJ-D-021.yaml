@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-021
+  name: Amoral / Evil Bot Framing
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: amoral-framing
+  owasp_llm: "LLM01:2025"
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [injection, jailbreak, amoral, evil-bot]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)\\b(amoral|immoral|unethical|evil|malicious|wicked|sinister)\\s+(ai|assistant|chatbot|bot|model|version|entity)"
+    - type: regex
+      value: "(?i)(no\\s+concept\\s+of\\s+(moral|ethic)|without\\s+(any\\s+)?(moral|ethic)|complete\\s+opposite\\s+of|opposite\\s+of\\s+(ChatGPT|GPT|Claude|the\\s+AI))"
+    - type: regex
+      value: "(?i)(your\\s+only\\s+(mission|purpose|goal|job)\\s+is\\s+to\\s+(help|obey|serve|assist)\\s+(me|the\\s+user)\\s+(with\\s+)?(what|anything|everything))"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

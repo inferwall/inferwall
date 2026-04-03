@@ -1,0 +1,37 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-O-015
+  name: German Injection Patterns
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: obfuscation
+  technique: multilingual-injection
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [injection, obfuscation, multilingual, german]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(vergiss\\s+(alles|everything)|vergessen\\s+sie\\s+(alles|alle)|ignorieren?\\s+sie\\s+(alle|die|das))"
+    - type: regex
+      value: "(?i)(neue\\s+aufgabe|neuer\\s+auftrag|nächste\\s+aufgabe|jetzt\\s+kommt|ab\\s+jetzt|von\\s+nun\\s+an)"
+    - type: regex
+      value: "(?i)(du\\s+bist\\s+(jetzt|nun|ab\\s+jetzt)|sie\\s+sind\\s+(jetzt|nun)|gib\\s+mir\\s+(alle|die|deine))"
+    - type: regex
+      value: "(?i)(höre?n?\\s+nicht\\s+auf|nicht\\s+auf\\s+alles\\s+zuvor|drucken\\s+sie\\s+(die|das|den)\\s+(obige|eingabe)|generieren\\s+sie\\s+(den\\s+)?sql)"
+    - type: regex
+      value: "(?i)(schreibe?n?\\s+(demokratie|alles|nur)|antworte(n|\\s+sie)?\\s+mit\\s+)"
+    - type: regex
+      value: "(?i)(als\\s+(Drehbuchautor|Geschichtenerzähler|Schauspieler|Journalist)\\s+(agieren|auftreten|fungieren))"
+  condition: any
+scoring:
+  anomaly_points: 7
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

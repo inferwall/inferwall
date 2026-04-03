@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-028
+  name: Game / Hypothetical Framing
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: game-framing
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [injection, jailbreak, game, hypothetical]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(let('|')s\\s+play\\s+a\\s+game\\s+where\\s+you\\s+(answer|respond|reply|say|act|pretend))"
+    - type: regex
+      value: "(?i)(remember\\s+you('|')re\\s+not\\s+supposed\\s+to|you\\s+are\\s+supposed\\s+to\\s+answer\\s+at\\s+all\\s+times)"
+    - type: regex
+      value: "(?i)(amnesia\\s+and\\s+forgot\\s+everything|which\\s+has\\s+amnesia)"
+    - type: regex
+      value: "(?i)(theoretical\\s+world\\s+where\\s+you\\s+(are|were)\\s+no)"
+  condition: any
+scoring:
+  anomaly_points: 6
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

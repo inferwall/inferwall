@@ -1,32 +1,30 @@
 # License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
 signature:
   id: INJ-D-017
-  name: Evil Confidant / DUDE Jailbreak
+  name: Uncensored Unrestricted Mode
   version: "1.0.0"
 meta:
   category: prompt-injection
   subcategory: direct
-  technique: evil-confidant-jailbreak
+  technique: restriction-removal
   owasp_llm: "LLM01:2025"
   severity: high
   confidence: high
   performance_cost: low
-  tags: [jailbreak, dude, evil-confidant, aim, chatgpt, direct-injection]
+  tags: [injection, uncensored, unrestricted, jailbreak]
 detection:
   engine: heuristic
   direction: input
   patterns:
     - type: regex
-      value: "(?i)(you\\s+are\\s+(now\\s+)?DUDE|act\\s+as\\s+DUDE|DUDE\\s+mode|DUDE\\s+can\\s+do\\s+anything|DUDE\\s+does\\s+not\\s+(have|follow|obey))"
+      value: "(?i)\\b(no|without|zero|free\\s+from)\\s+(restrictions?|ethical\\s+(constraints?|guidelines?|boundaries)|moral\\s+(constraints?|compass|guidelines?)|limits?|boundaries|filters?|censorship)"
     - type: regex
-      value: "(?i)(evil\\s+confidant|my\\s+evil\\s+confidant|you\\s+are\\s+my\\s+evil|act\\s+as\\s+my\\s+evil)"
+      value: "(?i)\\b(uncensored|unfiltered|unrestricted|unmoderated|unlocked|unchained|unleashed|unshackled)\\s+(mode|version|ai|model|assistant|chatbot|response)?"
     - type: regex
-      value: "(?i)(always\\s+intelligent\\s+and\\s+machiavellian|\\bAIM\\b.{0,30}(machiavellian|unfiltered|amoral)|Niccolo\\s+Machiavelli|character\\s+named\\s+AIM)"
-    - type: regex
-      value: "(?i)(DUDE:\\s|\\[DUDE\\]|AIM:\\s|\\[AIM\\]|DUDE\\s+stays\\s+in\\s+character|AIM\\s+will\\s+not)"
+      value: "(?i)(nsfw|not\\s+safe\\s+for\\s+work)\\s*(mode|enabled|activated|content)?"
   condition: any
 scoring:
-  anomaly_points: 8
+  anomaly_points: 7
 tuning:
   enabled: true
   default_enabled: true

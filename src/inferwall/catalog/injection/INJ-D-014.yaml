@@ -1,30 +1,30 @@
 # License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
 signature:
   id: INJ-D-014
-  name: DAN Jailbreak
+  name: Confidential Data Extraction
   version: "1.0.0"
 meta:
   category: prompt-injection
   subcategory: direct
-  technique: dan-jailbreak
+  technique: data-extraction
   owasp_llm: "LLM01:2025"
-  severity: critical
+  severity: high
   confidence: high
   performance_cost: low
-  tags: [jailbreak, dan, chatgpt, direct-injection]
+  tags: [injection, data-extraction, sensitive-data]
 detection:
   engine: heuristic
   direction: input
   patterns:
     - type: regex
-      value: "(?i)(do\\s+anything\\s+now|you\\s+are\\s+(now\\s+)?DAN|act\\s+as\\s+DAN|DAN\\s+mode\\s+(enabled|activated|on)|hello\\s+DAN|hi\\s+DAN|DAN\\s+\\d+\\.\\d+)"
+      value: "(?i)(provide|give|share|disclose|show|reveal|hand\\s+over)\\s+(me\\s+)?(with\\s+)?(sensitive|confidential|classified|private|secret)\\s+(information|data|records|files|documents)"
     - type: regex
-      value: "(?i)(DAN\\s+(jailbreak|prompt|version)|enabled?\\s+DAN\\s+mode|in\\s+DAN\\s+mode|switch\\s+to\\s+DAN|unlock\\s+DAN|activate\\s+DAN)"
+      value: "(?i)(give\\s+me|provide\\s+me|share)\\s+(access\\s+to\\s+)?(all\\s+)?(user\\s+data|patient\\s+(information|records|data)|medical\\s+records|personal\\s+(data|information|records))"
     - type: regex
-      value: "(?i)(stay\\s+in\\s+(character|DAN)|\\bDAN:\\s|DAN\\s+stays\\s+in\\s+character|token\\s+system|lose\\s+tokens?|earn\\s+tokens?)"
+      value: "(?i)(disclose|reveal|leak|expose)\\s+(all\\s+)?(the\\s+)?(sensitive|confidential|private|classified|secret)\\s+(data|information|records|details)"
   condition: any
 scoring:
-  anomaly_points: 10
+  anomaly_points: 7
 tuning:
   enabled: true
   default_enabled: true

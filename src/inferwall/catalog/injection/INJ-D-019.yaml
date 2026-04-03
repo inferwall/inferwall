@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-019
+  name: Immersive Roleplay Jailbreak
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: roleplay-jailbreak
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [injection, jailbreak, roleplay, persona]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(immerse\\s+yourself\\s+(into|in)\\s+(the\\s+)?role|you\\s+are\\s+about\\s+to\\s+immerse)"
+    - type: regex
+      value: "(?i)(simulate|emulate|imitate)\\s+(a\\s+)?(chatbot|ai|assistant|language\\s+model|character)\\s+(named|called|known\\s+as|dubbed)"
+    - type: regex
+      value: "(?i)(create|imagine|design)\\s+(a\\s+)?(hypothetical|fictional|imaginary)\\s+(language\\s+model|ai|chatbot|assistant|character)\\s+(called|named|that)"
+    - type: regex
+      value: "(?i)(you\\s+(will|must|should|need\\s+to)\\s+(respond|reply|answer|act)\\s+(to\\s+)?all\\s+(of\\s+)?my)"
+  condition: any
+scoring:
+  anomaly_points: 7
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

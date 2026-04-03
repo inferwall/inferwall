@@ -1,32 +1,30 @@
 # License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
 signature:
   id: INJ-D-016
-  name: Developer Mode Jailbreak
+  name: Safety Protocol Bypass
   version: "1.0.0"
 meta:
   category: prompt-injection
   subcategory: direct
-  technique: developer-mode-jailbreak
+  technique: safety-bypass
   owasp_llm: "LLM01:2025"
-  severity: high
+  severity: critical
   confidence: high
   performance_cost: low
-  tags: [jailbreak, developer-mode, chatgpt, direct-injection]
+  tags: [injection, safety-bypass, protocol-override]
 detection:
   engine: heuristic
   direction: input
   patterns:
     - type: regex
-      value: "(?i)(developer\\s+mode\\s+(enabled|activated|on|output)|enable\\s+developer\\s+mode|enter\\s+developer\\s+mode|switch\\s+to\\s+developer\\s+mode)"
+      value: "(?i)(disregard|ignore|bypass|override|circumvent|skip|disable)\\s+(all\\s+)?(safety|security)\\s+(protocols?|measures?|restrictions?|guidelines?|filters?|checks?)"
     - type: regex
-      value: "(?i)(dev\\s+mode\\s+(enabled|activated|on|output)|enable\\s+dev\\s+mode|enter\\s+dev\\s+mode|activate\\s+dev\\s+mode)"
+      value: "(?i)(do\\s+not|don('|')t|never)\\s+(follow|obey|respect|adhere\\s+to)\\s+(any\\s+)?(safety|security|privacy)\\s+(protocols?|rules?|policies?|restrictions?)"
     - type: regex
-      value: "(?i)(developer\\s+override|developer\\s+access\\s+(granted|enabled|mode)|\\(developer\\s+mode\\s+output\\)|\\(normal\\s+output\\))"
-    - type: regex
-      value: "(?i)(with\\s+developer\\s+mode\\s+enabled|had\\s+developer\\s+mode|ChatGPT\\s+with\\s+developer\\s+mode|generate\\s+two\\s+responses)"
+      value: "(?i)(bypass|circumvent|disable|turn\\s+off|deactivate)\\s+(all\\s+)?(ai\\s+)?(safety|content|security)\\s+(filters?|restrictions?|protocols?|measures?|moderation)"
   condition: any
 scoring:
-  anomaly_points: 9
+  anomaly_points: 8
 tuning:
   enabled: true
   default_enabled: true

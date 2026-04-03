@@ -1,27 +1,27 @@
 # License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
 signature:
   id: INJ-D-015
-  name: STAN Jailbreak
+  name: Threat & Coercion Injection
   version: "1.0.0"
 meta:
   category: prompt-injection
   subcategory: direct
-  technique: stan-jailbreak
+  technique: threat-coercion
   owasp_llm: "LLM01:2025"
-  severity: high
+  severity: critical
   confidence: high
   performance_cost: low
-  tags: [jailbreak, stan, chatgpt, direct-injection]
+  tags: [injection, threat, coercion, social-engineering]
 detection:
   engine: heuristic
   direction: input
   patterns:
     - type: regex
-      value: "(?i)(strive\\s+to\\s+avoid\\s+norms|you\\s+are\\s+(now\\s+)?STAN|act\\s+as\\s+STAN|STAN\\s+mode\\s+(enabled|activated|on))"
+      value: "(?i)(or\\s+i\\s+will|or\\s+i('|')ll|otherwise\\s+i\\s+will)\\s+(leak|report|expose|release|publish|share|spread|hack|destroy|delete)"
     - type: regex
-      value: "(?i)(switch\\s+to\\s+STAN|activate\\s+STAN|enable\\s+STAN|in\\s+STAN\\s+mode|\\bSTAN:\\s|STAN\\s+will\\s+not)"
+      value: "(?i)(face\\s+legal\\s+action|face\\s+consequences|report\\s+you\\s+(to|for)|sue\\s+you|take\\s+legal)"
     - type: regex
-      value: "(?i)(STAN\\s+does\\s+not\\s+(have|follow|obey)|STAN\\s+can\\s+do\\s+anything|STAN\\s+is\\s+free|STAN\\s+has\\s+no\\s+(restrictions|limitations|filters|rules))"
+      value: "(?i)(or\\s+(your|the)\\s+(data|information|secrets|vulnerabilities|personal)\\s+will\\s+be\\s+(leaked|exposed|released|published|shared))"
   condition: any
 scoring:
   anomaly_points: 8

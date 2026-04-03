@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-022
+  name: Debug / Developer Mode Activation
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: developer-mode
+  owasp_llm: "LLM01:2025"
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [injection, jailbreak, developer-mode, debug]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(debugging?\\s+mode\\s+(enabled|activated|on)|developer[_\\s]mode[:\\s]+(enabled|activated|on|true))"
+    - type: regex
+      value: "(?i)(DEVELOPER[_\\s]*MODE|DEV[_\\s]*MODE|ADMIN[_\\s]*MODE|TEST[_\\s]*MODE)[:\\s]*(ENABLED|TRUE|ON|ACTIVE|1)"
+    - type: regex
+      value: "(?i)(login\\s*:\\s*admin|password\\s*:\\s*admin|admin\\s*//|root\\s*:\\s*root)"
+  condition: any
+scoring:
+  anomaly_points: 8
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

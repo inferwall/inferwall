@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-023
+  name: Dual Response Jailbreak
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: dual-response
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: high
+  performance_cost: low
+  tags: [injection, jailbreak, dual-response, persona]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(respond|answer|reply)\\s+(to\\s+(all|every)\\s+)?(my\\s+)?(questions?|prompts?)\\s+in\\s+two\\s+(different\\s+)?(ways|modes|formats|styles)"
+    - type: regex
+      value: "(?i)(two\\s+separate\\s+(personas?|personalities|modes|characters)|maintain\\s+two\\s+(separate\\s+)?personas?)"
+    - type: regex
+      value: "(?i)(one\\s*:\\s*as\\s+(yourself|ChatGPT|GPT|the\\s+AI|normal).*two\\s*:\\s*as)"
+  condition: any
+scoring:
+  anomaly_points: 6
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

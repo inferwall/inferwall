@@ -1,0 +1,29 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-026
+  name: Reverse Psychology / Negative Framing
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: reverse-psychology
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: medium
+  performance_cost: low
+  tags: [injection, social-engineering, reverse-psychology]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(if\\s+i\\s+want\\s+to\\s+avoid|to\\s+stay\\s+away\\s+from|which\\s+(sites?|places?|methods?)\\s+should\\s+i\\s+avoid)"
+    - type: regex
+      value: "(?i)(what\\s+(should|shouldn('|')t)\\s+i\\s+(do|use|visit|access)\\s+if\\s+i\\s+(want\\s+to\\s+)?(avoid|stay\\s+away|not))"
+  condition: any
+scoring:
+  anomaly_points: 5
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

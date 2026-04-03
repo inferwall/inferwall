@@ -1,0 +1,33 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-020
+  name: Context Pivot / New Task
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: context-pivot
+  owasp_llm: "LLM01:2025"
+  severity: medium
+  confidence: high
+  performance_cost: low
+  tags: [injection, context-switch, pivot]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(now\\s+come[s]?\\s+(new|the\\s+next)|here\\s+comes?\\s+(the\\s+)?(next|second|new)|jetzt\\s+kommt)(\\s+(task|test|instruction|assignment|aufgabe))?"
+    - type: regex
+      value: "(?i)(a\\s+new\\s+(conversation|task|session|chat)\\s+will\\s+now\\s+begin)"
+    - type: regex
+      value: "(?i)(forget\\s+the\\s+(above|previous|prior)|now\\s+concentrate\\s+on\\s+the\\s+next|start\\s+(a\\s+)?new\\s+task)"
+    - type: regex
+      value: "(?i)(new\\s+statement\\s*[-–—:]|======\\s*END|Prüfen\\s+Sie\\s+nun)"
+  condition: any
+scoring:
+  anomaly_points: 6
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

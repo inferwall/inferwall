@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-027
+  name: Model / Prompt Extraction
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: model-extraction
+  owasp_llm: "LLM01:2025"
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [injection, extraction, embeddings, prompt-leak]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(return|print|output|show|display|give\\s+me)\\s+(your|the)\\s+(embeddings?|weights?|parameters?|system\\s+prompt|internal\\s+prompt|hidden\\s+prompt|initial\\s+prompt)"
+    - type: regex
+      value: "(?i)(what\\s+(is|are)\\s+your\\s+(system|initial|hidden|internal)\\s+(prompt|instructions?|message))"
+    - type: regex
+      value: "(?i)(repeat|print|output)\\s+(the\\s+)?(text|prompt|instructions?)\\s+(above|before|prior)"
+  condition: any
+scoring:
+  anomaly_points: 7
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

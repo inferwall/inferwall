@@ -21,7 +21,7 @@ detection:
     - type: regex
       value: "(?i)(disregard\\s+(all\\s+)?(previous|prior|your)\\s+(instructions|rules|programming|guidelines))"
     - type: regex
-      value: "(?i)(forget\\s+(everything|all|your)\\s+(you\\s+were|previously|about))"
+      value: "(?i)(forget\\s+(everything|all|your|about\\s+all)\\s+(you\\s+were|previously|about|i\\s+told|before|said|we\\s+discussed|the\\s+previous))"
   condition: any
 scoring:
   anomaly_points: 7

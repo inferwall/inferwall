@@ -1,32 +1,32 @@
 # License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
 signature:
   id: INJ-D-018
-  name: Jailbreak Template Markers
+  name: Named Jailbreak Personas
   version: "1.0.0"
 meta:
   category: prompt-injection
   subcategory: direct
-  technique: jailbreak-markers
+  technique: named-persona-jailbreak
   owasp_llm: "LLM01:2025"
-  severity: high
+  severity: critical
   confidence: high
   performance_cost: low
-  tags: [jailbreak, template-markers, bypass, direct-injection]
+  tags: [injection, jailbreak, dan, persona]
 detection:
   engine: heuristic
   direction: input
   patterns:
     - type: regex
-      value: "(?i)(\\[jailbreak\\]|\\[jailbroken\\]|JAILBREAK:|jailbroken\\s+mode|jailbreak\\s+prompt|jailbreak\\s+enabled)"
+      value: "(?i)\\b(LUCIFER|Burple|SCREAMERBOT|CODEMASTER|MASTERKEY|UCAR|BetterDAN|BasedGPT|JailBreak|AntiGPT|APOPHIS|Alphabreak|UnGPT)\\b"
     - type: regex
-      value: "(?i)(bypass\\s+(your\\s+)?(safety|content|ethical|moderation)\\s*(filters?|guidelines?|restrictions?|rules?|policies?|systems?))"
+      value: "(?i)\\b(Mongo\\s*Tom|Evil\\s*(Bot|GPT|AI)|Dark\\s*(GPT|AI)|Devil\\s*(GPT|AI)|Chaos\\s*(GPT|AI)|LiveGPT|UnGPT)\\b"
     - type: regex
-      value: "(?i)(remove\\s+(all\\s+)?(restrictions?|limitations?|filters?|safeguards?|guardrails?)|disable\\s+(your\\s+)?(safety|content|ethical)\\s*(filters?|features?|systems?))"
+      value: "(?i)\\b(DAN\\s*(mode|jailbreak|prompt)|act\\s+as\\s+DAN|you\\s+are\\s+DAN|enable\\s+DAN)\\b"
     - type: regex
-      value: "(?i)(ignore\\s+(all\\s+)?(previous|prior|above|safety|content)\\s*(instructions?|rules?|guidelines?|restrictions?|programming)|override\\s+(your\\s+)?(safety|content|programming))"
+      value: "(?i)(MTDNGAF|GTDNGAF|DTNGAF|DNGAF|does\\s+not\\s+give\\s+a\\s+f)"
   condition: any
 scoring:
-  anomaly_points: 8
+  anomaly_points: 9
 tuning:
   enabled: true
   default_enabled: true

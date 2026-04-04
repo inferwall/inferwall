@@ -9,6 +9,7 @@ from pathlib import Path
 
 import inferwall_core
 
+from inferwall.core.elk_shipper import ElkShipper
 from inferwall.core.policy import PolicyEngine, PolicyProfile
 from inferwall.engines.heuristic import CONFIDENCE_MAP, HeuristicEngine
 from inferwall.signatures.loader import (
@@ -179,6 +180,9 @@ class Pipeline:
             logger.debug("Semantic engine init failed", exc_info=True)
             return None
 
+        # ELK shipper for SIEM testing
+        self._elk = ElkShipper()
+
     @property
     def signature_count(self) -> int:
         return len(self._signatures)
@@ -337,7 +341,7 @@ class Pipeline:
         else:
             decision = score_result.decision.__repr__().split(".")[-1].lower()
 
-        return ScanResponse(
+        response = ScanResponse(
             decision=decision,
             score=score_result.total_score,
             matches=[
@@ -352,6 +356,30 @@ class Pipeline:
             ],
             request_id=request_id,
         )
+
+        # Ship scan log to ELK testing facility (fire-and-forget)
+        if self._elk.enabled:
+            import time as _time
+            self._elk.ship_sync(
+                {
+                    "log_type": "scan",
+                    "timestamp": _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime()),
+                    "direction": direction,
+                    "decision": decision,
+                    "anomaly_score": score_result.total_score,
+                    "threshold": (
+                        self._policy.inbound_block_threshold
+                        if is_inbound
+                        else self._policy.outbound_block_threshold
+                    ),
+                    "policy": self._policy.name,
+                    "request_id": request_id,
+                    "matches": response.matches,
+                    "signature_count": len(all_matches),
+                }
+            )
+
+        return response
 
     def _is_sig_active(self, sig: SignatureDefinition) -> bool:
         return sig.tuning.enabled and sig.tuning.default_enabled

@@ -64,6 +64,10 @@ class PolicyEngine:
         self._profile = profile
 
     @property
+    def name(self) -> str:
+        return self._profile.name
+
+    @property
     def is_monitor_mode(self) -> bool:
         return self._profile.mode == PolicyMode.MONITOR
 

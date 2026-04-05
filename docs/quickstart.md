@@ -65,11 +65,11 @@ curl http://localhost:8000/v1/health
 
 ## ML Models (Standard/Full profiles)
 
-After installing with `[standard]` or `[full]`, download the models:
+After installing with `[standard]` or `[full]`, install models:
 
 ```bash
-# Download models for Standard profile (~730MB)
-inferwall models download --profile standard
+# Install deps + download models (recommended one-command setup)
+inferwall models install --profile standard
 
 # Check what's available
 inferwall models status
@@ -118,7 +118,7 @@ inferwall test --profile lite
 
 # Model management
 inferwall models status
-inferwall models download --profile standard
+inferwall models install --profile standard
 ```
 
 ## Configuration

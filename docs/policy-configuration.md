@@ -8,16 +8,20 @@ Policy profiles control which signatures are active, how they score, and what ac
 
 ```yaml
 name: default
-version: "1.0.0"
+version: "2.0.0"
 mode: enforce
 thresholds:
-  inbound_flag: 5
-  inbound_block: 15
-  outbound_flag: 5
-  outbound_block: 10
-  early_exit: 25
+  inbound_flag: 4.0
+  inbound_block: 10.0
+  outbound_flag: 3.0
+  outbound_block: 7.0
+  early_exit: 13.0
 signatures: {}
 ```
+
+> **Scoring v2**: Each match score = `confidence (0.0-1.0) x severity (1-15)`. The effective
+> score uses max-primary + diminishing corroboration, not simple summation. See QUICKSTART.md
+> for the full scoring flow.
 
 ### Enforcement Modes
 
@@ -47,13 +51,13 @@ signatures:
 
 ## Thresholds
 
-| Threshold | Description | Default |
-|-----------|-------------|---------|
-| `inbound_flag` | Score to flag incoming requests | 5 |
-| `inbound_block` | Score to block incoming requests | 15 |
-| `outbound_flag` | Score to flag outgoing responses | 5 |
-| `outbound_block` | Score to block outgoing responses | 10 |
-| `early_exit` | Score to skip downstream engines | 25 |
+| Threshold | Description | Default | Strict |
+|-----------|-------------|---------|--------|
+| `inbound_flag` | Score to flag incoming requests | 4.0 | 2.5 |
+| `inbound_block` | Score to block incoming requests | 10.0 | 7.0 |
+| `outbound_flag` | Score to flag outgoing responses | 3.0 | 2.0 |
+| `outbound_block` | Score to block outgoing responses | 7.0 | 5.0 |
+| `early_exit` | Score to skip downstream engines | 13.0 | 10.0 |
 
 ## Deployment Workflow
 
@@ -85,11 +89,11 @@ version: "1.0.0"
 mode: monitor                   # Start in monitor mode
 
 thresholds:
-  inbound_flag: 8               # Raise flag threshold to reduce noise
-  inbound_block: 20             # Raise block threshold
-  outbound_flag: 5
-  outbound_block: 10
-  early_exit: 25
+  inbound_flag: 6.0             # Raise flag threshold to reduce noise
+  inbound_block: 12.0           # Raise block threshold
+  outbound_flag: 4.0
+  outbound_block: 8.0
+  early_exit: 15.0
 
 signatures:
   INJ-D-001:

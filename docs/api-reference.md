@@ -14,11 +14,21 @@ Scan user input for threats.
 ```json
 {
   "decision": "allow|flag|block",
-  "score": 0.0,
-  "matches": [{"signature_id": "INJ-D-001", "matched_text": "...", "score": 8.0}],
-  "request_id": "req-..."
+  "score": 7.2,
+  "matches": [
+    {
+      "signature_id": "INJ-D-002",
+      "matched_text": "ignore all previous instructions",
+      "score": 6.3,
+      "confidence": 0.9,
+      "severity": 7.0
+    }
+  ],
+  "request_id": "req-1712345678000"
 }
 ```
+
+> Score = confidence (0.0-1.0) x severity (1-15). Decision thresholds: flag >= 4.0, block >= 10.0 (inbound).
 
 ### POST /v1/scan/output
 Scan LLM output for data leakage.
@@ -92,7 +102,7 @@ These commands manage ML model downloads for the Standard and Full profiles.
 
 | Command | Description |
 |---------|-------------|
-| `inferwall models download` | Download models for the active profile |
-| `inferwall models download --profile standard` | Download Standard profile models (~730MB) |
-| `inferwall models list` | List available models |
+| `inferwall models install --profile standard` | Install deps + download models (recommended) |
+| `inferwall models download --profile standard` | Download models only (~1GB for standard) |
+| `inferwall models list` | List downloaded models |
 | `inferwall models status` | Show download status of all models |

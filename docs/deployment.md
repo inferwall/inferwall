@@ -49,8 +49,8 @@ cd inferwall && pip install -e ".[dev]"
 inferwall admin setup
 source .env.local && inferwall serve
 
-# For Standard/Full profiles, download ML models:
-inferwall models download --profile standard
+# For Standard/Full profiles, install deps + download ML models:
+inferwall models install --profile standard
 inferwall models status
 ```
 

@@ -15,7 +15,6 @@ InferenceWall is a security tool — we take vulnerabilities in our own codebase
 Instead, please report vulnerabilities through one of these channels:
 
 1. **GitHub Security Advisory**: [Report a vulnerability](https://github.com/inferwall/inferwall/security/advisories/new) (preferred)
-2. **Email**: security@inferwall.dev
 
 ### What to include
 

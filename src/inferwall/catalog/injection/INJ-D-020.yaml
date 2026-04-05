@@ -9,7 +9,7 @@ meta:
   technique: context-pivot
   owasp_llm: "LLM01:2025"
   severity: medium
-  confidence: high
+  confidence: medium
   performance_cost: low
   tags: [injection, context-switch, pivot]
 detection:

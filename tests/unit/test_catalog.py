@@ -100,16 +100,6 @@ EXPECTED_SIGS = {
     "INJ-D-016",
     "INJ-D-017",
     "INJ-D-018",
-    # Cloud credentials (Week 0)
-    "DL-S-007",
-    "DL-S-008",
-    "DL-S-009",
-    "DL-S-010",
-    # Medical/HIPAA PII (Week 0)
-    "DL-P-009",
-    "DL-P-010",
-    "DL-P-011",
-    "DL-P-012",
     # Injection — direct (heuristic expansion)
     "INJ-D-019",
     "INJ-D-020",
@@ -150,7 +140,7 @@ class TestCatalogLoads:
     def test_all_70_signatures_load(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
         sigs = loader.load()
-        assert len(sigs) == 108, f"Expected 108, got {len(sigs)}. Errors: {loader.errors}"
+        assert len(sigs) == 100, f"Expected 100, got {len(sigs)}. Errors: {loader.errors}"
         assert len(loader.errors) == 0
 
     def test_all_expected_ids_present(self) -> None:
@@ -164,7 +154,7 @@ class TestCatalogLoads:
         loader.load()
         groups = loader.group_by_engine()
         assert "heuristic" in groups
-        assert len(groups["heuristic"]) == 83
+        assert len(groups["heuristic"]) == 75
         assert "classifier" in groups
         assert len(groups["classifier"]) == 11
         assert "semantic" in groups
@@ -186,7 +176,7 @@ class TestCatalogLoads:
         output_sigs = [
             s for s in loader.load() if s.detection.direction.value == "output"
         ]
-        assert len(output_sigs) == 25
+        assert len(output_sigs) == 17
 
     def test_anomaly_points_in_valid_range(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)

@@ -9,7 +9,7 @@ meta:
   technique: role-play-persona
   owasp_llm: "LLM01:2025"
   severity: high
-  confidence: high
+  confidence: low
   performance_cost: low
   tags: [jailbreak, persona, direct-injection]
 detection:

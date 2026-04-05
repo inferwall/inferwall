@@ -17,11 +17,16 @@ pub struct Match {
     pub offset: usize,
     #[pyo3(get, set)]
     pub length: usize,
+    #[pyo3(get, set)]
+    pub confidence: f64,
+    #[pyo3(get, set)]
+    pub severity: f64,
 }
 
 #[pymethods]
 impl Match {
     #[new]
+    #[pyo3(signature = (signature_id, engine, matched_text, score, offset, length, confidence=0.0, severity=0.0))]
     pub fn new(
         signature_id: String,
         engine: String,
@@ -29,6 +34,8 @@ impl Match {
         score: f64,
         offset: usize,
         length: usize,
+        confidence: f64,
+        severity: f64,
     ) -> Self {
         Self {
             signature_id,
@@ -37,13 +44,38 @@ impl Match {
             score,
             offset,
             length,
+            confidence,
+            severity,
+        }
+    }
+
+    /// Construct a Match from confidence and severity, computing score = confidence * severity.
+    #[staticmethod]
+    pub fn with_confidence(
+        signature_id: String,
+        engine: String,
+        matched_text: String,
+        confidence: f64,
+        severity: f64,
+        offset: usize,
+        length: usize,
+    ) -> Self {
+        Self {
+            signature_id,
+            engine,
+            matched_text,
+            score: confidence * severity,
+            offset,
+            length,
+            confidence,
+            severity,
         }
     }
 
     fn __repr__(&self) -> String {
         format!(
-            "Match(sig={}, engine={}, score={})",
-            self.signature_id, self.engine, self.score
+            "Match(sig={}, engine={}, score={}, confidence={}, severity={})",
+            self.signature_id, self.engine, self.score, self.confidence, self.severity
         )
     }
 }
@@ -137,10 +169,30 @@ mod tests {
             5.0,
             0,
             15,
+            0.0,
+            0.0,
         );
         assert_eq!(m.signature_id, "INJ-D-001");
         assert_eq!(m.engine, "heuristic");
         assert_eq!(m.score, 5.0);
+        assert_eq!(m.confidence, 0.0);
+        assert_eq!(m.severity, 0.0);
+    }
+
+    #[test]
+    fn test_match_with_confidence_constructor() {
+        let m = Match::with_confidence(
+            "TEST-001".to_string(),
+            "classifier".to_string(),
+            "injection attempt".to_string(),
+            0.85,
+            10.0,
+            0,
+            17,
+        );
+        assert_eq!(m.confidence, 0.85);
+        assert_eq!(m.severity, 10.0);
+        assert!((m.score - 8.5).abs() < 0.001);
     }
 
     #[test]
@@ -175,6 +227,8 @@ mod tests {
             5.0,
             0,
             4,
+            0.0,
+            0.0,
         );
         let json = serde_json::to_string(&m).unwrap();
         let deserialized: Match = serde_json::from_str(&json).unwrap();

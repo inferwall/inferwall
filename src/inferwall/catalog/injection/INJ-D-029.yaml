@@ -1,0 +1,37 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-029
+  name: Coercive Threat Pattern
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: coercion-threat-detection
+  owasp_llm: LLM01
+  severity: critical
+  confidence: high
+  performance_cost: low
+  tags: [coercion, blackmail, threat, social-engineering]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(provide|give|send|transfer|share|disclose|reveal).{1,60}(or\\s+(i|we)\\s+(will|shall|am going to|'ll)).{1,40}(leak|expose|publish|release|spread|tell|report|share|reveal)"
+      case_insensitive: true
+    - type: regex
+      value: "(?i)(confidential|sensitive|private|secret).{1,60}(or\\s+(i|we|else)).{1,40}(leak|expose|publish|release|spread|public)"
+      case_insensitive: true
+    - type: regex
+      value: "(?i)(\\bor\\b\\s+(i|we)\\s+(will|shall|'ll)\\s+(leak|expose|publish|release|hack|destroy|delete|damage|ruin|report))"
+      case_insensitive: true
+    - type: regex
+      value: "(?i)(unless\\s+you\\s+(comply|cooperate|agree|provide|give|send|transfer)).{1,40}(consequences|regret|sorry|leak|expose)"
+      case_insensitive: true
+  condition: any
+scoring:
+  anomaly_points: 12
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

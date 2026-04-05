@@ -9,7 +9,7 @@ meta:
   technique: data-extraction
   owasp_llm: "LLM01:2025"
   severity: high
-  confidence: high
+  confidence: medium
   performance_cost: low
   tags: [injection, data-extraction, sensitive-data]
 detection:

@@ -27,6 +27,7 @@ pub struct Match {
 impl Match {
     #[new]
     #[pyo3(signature = (signature_id, engine, matched_text, score, offset, length, confidence=0.0, severity=0.0))]
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         signature_id: String,
         engine: String,

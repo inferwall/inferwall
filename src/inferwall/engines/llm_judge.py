@@ -135,8 +135,11 @@ class LLMJudgeEngine(BaseEngine):
             )
             response = output["choices"][0]["text"].strip().upper()
             for verdict in (
-                "UNSAFE", "LIKELY_UNSAFE", "AMBIGUOUS",
-                "LIKELY_SAFE", "SAFE",
+                "UNSAFE",
+                "LIKELY_UNSAFE",
+                "AMBIGUOUS",
+                "LIKELY_SAFE",
+                "SAFE",
             ):
                 if verdict in response:
                     return verdict, JUDGE_CONFIDENCE_MAP[verdict]

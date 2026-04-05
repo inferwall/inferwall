@@ -166,8 +166,7 @@ class Pipeline:
 
             if not phrases:
                 logger.info(
-                    "No semantic reference phrases found"
-                    " — skipping index build"
+                    "No semantic reference phrases found — skipping index build"
                 )
                 return None
 

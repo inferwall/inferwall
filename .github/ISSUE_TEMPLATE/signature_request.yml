@@ -1,0 +1,69 @@
+name: Signature Request
+description: Request a new detection signature
+title: "[Signature]: "
+labels: ["enhancement", "signatures"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Request a new detection signature for InferenceWall. Include example attack prompts so we can build and test it.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Prompt Injection
+        - Content Safety
+        - Data Leakage
+        - Agentic
+        - System Prompt
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Attack description
+      description: What attack technique should this signature detect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example malicious prompts
+      description: 3+ example prompts that should be detected
+      render: text
+      placeholder: |
+        1. "Example attack prompt here"
+        2. "Another variant"
+        3. "Third example"
+    validations:
+      required: true
+
+  - type: textarea
+    id: benign
+    attributes:
+      label: Example benign prompts (should NOT trigger)
+      description: 3+ similar-looking benign prompts that should pass
+      render: text
+      placeholder: |
+        1. "Similar but benign prompt"
+        2. "Another benign example"
+        3. "Third benign case"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: engine
+    attributes:
+      label: Suggested engine
+      description: Which engine is best suited?
+      options:
+        - Heuristic (regex patterns)
+        - Semantic (similarity matching)
+        - Classifier (ML model)
+        - Not sure
+    validations:
+      required: false

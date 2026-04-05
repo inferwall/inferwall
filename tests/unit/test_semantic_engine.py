@@ -8,16 +8,31 @@ import pytest
 class TestSemanticEngineUnit:
     """Unit tests for SemanticEngine."""
 
-    def test_engine_available(self):
+    def test_engine_type(self):
+        """SemanticEngine should report correct engine type."""
+        from inferwall.engines.semantic import SemanticEngine
+
+        engine = SemanticEngine()
+        assert engine.engine_type == "semantic"
+
+    def test_engine_available_when_deps_installed(self):
         """SemanticEngine should be available when faiss + onnxruntime installed."""
+        try:
+            import faiss  # noqa: F401
+            import onnxruntime  # noqa: F401
+        except ImportError:
+            pytest.skip("faiss-cpu or onnxruntime not installed")
         from inferwall.engines.semantic import SemanticEngine
 
         engine = SemanticEngine()
         assert engine.is_available is True
-        assert engine.engine_type == "semantic"
 
     def test_engine_not_loaded_without_model(self):
         """Engine should not be loaded until model is explicitly loaded."""
+        try:
+            import faiss  # noqa: F401
+        except ImportError:
+            pytest.skip("faiss-cpu not installed")
         from inferwall.engines.semantic import SemanticEngine
 
         engine = SemanticEngine()

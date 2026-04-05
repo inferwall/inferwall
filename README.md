@@ -3,8 +3,10 @@
 [![PyPI version](https://img.shields.io/pypi/v/inferwall?color=blue)](https://pypi.org/project/inferwall/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![CI](https://github.com/inferwall/inferwall/actions/workflows/ci.yml/badge.svg)](https://github.com/inferwall/inferwall/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-161%20passed-brightgreen)](https://github.com/inferwall/inferwall/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/pypi/pyversions/inferwall)](https://pypi.org/project/inferwall/)
 [![Downloads](https://img.shields.io/pypi/dm/inferwall)](https://pypi.org/project/inferwall/)
+[![Signatures](https://img.shields.io/badge/signatures-100-blue)](docs/SIGNATURE_CATALOG.md)
 
 **AI application firewall for LLM-powered apps.**
 
@@ -183,6 +185,24 @@ InferenceWall supports a three-layer catalog merge for signatures and auto-disco
 - Use `IW_SIGNATURES_DIR` and `IW_POLICY_PATH` environment variables to override the default paths.
 
 See [Signature Authoring](docs/signature-authoring.md) and [Policy Configuration](docs/policy-configuration.md) for details.
+
+## Testing
+
+```bash
+# Run all tests (161 tests)
+pytest tests/ -v
+
+# Rust engine tests (87 tests)
+cargo test --manifest-path crates/inferwall-core/Cargo.toml
+```
+
+| Suite | Tests | Coverage |
+|-------|-------|----------|
+| Python (unit + integration) | 161 | Scoring, pipeline, engines, signatures, policy, API |
+| Rust (inferwall-core) | 87 | Heuristic matching, scoring v1/v2, sessions, preprocessing |
+| **Total** | **248** | |
+
+CI runs on every push: Rust lint (fmt + clippy) + Python lint (ruff + mypy) + full test suite + wheel build.
 
 ## License
 

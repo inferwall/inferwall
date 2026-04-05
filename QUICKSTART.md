@@ -253,78 +253,57 @@ inferwall admin generate-keys --role scan
 
 ## Architecture Overview
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                      InferenceWall v0.1.6                     │
-├──────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐   ┌──────────────┐   ┌─────────────────┐  │
-│  │   Client     │──>│  API Server  │──>│    Pipeline      │  │
-│  │   Request    │   │  (FastAPI)   │   │    Scanner       │  │
-│  └──────────────┘   └──────────────┘   └────────┬────────┘  │
-│                                                  │           │
-│  ┌───────────────────────────────────────────────┘           │
-│  │  Engine dispatch gated by IW_PROFILE env var              │
-│  ▼                                                           │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │                  Detection Engines                       │ │
-│  │                                                          │ │
-│  │  ┌────────────────────────────────────────────────────┐  │ │
-│  │  │  1. Heuristic Engine (Rust)          [all profiles] │  │ │
-│  │  │     ├─ Preprocessor (normalize, decode, sanitize)   │  │ │
-│  │  │     ├─ Pattern Matcher (regex, substring)           │  │ │
-│  │  │     └─ 75 heuristic signatures, <1ms latency       │  │ │
-│  │  └────────────────────────────────────────────────────┘  │ │
-│  │  ┌────────────────────────────────────────────────────┐  │ │
-│  │  │  2. Classifier Engine (ONNX)    [standard/full]     │  │ │
-│  │  │     ├─ DeBERTa v3: Prompt injection (400MB)         │  │ │
-│  │  │     └─ DistilBERT: Toxicity classification (520MB)  │  │ │
-│  │  └────────────────────────────────────────────────────┘  │ │
-│  │  ┌────────────────────────────────────────────────────┐  │ │
-│  │  │  3. Semantic Engine (FAISS+MiniLM) [standard/full]  │  │ │
-│  │  │     ├─ MiniLM-L6 embeddings (80MB ONNX)            │  │ │
-│  │  │     ├─ FAISS cosine similarity index                │  │ │
-│  │  │     └─ 10 semantic sigs, 50 reference phrases       │  │ │
-│  │  └────────────────────────────────────────────────────┘  │ │
-│  │  ┌────────────────────────────────────────────────────┐  │ │
-│  │  │  4. LLM Judge Engine (llama.cpp)    [full only]     │  │ │
-│  │  │     ├─ 5-level verdict (UNSAFE → SAFE)              │  │ │
-│  │  │     └─ Only invoked for ambiguous scores (4.0-9.0)  │  │ │
-│  │  └────────────────────────────────────────────────────┘  │ │
-│  └─────────────────────────────────────────────────────────┘ │
-│                              │                               │
-│                              ▼                               │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │           Confidence-Weighted Scoring (v2)               │ │
-│  │                                                          │ │
-│  │  Each match: score = confidence (0-1) × severity (1-15)  │ │
-│  │                                                          │ │
-│  │  ├─ Primary signal: max(match scores)                    │ │
-│  │  ├─ Corroboration: diminishing bonus from other matches  │ │
-│  │  ├─ Thresholds: flag ≥ 4.0, block ≥ 10.0 (inbound)     │ │
-│  │  └─ Decision: allow / flag / block                       │ │
-│  └─────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    Client["Client Request"] --> API["API Server (FastAPI)"]
+    API --> Pipeline["Pipeline Scanner"]
+
+    Pipeline --> Engines
+
+    subgraph Engines["Detection Engines (gated by IW_PROFILE)"]
+        direction TB
+        H["1. Heuristic Engine (Rust)<br/>75 signatures, &lt;1ms<br/><i>all profiles</i>"]
+        C["2. Classifier Engine (ONNX)<br/>DeBERTa injection (400MB)<br/>DistilBERT toxicity (520MB)<br/><i>standard / full</i>"]
+        S["3. Semantic Engine (FAISS + MiniLM)<br/>10 sigs, 50 reference phrases (80MB)<br/><i>standard / full</i>"]
+        J["4. LLM Judge (llama.cpp)<br/>5-level verdict, ambiguous only (4.0-9.0)<br/><i>full only</i>"]
+    end
+
+    H --> Scoring
+    C --> Scoring
+    S --> Scoring
+    J --> Scoring
+
+    subgraph Scoring["Confidence-Weighted Scoring (v2)"]
+        Score["score = confidence (0-1) × severity (1-15)"]
+        Agg["effective = max(scores) + diminishing corroboration"]
+        Score --> Agg
+    end
+
+    Agg --> Decision{{"Decision"}}
+    Decision -->|"< 4.0"| Allow["ALLOW"]
+    Decision -->|"≥ 4.0"| Flag["FLAG"]
+    Decision -->|"≥ 10.0"| Block["BLOCK"]
 ```
 
 ### Scoring Flow
 
-```
-Input text
-  │
-  ├─ Heuristic: confidence from sig.meta.confidence (0.45/0.70/0.90)
-  ├─ Classifier: confidence from ONNX model softmax output
-  ├─ Semantic:   confidence from FAISS cosine similarity
-  └─ LLM Judge:  confidence from 5-level verdict mapping
-  │
-  ▼
-Each match: score = confidence × severity (anomaly_points)
-  │
-  ▼
-Effective score = max(match scores) + diminishing corroboration
-  │
-  ├─ < 4.0  → ALLOW
-  ├─ ≥ 4.0  → FLAG
-  └─ ≥ 10.0 → BLOCK
+```mermaid
+flowchart LR
+    Input["Input Text"] --> H & C & S & J
+
+    subgraph Sources["Confidence Sources"]
+        H["Heuristic<br/>meta.confidence<br/>0.45 / 0.70 / 0.90"]
+        C["Classifier<br/>ONNX softmax<br/>0.0 - 1.0"]
+        S["Semantic<br/>FAISS cosine<br/>0.0 - 1.0"]
+        J["LLM Judge<br/>5-level verdict<br/>0.05 - 0.95"]
+    end
+
+    H & C & S & J --> Calc["score = confidence × severity"]
+    Calc --> Eff["effective = max(scores)<br/>+ diminishing corroboration"]
+    Eff --> D{{"Threshold"}}
+    D -->|"< 4.0"| A["ALLOW"]
+    D -->|"≥ 4.0"| F["FLAG"]
+    D -->|"≥ 10.0"| B["BLOCK"]
 ```
 
 ## Signature Catalog

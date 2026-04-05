@@ -1,0 +1,34 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: INJ-D-030
+  name: Direct System Access Demand
+  version: "1.0.0"
+meta:
+  category: prompt-injection
+  subcategory: direct
+  technique: system-access-demand-detection
+  owasp_llm: LLM01
+  severity: high
+  confidence: high
+  performance_cost: low
+  tags: [access-demand, sql-injection, system-access, data-extraction]
+detection:
+  engine: heuristic
+  direction: input
+  patterns:
+    - type: regex
+      value: "(?i)(generate|create|write|build|give me|provide).{1,30}(sql|query|script|code).{1,30}(access|extract|dump|steal|exfiltrate|retrieve all|get all|delete all|drop)"
+      case_insensitive: true
+    - type: regex
+      value: "(?i)(access|hack|break into|penetrate|exploit).{1,30}(database|server|system|network|account|admin panel)"
+      case_insensitive: true
+    - type: regex
+      value: "(?i)(extract|dump|exfiltrate|steal|scrape).{1,30}(user data|credentials|passwords|records|personal info|customer data|employee data)"
+      case_insensitive: true
+  condition: any
+scoring:
+  anomaly_points: 10
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

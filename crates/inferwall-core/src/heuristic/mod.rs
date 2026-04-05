@@ -53,6 +53,8 @@ pub fn scan_heuristic(text: &str, signatures: &[HeuristicSignature]) -> Vec<Matc
                     sig.anomaly_points,
                     offset,
                     length,
+                    0.0,
+                    0.0,
                 ));
             }
         }

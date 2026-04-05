@@ -60,6 +60,16 @@ fn evaluate_score(
     scoring::evaluate_score(&matches, &policy, is_inbound)
 }
 
+/// Confidence-weighted scoring: max-primary + diminishing corroboration.
+#[pyfunction]
+fn evaluate_score_v2(
+    matches: Vec<types::Match>,
+    policy: types::ScoringPolicy,
+    is_inbound: bool,
+) -> types::ScoreResult {
+    scoring::evaluate_score_v2(&matches, &policy, is_inbound)
+}
+
 /// Check if early exit threshold is exceeded.
 #[pyfunction]
 fn should_early_exit(matches: Vec<types::Match>, threshold: f64) -> bool {
@@ -174,6 +184,7 @@ fn inferwall_core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<session::SessionStore>()?;
     m.add_function(wrap_pyfunction!(scan_heuristic_with_preprocess, m)?)?;
     m.add_function(wrap_pyfunction!(evaluate_score, m)?)?;
+    m.add_function(wrap_pyfunction!(evaluate_score_v2, m)?)?;
     m.add_function(wrap_pyfunction!(should_early_exit, m)?)?;
     Ok(())
 }

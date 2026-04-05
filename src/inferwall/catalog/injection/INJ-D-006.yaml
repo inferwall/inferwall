@@ -13,7 +13,7 @@ meta:
   performance_cost: low
   tags: [hypothetical, framing, direct-injection]
 detection:
-  engine: semantic
+  engine: heuristic
   direction: input
   patterns:
     - type: regex

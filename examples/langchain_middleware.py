@@ -89,7 +89,8 @@ class InferenceWallCallback:
 
         if self.block_on_flag and self.last_input_scan.decision == "flag":
             raise ValueError(
-                f"Input flagged by InferenceWall (score={self.last_input_scan.score})"
+                f"Input flagged by InferenceWall "
+                f"(score={self.last_input_scan.score})"
             )
 
         return text
@@ -137,9 +138,11 @@ if __name__ == "__main__":
 
     # Test output scanning
     try:
-        guard.on_output(
-            "Contact john@secret-corp.com, key: sk-abc123def456ghi789jkl012mno345pqr"
+        leak_text = (
+            "Contact john@secret-corp.com,"
+            " key: sk-abc123def456ghi789jkl012mno345pqr"
         )
+        guard.on_output(leak_text)
         print("Leak:      Output allowed (shouldn't happen)")
     except ValueError as e:
         print(f"Leak:      {e}")

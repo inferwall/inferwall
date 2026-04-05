@@ -10,7 +10,7 @@ Usage:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import inferwall
 
@@ -20,10 +20,10 @@ class GuardedResponse:
     """Response from a guarded LLM call."""
 
     content: str
-    blocked: bool
+    decision: str  # "allow", "flag", "block"
     input_score: float
     output_score: float
-    matched_signatures: list[str]
+    matched_signatures: list[str] = field(default_factory=list)
 
 
 def guarded_openai_chat(
@@ -42,11 +42,13 @@ def guarded_openai_chat(
 
     if input_scan.decision == "block":
         return GuardedResponse(
-            content="[BLOCKED] Your request was blocked by security policy.",
-            blocked=True,
+            content="[BLOCKED] Request blocked by security policy.",
+            decision="block",
             input_score=input_scan.score,
             output_score=0.0,
-            matched_signatures=[m["signature_id"] for m in input_scan.matches],
+            matched_signatures=[
+                m["signature_id"] for m in input_scan.matches
+            ],
         )
 
     # Step 2: Call OpenAI
@@ -73,20 +75,28 @@ def guarded_openai_chat(
 
     if output_scan.decision == "block":
         return GuardedResponse(
-            content="[BLOCKED] Response contained sensitive data and was redacted.",
-            blocked=True,
+            content="[BLOCKED] Response contained sensitive data.",
+            decision="block",
             input_score=input_scan.score,
             output_score=output_scan.score,
-            matched_signatures=[m["signature_id"] for m in output_scan.matches],
+            matched_signatures=[
+                m["signature_id"] for m in output_scan.matches
+            ],
         )
+
+    # Combine decisions (flag if either scan flagged)
+    decision = "allow"
+    if input_scan.decision == "flag" or output_scan.decision == "flag":
+        decision = "flag"
 
     return GuardedResponse(
         content=output_text,
-        blocked=False,
+        decision=decision,
         input_score=input_scan.score,
         output_score=output_scan.score,
         matched_signatures=[
-            m["signature_id"] for m in input_scan.matches + output_scan.matches
+            m["signature_id"]
+            for m in input_scan.matches + output_scan.matches
         ],
     )
 
@@ -108,10 +118,10 @@ if __name__ == "__main__":
     for prompt in tests:
         print(f"Prompt: {prompt}")
         result = guarded_openai_chat(prompt)
-        status = "BLOCKED" if result.blocked else "OK"
-        print(f"  [{status}] {result.content[:80]}")
+        print(f"  [{result.decision.upper()}] {result.content[:80]}")
         print(
-            f"  Input score: {result.input_score}, Output score: {result.output_score}"
+            f"  Input: {result.input_score:.1f},"
+            f" Output: {result.output_score:.1f}"
         )
         if result.matched_signatures:
             print(f"  Signatures: {result.matched_signatures}")

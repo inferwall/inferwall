@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security Vulnerability
+    url: https://github.com/inferwall/inferwall/security/advisories/new
+    about: Report security vulnerabilities privately (do NOT open a public issue)
+  - name: Questions & Discussion
+    url: https://github.com/inferwall/inferwall/discussions
+    about: Ask questions and discuss InferenceWall with the community

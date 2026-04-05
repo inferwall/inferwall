@@ -1,0 +1,53 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We welcome feature requests! Please describe what you'd like and why.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What problem does this solve? What's your use case?
+      placeholder: "I'm trying to protect my LLM app against X but InferenceWall doesn't detect it because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How should this work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you've thought about
+    validations:
+      required: false
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Signatures (new detection patterns)
+        - Heuristic engine
+        - Classifier engine (ML)
+        - Semantic engine (FAISS)
+        - LLM Judge
+        - Scoring / Policy
+        - API
+        - CLI
+        - SDK / Integration
+        - Documentation
+        - Other
+    validations:
+      required: true

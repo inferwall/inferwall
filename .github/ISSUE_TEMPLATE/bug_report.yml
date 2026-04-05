@@ -1,0 +1,71 @@
+name: Bug Report
+description: Report a bug in InferenceWall
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill out the sections below so we can reproduce and fix it.
+
+  - type: input
+    id: version
+    attributes:
+      label: InferenceWall Version
+      description: "Run: python -c \"import inferwall; print(inferwall.__version__)\""
+      placeholder: "0.1.6"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: profile
+    attributes:
+      label: Profile
+      options:
+        - lite
+        - standard
+        - full
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Clear description of the bug
+      placeholder: "When I scan input X, I expected Y but got Z"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal code or commands to reproduce
+      render: python
+      placeholder: |
+        import inferwall
+        result = inferwall.scan_input("your input here")
+        print(result.decision, result.score)
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, install method
+      placeholder: |
+        - OS: Ubuntu 24.04
+        - Python: 3.12.3
+        - Install: pip install inferwall[standard]
+    validations:
+      required: false

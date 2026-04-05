@@ -87,3 +87,47 @@ curl http://localhost:8000/v1/health/ready
 # Full health with signature count
 curl http://localhost:8000/v1/health
 ```
+
+## GPU Support for ONNX Runtime
+
+For significantly faster inference with the Standard and Full profiles, you can enable GPU support for ONNX Runtime.  By default, Inferwall uses the CPUExecutionProvider, resulting in ~500ms per request.  With GPU acceleration, latency can be reduced to ~20-50ms.
+
+### CUDA Requirements
+
+- A compatible NVIDIA GPU.
+- NVIDIA CUDA Toolkit installed.  Refer to the ONNX Runtime documentation for supported CUDA versions: [https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html)
+- `nvidia-driver` installed and configured.
+
+### Installation
+
+Instead of installing `onnxruntime`, install `onnxruntime-gpu`:
+
+```bash
+pip install onnxruntime-gpu
+```
+
+### Docker GPU Setup (nvidia-docker)
+
+To use the GPU within a Docker container, you need to use `nvidia-docker`.
+
+1.  Ensure you have the NVIDIA Container Toolkit installed.  Follow the instructions here: [https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+
+2.  Build and run your Docker container using `nvidia-docker`:
+
+```bash
+docker build -t inferwall .
+docker run --gpus all -p 8000:8000 \
+  -e IW_API_KEY=iwk_scan_yourkey \
+  -e IW_ADMIN_KEY=iwk_admin_yourkey \
+  inferwall
+```
+
+The `--gpus all` flag makes all available GPUs accessible to the container.
+
+### Verifying GPU Usage
+
+1.  **Check ONNX Runtime logs:**  When the application starts, ONNX Runtime will log which execution providers are available.  Look for output indicating that the CUDA Execution Provider is being used.
+
+2.  **Monitor GPU utilization:** Use tools like `nvidia-smi` to monitor GPU utilization while the application is processing requests.  You should see increased GPU usage when requests are being handled.
+
+3.  **In-code verification (advanced):**  You can add logging to `src/inferwall/engines/classifier.py` to explicitly check the session options and available providers.  For example, you can log the `providers` list in the `__init__` method of the `Classifier` class.

@@ -55,7 +55,7 @@ dependencies = [
 
 [[package]]
 name = "inferwall-core"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "aho-corasick",
  "arc-swap",

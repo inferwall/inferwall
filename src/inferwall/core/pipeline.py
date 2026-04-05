@@ -2,23 +2,22 @@
 
 from __future__ import annotations
 
+import logging
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-
-import logging
 
 import inferwall_core
 
 from inferwall.core.policy import PolicyEngine, PolicyProfile
 from inferwall.engines.heuristic import CONFIDENCE_MAP, HeuristicEngine
-
-logger = logging.getLogger(__name__)
 from inferwall.signatures.loader import (
     USER_DIR,
     SignatureLoader,
 )
 from inferwall.signatures.schema import SignatureDefinition
+
+logger = logging.getLogger(__name__)
 
 # Default shipped policy
 SHIPPED_POLICIES = Path(__file__).parent.parent / "policies"
@@ -166,7 +165,10 @@ class Pipeline:
                             labels.append(sig.signature.id)
 
             if not phrases:
-                logger.info("No semantic reference phrases found — skipping index build")
+                logger.info(
+                    "No semantic reference phrases found"
+                    " — skipping index build"
+                )
                 return None
 
             if not engine.build_index(phrases, labels):

@@ -173,7 +173,7 @@ struct PyPreprocessResult {
 /// InferenceWall Rust core extension.
 #[pymodule]
 fn inferwall_core(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add("__version__", "0.1.5")?;
+    m.add("__version__", "0.1.6")?;
     m.add_class::<types::Match>()?;
     m.add_class::<types::Decision>()?;
     m.add_class::<types::ScoringPolicy>()?;

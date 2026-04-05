@@ -9,7 +9,6 @@ import inferwall_core
 from inferwall.engines.base import BaseEngine, ScanResult
 from inferwall.signatures.schema import SignatureDefinition
 
-
 # Confidence level to float mapping for scoring.
 # HIGH = specific patterns unlikely in benign text (CSAM, base64+exec).
 # MEDIUM = moderately specific (ignore instructions, forget everything).

@@ -82,7 +82,6 @@ class ClassifierEngine(BaseEngine):
 
         # Load label mapping from config.json
         config_path = model_dir / "config.json"
-        benign_labels = {"BENIGN", "not_toxic", "LABEL_0"}
         if config_path.exists():
             try:
                 config = json.loads(config_path.read_text())
@@ -144,7 +143,10 @@ class ClassifierEngine(BaseEngine):
         return results
 
     # Labels considered benign (not flagged) across different model conventions
-    BENIGN_LABELS = {"BENIGN", "SAFE", "LABEL_0", "not_toxic", "not-toxic", "safe", "ham"}
+    BENIGN_LABELS = {
+        "BENIGN", "SAFE", "LABEL_0", "not_toxic",
+        "not-toxic", "safe", "ham",
+    }
 
     def _infer(
         self, model_name: str, session: Any, tokenizer: Any, text: str

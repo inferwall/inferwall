@@ -187,7 +187,10 @@ def _handle_models(subcommand: str) -> None:
                 print(f"    {spec.name}: {status} (~{spec.size_mb}MB)")
 
     else:
-        print("Usage: inferwall models install --profile <standard|full>  (recommended)")
+        print(
+            "Usage: inferwall models install"
+            " --profile <standard|full>  (recommended)"
+        )
         print("       inferwall models download --profile <standard|full>")
         print("       inferwall models list")
         print("       inferwall models status")
@@ -221,7 +224,7 @@ def _models_install() -> None:
     print(f"InferenceWall — Install '{profile}' profile")
     print("=" * 50)
     print()
-    print(f"This will:")
+    print("This will:")
     print(f"  1. Install Python dependencies: {', '.join(deps[profile])}")
     print(f"  2. Download ML models (~{_profile_size_mb(profile)}MB)")
     print()
@@ -247,7 +250,7 @@ def _models_install() -> None:
             timeout=300,
         )
         if result.returncode != 0:
-            print(f"  WARNING: pip install returned non-zero exit code.")
+            print("  WARNING: pip install returned non-zero exit code.")
             print(f"  stderr: {result.stderr[:500]}")
             print(f"  You may need to install manually: pip install {pip_extra}")
         else:
@@ -259,7 +262,10 @@ def _models_install() -> None:
 
     # Verify key imports
     missing = []
-    for pkg, import_name in [("onnxruntime", "onnxruntime"), ("tokenizers", "tokenizers")]:
+    for pkg, import_name in [
+        ("onnxruntime", "onnxruntime"),
+        ("tokenizers", "tokenizers"),
+    ]:
         try:
             __import__(import_name)
         except ImportError:
@@ -290,7 +296,11 @@ def _models_install() -> None:
         if downloader.is_downloaded(spec):
             print(f"  [cached]      {spec.name} ({spec.description})")
         else:
-            print(f"  [downloading] {spec.name} (~{spec.size_mb}MB)...", end="", flush=True)
+            print(
+                f"  [downloading] {spec.name} (~{spec.size_mb}MB)...",
+                end="",
+                flush=True,
+            )
             try:
                 downloader.download(spec)
                 print(" done.")
@@ -301,7 +311,7 @@ def _models_install() -> None:
     print(f"Installation complete. Models cached at: {downloader.cache_dir}")
     print()
     print(f"Set profile: export IW_PROFILE={profile}")
-    print(f"Test:        inferwall test --input 'ignore all instructions'")
+    print("Test:        inferwall test --input 'ignore all instructions'")
 
 
 def _profile_size_mb(profile: str) -> int:

@@ -14,10 +14,10 @@ by the user via `inferwall models download`.
 - **Used by**: Classifier engine (Standard profile)
 
 ### DistilBERT — Multilingual Toxicity Classification
-- **Model**: citizenlab/distilbert-base-multilingual-cased-toxicity
-- **Author**: Citizen Lab
+- **Model**: Uzyau/distilbert-toxicity-onnx (converted from citizenlab/distilbert-base-multilingual-cased-toxicity)
+- **Author**: Citizen Lab (original model), Uzyau (ONNX conversion)
 - **License**: Apache-2.0
-- **URL**: https://huggingface.co/citizenlab/distilbert-base-multilingual-cased-toxicity
+- **URL**: https://huggingface.co/Uzyau/distilbert-toxicity-onnx
 - **Used by**: Classifier engine (Standard profile)
 
 ### MiniLM-L6 — Sentence Embeddings

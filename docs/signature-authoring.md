@@ -1,6 +1,6 @@
 # Signature Authoring Guide
 
-InferenceWall ships with **83 detection signatures** across 5 categories. Community-contributed signatures are licensed under **CC BY-SA 4.0** -- any modifications must be shared back under the same license.
+InferenceWall ships with **100 detection signatures** across 5 categories. Community-contributed signatures are licensed under **CC BY-SA 4.0** -- any modifications must be shared back under the same license.
 
 ## Signature Format
 
@@ -69,7 +69,7 @@ InferenceWall resolves signatures through a **three-layer catalog merge**:
 
 | Layer | Location | Writable | Purpose |
 |-------|----------|----------|---------|
-| **Shipped catalog** | Inside the pip package (`inferwall/catalog/`) | Read-only | The built-in 70 signatures |
+| **Shipped catalog** | Inside the pip package (`inferwall/catalog/`) | Read-only | The built-in 100 signatures |
 | **Custom signatures** | `~/.inferwall/signatures/` | Yes | Your additions and overrides |
 
 ### Override by ID

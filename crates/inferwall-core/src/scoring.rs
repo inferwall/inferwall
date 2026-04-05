@@ -54,7 +54,11 @@ pub fn evaluate_score_v2(
     let (primary_idx, primary) = matches
         .iter()
         .enumerate()
-        .max_by(|(_, a), (_, b)| a.score.partial_cmp(&b.score).unwrap_or(std::cmp::Ordering::Equal))
+        .max_by(|(_, a), (_, b)| {
+            a.score
+                .partial_cmp(&b.score)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        })
         .unwrap();
 
     // Corroboration: distinct signatures with diminishing returns
@@ -63,17 +67,21 @@ pub fn evaluate_score_v2(
         .enumerate()
         .filter(|(i, m)| *i != primary_idx && m.signature_id != primary.signature_id)
         .enumerate()
-        .map(|(rank, (_, m))| {
-            m.confidence * 0.3 * primary.severity / (1.0 + rank as f64)
-        })
+        .map(|(rank, (_, m))| m.confidence * 0.3 * primary.severity / (1.0 + rank as f64))
         .sum();
 
     let effective_score = primary.score + corroboration;
 
     let (flag_t, block_t) = if is_inbound {
-        (policy.inbound_threshold_flag, policy.inbound_threshold_block)
+        (
+            policy.inbound_threshold_flag,
+            policy.inbound_threshold_block,
+        )
     } else {
-        (policy.outbound_threshold_flag, policy.outbound_threshold_block)
+        (
+            policy.outbound_threshold_flag,
+            policy.outbound_threshold_block,
+        )
     };
 
     let decision = if effective_score >= block_t {
@@ -279,8 +287,14 @@ mod tests {
         ];
         let policy = default_policy_v2();
         let result = evaluate_score_v2(&matches, &policy, true);
-        assert!(result.total_score < 10.0, "Diminishing returns must prevent block");
-        assert!(result.total_score >= 4.0, "Three medium signals should at least flag");
+        assert!(
+            result.total_score < 10.0,
+            "Diminishing returns must prevent block"
+        );
+        assert!(
+            result.total_score >= 4.0,
+            "Three medium signals should at least flag"
+        );
     }
 
     #[test]

@@ -212,5 +212,5 @@ class SemanticEngine(BaseEngine):
         if hasattr(sig, "detection") and sig.detection.patterns:
             for p in sig.detection.patterns:
                 if p.similarity_threshold is not None:
-                    return p.similarity_threshold
+                    return float(p.similarity_threshold)
         return self._threshold

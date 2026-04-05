@@ -1,9 +1,33 @@
 # Changelog
 
+## [0.1.6] - 2026-04-05
+
+### Added
+- Confidence-weighted scoring v2: replaces additive scoring with max-primary + diminishing corroboration
+- Semantic detection engine (FAISS + MiniLM embeddings) for paraphrased attack detection
+- 10 semantic signatures (INJ-S-001 through INJ-S-010)
+- 2 coercion/access demand signatures (INJ-D-029, INJ-D-030)
+- DistilBERT toxicity classifier (ONNX, from Uzyau/distilbert-toxicity-onnx)
+- `inferwall models install --profile standard` CLI command
+- Dynamic classifier label mapping from model config.json
+- Profile-gated engine initialization (IW_PROFILE env var)
+- 100 total signatures across 5 categories
+
+### Changed
+- Scoring: score = confidence * severity (not fixed anomaly_points)
+- Classifier confidence gate lowered from 0.7 to 0.5
+- LLM judge: 5-level verdict (UNSAFE/LIKELY_UNSAFE/AMBIGUOUS/LIKELY_SAFE/SAFE)
+- Default thresholds: flag=4.0, block=10.0 (inbound)
+- INJ-D-001 (roleplay) downgraded to confidence: low
+
+### Fixed
+- INJ-D-006 incorrectly declared engine: semantic (changed to heuristic)
+- DistilBERT toxicity removed from registry (no ONNX), replaced with self-hosted ONNX version
+
 ## 0.1.5 (2026-03-30)
 
 ### Signatures
-- 83 total signatures (was 70)
+- 83 total signatures (was 70) [now 100 in v0.1.6]
 - 5 ChatGPT jailbreak patterns: DAN, STAN, Developer Mode, DUDE, template markers
 - 4 cloud credential patterns: GCP, Azure, Stripe, Slack
 - 4 medical/HIPAA PII patterns: patient MRN, ICD-10, insurance, DEA number

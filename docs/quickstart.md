@@ -83,7 +83,7 @@ Models are cached in `~/.cache/inferwall/models/` and downloaded from HuggingFac
 | Model | Size | Engine | Profile |
 |-------|------|--------|---------|
 | DeBERTa v3 (injection) | ~400MB | Classifier | Standard |
-| DistilBERT (toxicity) | ~250MB | Classifier | Standard |
+| DistilBERT (toxicity) | ~520MB | Classifier | Standard |
 | MiniLM-L6 (embeddings) | ~80MB | Semantic | Standard |
 | Phi-4 Mini Q4 (judge) | ~2.4GB | LLM-Judge | Full |
 
@@ -142,7 +142,7 @@ InferenceWall uses a **three-layer catalog merge** system that lets you customiz
 
 Place custom signature YAML files in `~/.inferwall/signatures/`. These are merged with the shipped catalog at startup:
 
-1. **Shipped catalog** (read-only, inside the pip package) — the built-in 83 signatures
+1. **Shipped catalog** (read-only, inside the pip package) — the built-in 100 signatures
 2. **Custom signatures** (`~/.inferwall/signatures/`) — your additions and overrides
 3. **Override by ID** — a custom signature with the same ID as a shipped one replaces it entirely
 

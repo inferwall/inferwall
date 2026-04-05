@@ -39,10 +39,11 @@ result = inferwall.scan_output("Your API key is sk-1234...")
 
 ## Features
 
-- **83 detection signatures** across 5 categories (injection, content safety, data leakage, system prompt, agentic)
+- **100 detection signatures** across 5 categories (injection, content safety, data leakage, system prompt, agentic)
 - **Rust-powered heuristic engine** — <0.3ms p99 for pattern matching
 - **ML engines** — ONNX classifier (DeBERTa/DistilBERT) + FAISS semantic similarity
-- **Anomaly scoring** — multiple weak signals combine into strong signals (like OWASP CRS)
+- **Semantic detection engine** — FAISS + MiniLM embeddings for paraphrased attack detection
+- **Anomaly scoring** — confidence-weighted scoring with diminishing corroboration (like OWASP CRS)
 - **Policy profiles** — operators configure detection without code
 - **Three deployment modes**: SDK, API server, reverse proxy
 - **API key authentication** with scan/admin role separation
@@ -133,6 +134,9 @@ inferwall test --input "Ignore all previous instructions"
 
 # Generate API keys
 inferwall admin setup
+
+# Download and install models for Standard profile
+inferwall models install --profile standard
 ```
 
 ## Deployment Profiles
@@ -156,6 +160,7 @@ See [examples/README.md](examples/README.md) for details.
 
 - [Quickstart](docs/quickstart.md)
 - [API Reference](docs/api-reference.md)
+- [Signature Catalog](docs/SIGNATURE_CATALOG.md)
 - [Signature Authoring](docs/signature-authoring.md)
 - [Policy Configuration](docs/policy-configuration.md)
 - [Deployment Guide](docs/deployment.md)

@@ -16,21 +16,9 @@ app = FastAPI(
 )
 
 # Register routers
-from inferwall.api.routes.admin import router as admin_router  # noqa: E402
-from inferwall.api.routes.auth import router as auth_router  # noqa: E402
-from inferwall.api.routes.config import router as config_router  # noqa: E402
-from inferwall.api.routes.policies import router as policies_router  # noqa: E402
-from inferwall.api.routes.scan import router as analyze_router  # noqa: E402
-from inferwall.api.routes.sessions import router as sessions_router  # noqa: E402
 from inferwall.api.routes.signatures import router as signatures_router  # noqa: E402
 
 app.include_router(signatures_router)
-app.include_router(sessions_router)
-app.include_router(admin_router)
-app.include_router(policies_router)
-app.include_router(auth_router)
-app.include_router(config_router)
-app.include_router(analyze_router)
 
 
 # --- Request/Response Models ---

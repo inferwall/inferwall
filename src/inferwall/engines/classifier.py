@@ -144,8 +144,13 @@ class ClassifierEngine(BaseEngine):
 
     # Labels considered benign (not flagged) across different model conventions
     BENIGN_LABELS = {
-        "BENIGN", "SAFE", "LABEL_0", "not_toxic",
-        "not-toxic", "safe", "ham",
+        "BENIGN",
+        "SAFE",
+        "LABEL_0",
+        "not_toxic",
+        "not-toxic",
+        "safe",
+        "ham",
     }
 
     def _infer(

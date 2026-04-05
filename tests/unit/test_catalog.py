@@ -140,7 +140,9 @@ class TestCatalogLoads:
     def test_all_70_signatures_load(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
         sigs = loader.load()
-        assert len(sigs) == 100, f"Expected 100, got {len(sigs)}. Errors: {loader.errors}"
+        assert len(sigs) == 100, (
+            f"Expected 100, got {len(sigs)}. Errors: {loader.errors}"
+        )
         assert len(loader.errors) == 0
 
     def test_all_expected_ids_present(self) -> None:

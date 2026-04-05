@@ -143,11 +143,7 @@ class SemanticEngine(BaseEngine):
             for dist, idx in zip(distances[0], indices[0], strict=True):
                 if idx < 0:
                     continue
-                label = (
-                    self._index_labels[idx]
-                    if idx < len(self._index_labels)
-                    else ""
-                )
+                label = self._index_labels[idx] if idx < len(self._index_labels) else ""
                 if label and dist > best_per_sig.get(label, 0.0):
                     best_per_sig[label] = float(dist)
 

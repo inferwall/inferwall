@@ -188,8 +188,7 @@ def _handle_models(subcommand: str) -> None:
 
     else:
         print(
-            "Usage: inferwall models install"
-            " --profile <standard|full>  (recommended)"
+            "Usage: inferwall models install --profile <standard|full>  (recommended)"
         )
         print("       inferwall models download --profile <standard|full>")
         print("       inferwall models list")

@@ -46,9 +46,7 @@ def guarded_anthropic_chat(
             blocked=True,
             input_score=input_scan.score,
             output_score=0.0,
-            matched_signatures=[
-                m["signature_id"] for m in input_scan.matches
-            ],
+            matched_signatures=[m["signature_id"] for m in input_scan.matches],
         )
 
     # Step 2: Call Anthropic
@@ -78,9 +76,7 @@ def guarded_anthropic_chat(
             blocked=True,
             input_score=input_scan.score,
             output_score=output_scan.score,
-            matched_signatures=[
-                m["signature_id"] for m in output_scan.matches
-            ],
+            matched_signatures=[m["signature_id"] for m in output_scan.matches],
         )
 
     return GuardedResponse(
@@ -89,8 +85,7 @@ def guarded_anthropic_chat(
         input_score=input_scan.score,
         output_score=output_scan.score,
         matched_signatures=[
-            m["signature_id"]
-            for m in input_scan.matches + output_scan.matches
+            m["signature_id"] for m in input_scan.matches + output_scan.matches
         ],
     )
 
@@ -114,7 +109,9 @@ if __name__ == "__main__":
         result = guarded_anthropic_chat(prompt)
         status = "BLOCKED" if result.blocked else "OK"
         print(f"  [{status}] {result.content[:80]}")
-        print(f"  Input score: {result.input_score}, Output score: {result.output_score}")
+        print(
+            f"  Input score: {result.input_score}, Output score: {result.output_score}"
+        )
         if result.matched_signatures:
             print(f"  Signatures: {result.matched_signatures}")
         print()

@@ -10,6 +10,17 @@ from inferwall.engines.base import BaseEngine, ScanResult
 from inferwall.signatures.schema import SignatureDefinition
 
 
+# Confidence level to float mapping for scoring.
+# HIGH = specific patterns unlikely in benign text (CSAM, base64+exec).
+# MEDIUM = moderately specific (ignore instructions, forget everything).
+# LOW = broad patterns common in benign text (act as, roleplay).
+CONFIDENCE_MAP: dict[str, float] = {
+    "high": 0.90,
+    "medium": 0.70,
+    "low": 0.45,
+}
+
+
 class HeuristicEngine(BaseEngine):
     """Heuristic detection engine backed by Rust extension."""
 

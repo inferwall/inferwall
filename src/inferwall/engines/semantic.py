@@ -135,30 +135,44 @@ class SemanticEngine(BaseEngine):
             norms[norms == 0] = 1
             query = query / norms
 
-            distances, indices = self._index.search(query, min(5, self._index.ntotal))
+            k = min(10, self._index.ntotal)
+            distances, indices = self._index.search(query, k)
 
-            results: list[ScanResult] = []
+            # Collect best similarity per signature ID
+            best_per_sig: dict[str, float] = {}
             for dist, idx in zip(distances[0], indices[0], strict=True):
-                if dist >= self._threshold and idx >= 0:
-                    label = (
-                        self._index_labels[idx]
-                        if idx < len(self._index_labels)
-                        else "semantic-match"
-                    )
-                    # Find matching signature
-                    for sig in signatures:
-                        sig_id = self._sig_id(sig)
-                        points = self._sig_points(sig)
-                        results.append(
-                            ScanResult(
-                                signature_id=sig_id,
-                                matched_text=f"similarity={dist:.3f} label={label}",
-                                score=float(points),
-                                offset=0,
-                                length=len(text),
-                            )
+                if idx < 0:
+                    continue
+                label = (
+                    self._index_labels[idx]
+                    if idx < len(self._index_labels)
+                    else ""
+                )
+                if label and dist > best_per_sig.get(label, 0.0):
+                    best_per_sig[label] = float(dist)
+
+            # Match against signatures using per-sig threshold
+            results: list[ScanResult] = []
+            matched_ids: set[str] = set()
+            for sig in signatures:
+                sig_id = self._sig_id(sig)
+                if sig_id in matched_ids:
+                    continue
+                similarity = best_per_sig.get(sig_id, 0.0)
+                threshold = self._sig_threshold(sig)
+                if similarity >= threshold:
+                    matched_ids.add(sig_id)
+                    points = self._sig_points(sig)
+                    results.append(
+                        ScanResult(
+                            signature_id=sig_id,
+                            matched_text=f"semantic similarity={similarity:.3f}",
+                            score=float(points),
+                            offset=0,
+                            length=len(text),
+                            confidence=similarity,
                         )
-                        break  # One match per threshold hit
+                    )
 
             return results
         except Exception:
@@ -196,3 +210,11 @@ class SemanticEngine(BaseEngine):
 
     def _sig_points(self, sig: Any) -> int:
         return sig.scoring.anomaly_points if hasattr(sig, "scoring") else 5
+
+    def _sig_threshold(self, sig: Any) -> float:
+        """Get per-signature similarity threshold, falling back to engine default."""
+        if hasattr(sig, "detection") and sig.detection.patterns:
+            for p in sig.detection.patterns:
+                if p.similarity_threshold is not None:
+                    return p.similarity_threshold
+        return self._threshold

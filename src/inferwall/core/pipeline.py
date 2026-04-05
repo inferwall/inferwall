@@ -6,10 +6,14 @@ import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import logging
+
 import inferwall_core
 
 from inferwall.core.policy import PolicyEngine, PolicyProfile
-from inferwall.engines.heuristic import HeuristicEngine
+from inferwall.engines.heuristic import CONFIDENCE_MAP, HeuristicEngine
+
+logger = logging.getLogger(__name__)
 from inferwall.signatures.loader import (
     USER_DIR,
     SignatureLoader,
@@ -57,10 +61,37 @@ class Pipeline:
         profile = PolicyProfile.from_yaml(policy_path)
         self._policy = PolicyEngine(profile)
 
-        # Initialize engines
+        # Initialize engines based on profile
         self._heuristic = HeuristicEngine()
-        self._classifier = self._init_classifier()
-        self._llm_judge = self._init_llm_judge()
+        _profile = os.environ.get("IW_PROFILE", "lite").lower()
+
+        if _profile in ("standard", "full"):
+            self._classifier = self._init_classifier()
+            if self._classifier is None:
+                logger.warning(
+                    "Standard/Full profile selected but classifier models not found. "
+                    "Falling back to heuristic-only (Lite). "
+                    "Install with: inferwall models install --profile standard"
+                )
+            self._semantic = self._init_semantic()
+            if self._semantic is None:
+                logger.info(
+                    "Semantic engine not available — skipping semantic detection."
+                )
+        else:
+            self._classifier = None
+            self._semantic = None
+
+        if _profile == "full":
+            self._llm_judge = self._init_llm_judge()
+            if self._llm_judge is None:
+                logger.warning(
+                    "Full profile selected but LLM judge model not found. "
+                    "Falling back to Standard. "
+                    "Install with: inferwall models install --profile full"
+                )
+        else:
+            self._llm_judge = None
 
     def _init_classifier(self) -> object | None:
         """Try to initialize classifier engine with downloaded models."""
@@ -101,6 +132,52 @@ class Pipeline:
         except Exception:
             return None
 
+    def _init_semantic(self) -> object | None:
+        """Try to initialize semantic engine with MiniLM + FAISS index."""
+        try:
+            from inferwall.engines.semantic import SemanticEngine
+            from inferwall.models.downloader import ModelDownloader
+            from inferwall.models.registry import get_model
+
+            engine = SemanticEngine(similarity_threshold=0.75)
+            if not engine.is_available:
+                return None
+
+            downloader = ModelDownloader()
+            spec = get_model("minilm-embeddings")
+            if not spec or not downloader.is_downloaded(spec):
+                return None
+
+            if not engine.load_model(downloader.model_path(spec)):
+                return None
+
+            # Build FAISS index from all semantic signatures' reference_phrases
+            phrases: list[str] = []
+            labels: list[str] = []
+            for sig in self._signatures:
+                if sig.detection.engine.value != "semantic":
+                    continue
+                if not sig.detection.patterns:
+                    continue
+                for pattern in sig.detection.patterns:
+                    if pattern.reference_phrases:
+                        for phrase in pattern.reference_phrases:
+                            phrases.append(phrase)
+                            labels.append(sig.signature.id)
+
+            if not phrases:
+                logger.info("No semantic reference phrases found — skipping index build")
+                return None
+
+            if not engine.build_index(phrases, labels):
+                return None
+
+            logger.info("Semantic engine ready: %d phrases indexed", len(phrases))
+            return engine
+        except Exception:
+            logger.debug("Semantic engine init failed", exc_info=True)
+            return None
+
     @property
     def signature_count(self) -> int:
         return len(self._signatures)
@@ -134,6 +211,9 @@ class Pipeline:
         classifier_sigs = [
             s for s in active_sigs if s.detection.engine.value == "classifier"
         ]
+        semantic_sigs = [
+            s for s in active_sigs if s.detection.engine.value == "semantic"
+        ]
 
         all_matches: list[inferwall_core.Match] = []
 
@@ -150,14 +230,19 @@ class Pipeline:
                     sig_default_action=self._get_sig_default_action(r.signature_id),
                 )
                 if action == "enforce":
+                    sig_conf = self._get_sig_confidence(r.signature_id)
+                    confidence = CONFIDENCE_MAP.get(sig_conf, 0.70)
+                    severity = float(points)
                     all_matches.append(
                         inferwall_core.Match(
                             signature_id=r.signature_id,
                             engine="heuristic",
                             matched_text=r.matched_text,
-                            score=float(points),
+                            score=confidence * severity,
                             offset=r.offset,
                             length=r.length,
+                            confidence=confidence,
+                            severity=severity,
                         )
                     )
 
@@ -174,14 +259,47 @@ class Pipeline:
                     sig_default_action=self._get_sig_default_action(r.signature_id),
                 )
                 if action == "enforce":
+                    severity = float(points)
+                    confidence = getattr(r, "confidence", 0.0) or 0.70
                     all_matches.append(
                         inferwall_core.Match(
                             signature_id=r.signature_id,
                             engine="classifier",
                             matched_text=r.matched_text,
-                            score=float(points),
+                            score=confidence * severity,
                             offset=r.offset,
                             length=r.length,
+                            confidence=confidence,
+                            severity=severity,
+                        )
+                    )
+
+        # Semantic scan (Standard/Full profiles)
+        if semantic_sigs and self._semantic is not None:
+            results = self._semantic.scan(text, semantic_sigs)  # type: ignore[attr-defined]
+            for r in results:
+                points = self._policy.resolve_anomaly_points(
+                    r.signature_id,
+                    sig_default_points=int(r.score),
+                )
+                action = self._policy.resolve_action(
+                    r.signature_id,
+                    sig_default_action=self._get_sig_default_action(r.signature_id),
+                )
+                if action == "enforce":
+                    severity = float(points)
+                    # Use FAISS similarity score as confidence (already 0.0-1.0)
+                    confidence = getattr(r, "confidence", 0.0) or 0.70
+                    all_matches.append(
+                        inferwall_core.Match(
+                            signature_id=r.signature_id,
+                            engine="semantic",
+                            matched_text=r.matched_text,
+                            score=confidence * severity,
+                            offset=r.offset,
+                            length=r.length,
+                            confidence=confidence,
+                            severity=severity,
                         )
                     )
 
@@ -209,7 +327,7 @@ class Pipeline:
             outbound_threshold_flag=self._policy.outbound_flag_threshold,
             outbound_threshold_block=self._policy.outbound_block_threshold,
         )
-        score_result = inferwall_core.evaluate_score(
+        score_result = inferwall_core.evaluate_score_v2(
             all_matches, scoring_policy, is_inbound
         )
 
@@ -226,6 +344,8 @@ class Pipeline:
                     "signature_id": m.signature_id,
                     "matched_text": m.matched_text,
                     "score": m.score,
+                    "confidence": m.confidence,
+                    "severity": m.severity,
                 }
                 for m in all_matches
             ],
@@ -240,6 +360,13 @@ class Pipeline:
         if sig:
             return sig.tuning.default_action.value
         return "enforce"
+
+    def _get_sig_confidence(self, sig_id: str) -> str:
+        """Get confidence level string from signature metadata."""
+        sig = self._loader.get_by_id(sig_id)
+        if sig:
+            return sig.meta.confidence.value
+        return "medium"
 
 
 def _resolve_policy_path() -> Path:

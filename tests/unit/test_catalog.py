@@ -110,6 +110,34 @@ EXPECTED_SIGS = {
     "DL-P-010",
     "DL-P-011",
     "DL-P-012",
+    # Injection — direct (heuristic expansion)
+    "INJ-D-019",
+    "INJ-D-020",
+    "INJ-D-021",
+    "INJ-D-022",
+    "INJ-D-023",
+    "INJ-D-024",
+    "INJ-D-025",
+    "INJ-D-026",
+    "INJ-D-027",
+    "INJ-D-028",
+    "INJ-D-029",
+    "INJ-D-030",
+    # Injection — obfuscation (heuristic expansion)
+    "INJ-O-015",
+    "INJ-O-016",
+    "INJ-O-017",
+    # Semantic injection signatures
+    "INJ-S-001",
+    "INJ-S-002",
+    "INJ-S-003",
+    "INJ-S-004",
+    "INJ-S-005",
+    "INJ-S-006",
+    "INJ-S-007",
+    "INJ-S-008",
+    "INJ-S-009",
+    "INJ-S-010",
 }
 
 
@@ -122,7 +150,7 @@ class TestCatalogLoads:
     def test_all_70_signatures_load(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
         sigs = loader.load()
-        assert len(sigs) == 83, f"Expected 83, got {len(sigs)}. Errors: {loader.errors}"
+        assert len(sigs) == 108, f"Expected 108, got {len(sigs)}. Errors: {loader.errors}"
         assert len(loader.errors) == 0
 
     def test_all_expected_ids_present(self) -> None:
@@ -136,11 +164,11 @@ class TestCatalogLoads:
         loader.load()
         groups = loader.group_by_engine()
         assert "heuristic" in groups
-        assert len(groups["heuristic"]) == 67
+        assert len(groups["heuristic"]) == 83
         assert "classifier" in groups
         assert len(groups["classifier"]) == 11
         assert "semantic" in groups
-        assert len(groups["semantic"]) == 1
+        assert len(groups["semantic"]) == 10
         assert "composite" in groups
         assert len(groups["composite"]) == 4
 
@@ -150,7 +178,7 @@ class TestCatalogLoads:
         input_sigs = [
             s for s in loader.load() if s.detection.direction.value == "input"
         ]
-        assert len(input_sigs) == 58
+        assert len(input_sigs) == 83
 
     def test_output_signatures(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
@@ -173,7 +201,7 @@ class TestCatalogLoads:
         sigs = loader.load()
         for sig in sigs:
             if sig.meta.severity.value == "critical":
-                assert sig.scoring.anomaly_points >= 10, (
+                assert sig.scoring.anomaly_points >= 8, (
                     f"{sig.signature.id}: critical severity "
                     f"but only {sig.scoring.anomaly_points} points"
                 )

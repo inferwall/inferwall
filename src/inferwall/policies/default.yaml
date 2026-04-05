@@ -1,10 +1,10 @@
 name: default
-version: "1.0.0"
+version: "2.0.0"
 mode: enforce
 thresholds:
-  inbound_flag: 5
-  inbound_block: 15
-  outbound_flag: 5
-  outbound_block: 10
-  early_exit: 25
+  inbound_flag: 4.0
+  inbound_block: 10.0
+  outbound_flag: 3.0
+  outbound_block: 7.0
+  early_exit: 13.0
 signatures: {}

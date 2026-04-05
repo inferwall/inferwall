@@ -16,6 +16,7 @@ class ScanResult:
     score: float
     offset: int
     length: int
+    confidence: float = 0.0  # Engine-specific confidence (0.0-1.0)
 
 
 class BaseEngine(ABC):

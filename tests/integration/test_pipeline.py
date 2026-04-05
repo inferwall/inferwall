@@ -8,7 +8,7 @@ class TestPipelineSetup:
 
     def test_pipeline_initializes(self) -> None:
         pipeline = Pipeline()
-        assert pipeline.signature_count == 83
+        assert pipeline.signature_count == 108
 
     def test_pipeline_loads_signatures(self) -> None:
         pipeline = Pipeline()

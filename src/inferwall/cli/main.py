@@ -41,6 +41,7 @@ def _print_usage() -> None:
     print("  test --profile <name>  Run test against a profile")
     print("  admin setup            First-time setup (generate keys)")
     print("  admin generate-keys    Generate API keys")
+    print("  models install         Install dependencies + download models")
     print("  models download        Download ML models for a profile")
     print("  models list            List downloaded models")
     print("  models status          Check model availability")
@@ -120,6 +121,10 @@ def _generate_keys() -> None:
 def _handle_models(subcommand: str) -> None:
     from inferwall.models.registry import get_models_for_profile
 
+    if subcommand == "install":
+        _models_install()
+        return
+
     if subcommand == "download":
         profile = "standard"
         for i, arg in enumerate(sys.argv):
@@ -182,9 +187,128 @@ def _handle_models(subcommand: str) -> None:
                 print(f"    {spec.name}: {status} (~{spec.size_mb}MB)")
 
     else:
-        print("Usage: inferwall models download --profile <lite|standard|full>")
+        print("Usage: inferwall models install --profile <standard|full>  (recommended)")
+        print("       inferwall models download --profile <standard|full>")
         print("       inferwall models list")
         print("       inferwall models status")
+
+
+def _models_install() -> None:
+    """Install dependencies and download models for a profile."""
+    import subprocess
+
+    profile = "standard"
+    auto_confirm = False
+    for i, arg in enumerate(sys.argv):
+        if arg == "--profile" and i + 1 < len(sys.argv):
+            profile = sys.argv[i + 1]
+        if arg in ("-y", "--yes"):
+            auto_confirm = True
+
+    if profile not in ("standard", "full"):
+        print(f"Profile '{profile}' does not require model installation.")
+        print("Use: inferwall models install --profile standard")
+        print("  or: inferwall models install --profile full")
+        return
+
+    # Map profile to pip extra
+    pip_extra = f"inferwall[{profile}]"
+    deps = {
+        "standard": ["onnxruntime", "tokenizers", "numpy", "faiss-cpu"],
+        "full": ["onnxruntime", "tokenizers", "numpy", "faiss-cpu", "llama-cpp-python"],
+    }
+
+    print(f"InferenceWall — Install '{profile}' profile")
+    print("=" * 50)
+    print()
+    print(f"This will:")
+    print(f"  1. Install Python dependencies: {', '.join(deps[profile])}")
+    print(f"  2. Download ML models (~{_profile_size_mb(profile)}MB)")
+    print()
+
+    if not auto_confirm:
+        try:
+            answer = input("Proceed? [Y/n] ").strip().lower()
+            if answer and answer not in ("y", "yes"):
+                print("Cancelled.")
+                return
+        except (EOFError, KeyboardInterrupt):
+            print("\nCancelled.")
+            return
+
+    # Step 1: Install pip dependencies
+    print()
+    print("[1/2] Installing Python dependencies...")
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "install", pip_extra],
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+        if result.returncode != 0:
+            print(f"  WARNING: pip install returned non-zero exit code.")
+            print(f"  stderr: {result.stderr[:500]}")
+            print(f"  You may need to install manually: pip install {pip_extra}")
+        else:
+            print("  Done.")
+    except FileNotFoundError:
+        print(f"  WARNING: pip not found. Install manually: pip install {pip_extra}")
+    except subprocess.TimeoutExpired:
+        print("  WARNING: pip install timed out. Install manually.")
+
+    # Verify key imports
+    missing = []
+    for pkg, import_name in [("onnxruntime", "onnxruntime"), ("tokenizers", "tokenizers")]:
+        try:
+            __import__(import_name)
+        except ImportError:
+            missing.append(pkg)
+
+    if profile == "full":
+        try:
+            __import__("llama_cpp")
+        except ImportError:
+            missing.append("llama-cpp-python")
+
+    if missing:
+        print(f"  WARNING: Could not import: {', '.join(missing)}")
+        print(f"  Install manually: pip install {' '.join(missing)}")
+    else:
+        print("  All dependencies verified.")
+
+    # Step 2: Download models
+    print()
+    print("[2/2] Downloading ML models...")
+    from inferwall.models.downloader import ModelDownloader
+    from inferwall.models.registry import get_models_for_profile
+
+    downloader = ModelDownloader()
+    models = get_models_for_profile(profile)
+
+    for spec in models:
+        if downloader.is_downloaded(spec):
+            print(f"  [cached]      {spec.name} ({spec.description})")
+        else:
+            print(f"  [downloading] {spec.name} (~{spec.size_mb}MB)...", end="", flush=True)
+            try:
+                downloader.download(spec)
+                print(" done.")
+            except Exception as e:
+                print(f" FAILED: {e}")
+
+    print()
+    print(f"Installation complete. Models cached at: {downloader.cache_dir}")
+    print()
+    print(f"Set profile: export IW_PROFILE={profile}")
+    print(f"Test:        inferwall test --input 'ignore all instructions'")
+
+
+def _profile_size_mb(profile: str) -> int:
+    """Estimate total download size for a profile."""
+    from inferwall.models.registry import get_models_for_profile
+
+    return sum(m.size_mb for m in get_models_for_profile(profile))
 
 
 def _handle_serve() -> None:

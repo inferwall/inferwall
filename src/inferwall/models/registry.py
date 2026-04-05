@@ -31,12 +31,12 @@ MODELS: dict[str, ModelSpec] = {
     ),
     "distilbert-toxicity": ModelSpec(
         name="distilbert-toxicity",
-        repo_id="citizenlab/distilbert-base-multilingual-cased-toxicity",
+        repo_id="Uzyau/distilbert-toxicity-onnx",
         filename="",
-        size_mb=250,
+        size_mb=520,
         engine="classifier",
         profile="standard",
-        description="DistilBERT multilingual toxicity classifier",
+        description="DistilBERT multilingual toxicity classifier (ONNX)",
     ),
     "minilm-embeddings": ModelSpec(
         name="minilm-embeddings",

@@ -25,9 +25,10 @@ class ClassifierEngine(BaseEngine):
     def __init__(self) -> None:
         self._sessions: dict[str, Any] = {}
         self._tokenizers: dict[str, Any] = {}
+        self._label_maps: dict[str, dict[int, str]] = {}
         self._ort_available = False
         self._tok_available = False
-        self._threshold = 0.7
+        self._threshold = 0.5
 
         try:
             import onnxruntime  # noqa: F401
@@ -62,6 +63,8 @@ class ClassifierEngine(BaseEngine):
         if not self.is_available:
             return False
 
+        import json
+
         import onnxruntime as ort  # noqa: F811
         from tokenizers import Tokenizer
 
@@ -76,6 +79,19 @@ class ClassifierEngine(BaseEngine):
         if not tokenizer_path.exists():
             logger.error("No tokenizer.json found in %s", model_dir)
             return False
+
+        # Load label mapping from config.json
+        config_path = model_dir / "config.json"
+        benign_labels = {"BENIGN", "not_toxic", "LABEL_0"}
+        if config_path.exists():
+            try:
+                config = json.loads(config_path.read_text())
+                id2label = config.get("id2label", {})
+                self._label_maps[name] = {int(k): v for k, v in id2label.items()}
+            except Exception:
+                self._label_maps[name] = {}
+        else:
+            self._label_maps[name] = {}
 
         try:
             session = ort.InferenceSession(
@@ -104,11 +120,12 @@ class ClassifierEngine(BaseEngine):
 
             try:
                 confidence, label = self._infer(
+                    model_name,
                     self._sessions[model_name],
                     self._tokenizers[model_name],
                     text,
                 )
-                if label != "BENIGN" and confidence >= self._threshold:
+                if label not in self.BENIGN_LABELS and confidence >= self._threshold:
                     results.append(
                         ScanResult(
                             signature_id=self._sig_id(sig),
@@ -116,6 +133,7 @@ class ClassifierEngine(BaseEngine):
                             score=float(self._sig_points(sig)),
                             offset=0,
                             length=len(text),
+                            confidence=confidence,
                         )
                     )
             except Exception:
@@ -125,7 +143,12 @@ class ClassifierEngine(BaseEngine):
 
         return results
 
-    def _infer(self, session: Any, tokenizer: Any, text: str) -> tuple[float, str]:
+    # Labels considered benign (not flagged) across different model conventions
+    BENIGN_LABELS = {"BENIGN", "SAFE", "LABEL_0", "not_toxic", "not-toxic", "safe", "ham"}
+
+    def _infer(
+        self, model_name: str, session: Any, tokenizer: Any, text: str
+    ) -> tuple[float, str]:
         """Run ONNX inference. Returns (confidence, label)."""
         import numpy as np
 
@@ -147,7 +170,16 @@ class ClassifierEngine(BaseEngine):
         probs = probs / probs.sum()
 
         idx = int(np.argmax(probs))
-        return float(probs[idx]), "INJECTION" if idx == 1 else "BENIGN"
+
+        # Resolve label from config.json id2label, fallback to DeBERTa convention
+        label_map = self._label_maps.get(model_name, {})
+        if label_map:
+            label = label_map.get(idx, f"LABEL_{idx}")
+        else:
+            # Legacy fallback: DeBERTa convention (0=BENIGN, 1=INJECTION)
+            label = "INJECTION" if idx == 1 else "BENIGN"
+
+        return float(probs[idx]), label
 
     def _resolve_model(self, sig: Any) -> str:
         if hasattr(sig, "detection") and sig.detection.model:

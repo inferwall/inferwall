@@ -1,4 +1,4 @@
-"""SIEM integration plugin for log shipping."""
+"""Observability plugin for log shipping."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Any
 def _get_shipper_class() -> type[Any] | None:
     """Lazy import - only load when needed."""
     try:
-        from inferwall.plugins.siem.elk_shipper import ElkShipper
+        from inferwall.plugins.observability.elk_shipper import ElkShipper
 
         return ElkShipper
     except ImportError:
@@ -17,7 +17,7 @@ def _get_shipper_class() -> type[Any] | None:
 
 
 def create_shipper(endpoint: str | None = None) -> Any | None:
-    """Create a SIEM shipper if enabled via environment.
+    """Create an observability shipper if enabled via environment.
 
     Set IW_ELK_URL to enable (e.g., http://localhost:8080).
     Returns None if not configured or dependencies missing.
@@ -31,8 +31,8 @@ def create_shipper(endpoint: str | None = None) -> Any | None:
         import logging
 
         logging.getLogger(__name__).warning(
-            "SIEM plugin requested but httpx not installed. "
-            "Install with: pip install inferwall[siem]"
+            "Observability plugin requested but httpx not installed. "
+            "Install with: pip install inferwall[observability]"
         )
         return None
 

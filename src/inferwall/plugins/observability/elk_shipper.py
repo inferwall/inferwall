@@ -10,7 +10,7 @@ import httpx
 
 
 class ElkShipper:
-    """Ship structured events to a Logstash HTTP input for SIEM testing.
+    """Ship structured events to a Logstash HTTP input for observability.
 
     Set ``IW_ELK_URL`` (e.g. ``http://localhost:8080``) to enable shipping.
     Events are fire-and-forget; failures are silently dropped so the scan

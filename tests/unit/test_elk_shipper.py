@@ -3,7 +3,7 @@
 import os
 from unittest.mock import MagicMock, patch
 
-from inferwall.plugins.siem.elk_shipper import ElkShipper
+from inferwall.plugins.observability.elk_shipper import ElkShipper
 
 
 class TestElkShipper:
@@ -15,7 +15,7 @@ class TestElkShipper:
         shipper = ElkShipper(endpoint="http://localhost:8080")
         assert shipper.enabled
 
-    @patch("inferwall.plugins.siem.elk_shipper.httpx.post")
+    @patch("inferwall.plugins.observability.elk_shipper.httpx.post")
     def test_ship_sync_posts_json(self, mock_post):
         mock_post.return_value = MagicMock(status_code=200)
         shipper = ElkShipper(endpoint="http://localhost:8080")
@@ -24,7 +24,7 @@ class TestElkShipper:
         _, kwargs = mock_post.call_args
         assert kwargs["json"]["decision"] == "block"
 
-    @patch("inferwall.plugins.siem.elk_shipper.httpx.post")
+    @patch("inferwall.plugins.observability.elk_shipper.httpx.post")
     def test_ship_sync_silently_fails(self, mock_post):
         mock_post.side_effect = Exception("connection refused")
         shipper = ElkShipper(endpoint="http://localhost:8080")
@@ -40,7 +40,7 @@ class TestCreateShipper:
         # Ensure env var is not set
         old_value = os.environ.pop("IW_ELK_URL", None)
         try:
-            from inferwall.plugins.siem import create_shipper
+            from inferwall.plugins.observability import create_shipper
 
             result = create_shipper()
             assert result is None
@@ -54,7 +54,7 @@ class TestCreateShipper:
         old_value = os.environ.get("IW_ELK_URL")
         try:
             os.environ["IW_ELK_URL"] = "http://localhost:8080"
-            from inferwall.plugins.siem import create_shipper
+            from inferwall.plugins.observability import create_shipper
 
             result = create_shipper()
             assert result is not None
@@ -67,7 +67,7 @@ class TestCreateShipper:
 
     def test_returns_none_when_explicitly_disabled(self):
         """create_shipper() returns None when endpoint is explicitly None."""
-        from inferwall.plugins.siem import create_shipper
+        from inferwall.plugins.observability import create_shipper
 
         result = create_shipper(endpoint=None)
         assert result is None

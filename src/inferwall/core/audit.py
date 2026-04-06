@@ -23,11 +23,11 @@ def _iso_timestamp(ts: float) -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(ts))
 
 
-def _create_siem_shipper() -> Any | None:
-    """Lazy initialization of SIEM shipper - only imports when needed."""
+def _create_obs_shipper() -> Any | None:
+    """Lazy initialization of observability shipper - only imports when needed."""
     if not os.environ.get("IW_ELK_URL"):
         return None
-    from inferwall.plugins.siem import create_shipper
+    from inferwall.plugins.observability import create_shipper
 
     return create_shipper()
 
@@ -63,7 +63,7 @@ class AuditLogger:
     def __init__(self, log_path: Path | None = None) -> None:
         self._log_path = log_path
         self._events: list[AuditEvent] = []
-        self._siem_shipper = _create_siem_shipper()
+        self._obs_shipper = _create_obs_shipper()
 
     def log(self, event: AuditEvent) -> None:
         """Log an audit event."""
@@ -71,7 +71,7 @@ class AuditLogger:
         if self._log_path:
             with open(self._log_path, "a") as f:
                 f.write(json.dumps(asdict(event)) + "\n")
-        if self._siem_shipper is not None and self._siem_shipper.enabled:
+        if self._obs_shipper is not None and self._obs_shipper.enabled:
             payload = {
                 "log_type": "audit",
                 "timestamp": _iso_timestamp(event.timestamp),
@@ -81,7 +81,7 @@ class AuditLogger:
                 "source_ip": event.ip,
                 "key_prefix": event.key_prefix,
             }
-            self._siem_shipper.ship_sync(payload)
+            self._obs_shipper.ship_sync(payload)
 
     def get_events(
         self,

@@ -1,4 +1,4 @@
-# SIEM Integration
+# Observability
 
 InferenceWall can ship scan results and audit events to an ELK (Elasticsearch, Logstash, Kibana) stack for centralized security monitoring.
 
@@ -7,8 +7,8 @@ This is an **optional plugin** — it has zero impact on InferenceWall unless ex
 ## Installation
 
 ```bash
-# SIEM plugin is optional — install separately
-pip install inferwall[siem]
+# Observability plugin is optional — install separately
+pip install inferwall[observability]
 ```
 
 This adds the `httpx` dependency for HTTP log shipping. The core `pip install inferwall` does not include it.
@@ -51,7 +51,7 @@ docker logs logstash | tail -5
 |----------|-------------|---------|
 | `IW_ELK_URL` | Logstash HTTP input endpoint | Not set (disabled) |
 
-When `IW_ELK_URL` is **not set**, the SIEM plugin is completely inactive — no imports, no overhead, no side effects.
+When `IW_ELK_URL` is **not set**, the Observability plugin is completely inactive — no imports, no overhead, no side effects.
 
 ## What Gets Shipped
 

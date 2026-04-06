@@ -93,16 +93,16 @@ class Pipeline:
         else:
             self._llm_judge = None
 
-        # SIEM plugin (lazy initialization, enabled via IW_ELK_URL)
-        self._siem_shipper: Any | None = None
+        # Observability plugin (lazy initialization, enabled via IW_ELK_URL)
+        self._obs_shipper: Any | None = None
 
-    def _get_siem_shipper(self) -> Any | None:
-        """Lazy initialization of SIEM shipper."""
-        if self._siem_shipper is None:
-            from inferwall.plugins.siem import create_shipper
+    def _get_obs_shipper(self) -> Any | None:
+        """Lazy initialization of observability shipper."""
+        if self._obs_shipper is None:
+            from inferwall.plugins.observability import create_shipper
 
-            self._siem_shipper = create_shipper()
-        return self._siem_shipper
+            self._obs_shipper = create_shipper()
+        return self._obs_shipper
 
     def _init_classifier(self) -> object | None:
         """Try to initialize classifier engine with downloaded models."""
@@ -365,8 +365,8 @@ class Pipeline:
             request_id=request_id,
         )
 
-        # Ship scan log to SIEM if enabled (fire-and-forget)
-        shipper = self._get_siem_shipper()
+        # Ship scan log to observability backend if enabled (fire-and-forget)
+        shipper = self._get_obs_shipper()
         if shipper is not None and shipper.enabled:
             import time as _time
 

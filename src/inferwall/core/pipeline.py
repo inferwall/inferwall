@@ -6,6 +6,7 @@ import logging
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import inferwall_core
 
@@ -91,6 +92,17 @@ class Pipeline:
                 )
         else:
             self._llm_judge = None
+
+        # SIEM plugin (lazy initialization, enabled via IW_ELK_URL)
+        self._siem_shipper: Any | None = None
+
+    def _get_siem_shipper(self) -> Any | None:
+        """Lazy initialization of SIEM shipper."""
+        if self._siem_shipper is None:
+            from inferwall.plugins.siem import create_shipper
+
+            self._siem_shipper = create_shipper()
+        return self._siem_shipper
 
     def _init_classifier(self) -> object | None:
         """Try to initialize classifier engine with downloaded models."""
@@ -337,7 +349,7 @@ class Pipeline:
         else:
             decision = score_result.decision.__repr__().split(".")[-1].lower()
 
-        return ScanResponse(
+        response = ScanResponse(
             decision=decision,
             score=score_result.total_score,
             matches=[
@@ -352,6 +364,32 @@ class Pipeline:
             ],
             request_id=request_id,
         )
+
+        # Ship scan log to SIEM if enabled (fire-and-forget)
+        shipper = self._get_siem_shipper()
+        if shipper is not None and shipper.enabled:
+            import time as _time
+
+            shipper.ship_sync(
+                {
+                    "log_type": "scan",
+                    "timestamp": _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime()),
+                    "direction": direction,
+                    "decision": decision,
+                    "anomaly_score": score_result.total_score,
+                    "threshold": (
+                        self._policy.inbound_block_threshold
+                        if is_inbound
+                        else self._policy.outbound_block_threshold
+                    ),
+                    "policy": self._policy.name,
+                    "request_id": request_id,
+                    "matches": response.matches,
+                    "signature_count": len(all_matches),
+                }
+            )
+
+        return response
 
     def _is_sig_active(self, sig: SignatureDefinition) -> bool:
         return sig.tuning.enabled and sig.tuning.default_enabled

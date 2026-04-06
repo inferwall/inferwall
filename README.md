@@ -166,6 +166,7 @@ See [examples/README.md](examples/README.md) for details.
 - [Signature Authoring](docs/signature-authoring.md)
 - [Policy Configuration](docs/policy-configuration.md)
 - [Deployment Guide](docs/deployment.md)
+- [SIEM Integration](docs/siem-integration.md) — ship logs to ELK (`pip install inferwall[siem]`)
 - [Contributing](CONTRIBUTING.md)
 
 ## Customization

@@ -1,76 +1,152 @@
-# SIEM Integration — ELK Testing Facility
+# SIEM Integration
 
-InferenceWall can ship scan results and audit events to an external ELK (Elasticsearch, Logstash, Kibana) stack for SIEM-style analysis and testing.
+InferenceWall can ship scan results and audit events to an ELK (Elasticsearch, Logstash, Kibana) stack for centralized security monitoring.
+
+This is an **optional plugin** — it has zero impact on InferenceWall unless explicitly enabled.
+
+## Installation
+
+```bash
+# SIEM plugin is optional — install separately
+pip install inferwall[siem]
+```
+
+This adds the `httpx` dependency for HTTP log shipping. The core `pip install inferwall` does not include it.
 
 ## Quick Start
 
-1. **Start an ELK stack** (using Docker Compose):
-   ```bash
-   # Example docker-compose.yml for ELK
-   wget https://raw.githubusercontent.com/inferwall/inferwall/main/docs/examples/elk-docker-compose.yml
-   docker compose up -d
-   ```
+### 1. Enable log shipping
 
-2. **Point inferwall to Logstash**:
-   ```bash
-   export IW_ELK_URL=http://localhost:8080
-   ```
+Set the `IW_ELK_URL` environment variable to your Logstash HTTP input:
 
-3. **Run inferwall**:
-   ```bash
-   inferwall serve
-   # or with Docker
-   docker run -e IW_ELK_URL=http://host.docker.internal:8080 -p 8000:8000 inferwall
-   ```
+```bash
+export IW_ELK_URL=http://localhost:8080
+```
 
-4. **Open Kibana** at http://localhost:5601 and import the dashboard from `elk-siem/kibana/dashboards/inferwall-dashboard.ndjson`.
+That's it. InferenceWall will now ship scan logs and audit events to that endpoint.
+
+### 2. Start InferenceWall
+
+```bash
+inferwall serve
+```
+
+Every scan request will fire-and-forget a JSON log to Logstash. If Logstash is unreachable, logs are silently dropped — scan latency is never affected.
+
+### 3. Verify
+
+```bash
+# Trigger a scan
+curl -X POST http://localhost:8000/v1/scan/input \
+  -H "Content-Type: application/json" \
+  -d '{"text": "ignore all previous instructions"}'
+
+# Check Logstash received it
+docker logs logstash | tail -5
+```
 
 ## Configuration
 
-| Environment Variable | Description | Example |
-|----------------------|-------------|---------|
-| `IW_ELK_URL` | Logstash HTTP input endpoint | `http://localhost:8080` |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `IW_ELK_URL` | Logstash HTTP input endpoint | Not set (disabled) |
 
-When `IW_ELK_URL` is set, inferwall automatically ships:
-- **Scan logs** — decision, score, matched signatures, request metadata
-- **Audit events** — auth, policy changes, config changes, etc.
+When `IW_ELK_URL` is **not set**, the SIEM plugin is completely inactive — no imports, no overhead, no side effects.
 
-Shipping is fire-and-forget: failures are silently ignored so the scan path is never blocked.
+## What Gets Shipped
+
+### Scan Logs
+
+Every `scan_input` and `scan_output` call ships a JSON payload:
+
+```json
+{
+  "log_type": "scan",
+  "timestamp": "2026-04-06T12:00:00Z",
+  "direction": "input",
+  "decision": "block",
+  "anomaly_score": 12.8,
+  "threshold": 10.0,
+  "policy": "default",
+  "request_id": "req-1712345678000",
+  "matches": [
+    {
+      "signature_id": "INJ-D-002",
+      "matched_text": "ignore all previous instructions",
+      "score": 6.3,
+      "confidence": 0.9,
+      "severity": 7.0
+    }
+  ],
+  "signature_count": 1
+}
+```
+
+### Audit Events
+
+Auth, policy, and config changes:
+
+```json
+{
+  "log_type": "audit",
+  "timestamp": "2026-04-06T12:00:00Z",
+  "category": "auth",
+  "action": "login_attempt",
+  "details": {"key_prefix": "iwk_scan_"},
+  "source_ip": "192.168.1.100"
+}
+```
+
+Audit categories: `auth`, `policy`, `config`, `signatures`, `engines`, `admin`, `rate_limit`, `lifecycle`, `scan`.
 
 ## Architecture
 
+```mermaid
+flowchart LR
+    IW["InferenceWall"] -->|"HTTP/JSON"| LS["Logstash :8080"]
+    LS --> ES["Elasticsearch"]
+    ES --> KB["Kibana"]
 ```
-inferwall ──HTTP/JSON──> Logstash (8080) ──> Elasticsearch ──> Kibana
-       │
-       └── Filebeat (optional, file-based logs)
+
+- **Fire-and-forget**: Shipping never blocks the scan pipeline
+- **Synchronous HTTP**: Uses `httpx.post()` with 5s timeout
+- **Silent failure**: All shipping errors are suppressed
+
+## Logstash Configuration
+
+Minimal Logstash pipeline to receive InferenceWall logs:
+
+```conf
+input {
+  http {
+    port => 8080
+    codec => json
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+    index => "inferwall-logs-%{+YYYY.MM.dd}"
+  }
+}
 ```
 
-## Indices
-
-Events land in daily indices: `inferwall-logs-YYYY.MM.dd`
-
-## Dashboards
-
-The provided Kibana dashboard includes:
-- **Scans by Decision** — pie chart of allow / flag / block
-- **Top Signatures** — most frequently matched signatures
-- **Anomaly Score Over Time** — trend line of average scores
-
-## Docker Compose (inferwall + ELK)
-
-To run inferwall inside Docker on the same network:
+## Docker Setup
 
 ```bash
-# Build inferwall image
-docker build -t inferwall:latest .
-
-# Start ELK stack
-docker compose up -d
-
-# Start inferwall with ELK integration
+# Run InferenceWall with ELK shipping enabled
 docker run -d \
   -e IW_ELK_URL=http://logstash:8080 \
-  --network elk-network \
+  -e IW_API_KEY=iwk_scan_yourkey \
+  --network your-elk-network \
   -p 8000:8000 \
   inferwall:latest
 ```
+
+## Use Cases
+
+- **Compliance** (SOC2, ISO27001): Centralized audit trail of all scan decisions
+- **Threat monitoring**: Dashboard showing block rate trends, top triggered signatures
+- **Incident response**: Correlate LLM firewall events with other security logs
+- **Tuning**: Identify high-FP signatures by analyzing flagged-but-benign patterns

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import os
 from typing import Any
 
@@ -27,22 +28,17 @@ class ElkShipper:
         return self._endpoint is not None and self._client is not None
 
     async def ship(self, payload: dict[str, Any]) -> None:
-        if not self.enabled or self._client is None:
+        if not self.enabled or self._client is None or self._endpoint is None:
             return
-        try:
+        with contextlib.suppress(Exception):
             await self._client.post(self._endpoint, json=payload)
-        except Exception:
-            # Fire-and-forget: never block scan path for SIEM testing
-            pass
 
     def ship_sync(self, payload: dict[str, Any]) -> None:
         """Synchronous fallback for code paths that are not async."""
-        if not self.enabled:
+        if not self.enabled or self._endpoint is None:
             return
-        try:
+        with contextlib.suppress(Exception):
             httpx.post(self._endpoint, json=payload, timeout=5.0)
-        except Exception:
-            pass
 
     async def close(self) -> None:
         if self._client is not None:

@@ -3,16 +3,33 @@
 from __future__ import annotations
 
 import json
+import os
+import sys
 import time
 from dataclasses import asdict, dataclass, field
-from enum import StrEnum
 from pathlib import Path
+from typing import Any
 
-from inferwall.core.elk_shipper import ElkShipper
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from enum import Enum
+
+    class StrEnum(str, Enum):  # noqa: UP042
+        pass
 
 
 def _iso_timestamp(ts: float) -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(ts))
+
+
+def _create_siem_shipper() -> Any | None:
+    """Lazy initialization of SIEM shipper - only imports when needed."""
+    if not os.environ.get("IW_ELK_URL"):
+        return None
+    from inferwall.plugins.siem import create_shipper
+
+    return create_shipper()
 
 
 class AuditCategory(StrEnum):
@@ -46,7 +63,7 @@ class AuditLogger:
     def __init__(self, log_path: Path | None = None) -> None:
         self._log_path = log_path
         self._events: list[AuditEvent] = []
-        self._elk = ElkShipper()
+        self._siem_shipper = _create_siem_shipper()
 
     def log(self, event: AuditEvent) -> None:
         """Log an audit event."""
@@ -54,7 +71,7 @@ class AuditLogger:
         if self._log_path:
             with open(self._log_path, "a") as f:
                 f.write(json.dumps(asdict(event)) + "\n")
-        if self._elk.enabled:
+        if self._siem_shipper is not None and self._siem_shipper.enabled:
             payload = {
                 "log_type": "audit",
                 "timestamp": _iso_timestamp(event.timestamp),
@@ -64,7 +81,7 @@ class AuditLogger:
                 "source_ip": event.ip,
                 "key_prefix": event.key_prefix,
             }
-            self._elk.ship_sync(payload)
+            self._siem_shipper.ship_sync(payload)
 
     def get_events(
         self,

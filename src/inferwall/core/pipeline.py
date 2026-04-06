@@ -6,10 +6,10 @@ import logging
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import inferwall_core
 
-from inferwall.core.elk_shipper import ElkShipper
 from inferwall.core.policy import PolicyEngine, PolicyProfile
 from inferwall.engines.heuristic import CONFIDENCE_MAP, HeuristicEngine
 from inferwall.signatures.loader import (
@@ -92,6 +92,17 @@ class Pipeline:
                 )
         else:
             self._llm_judge = None
+
+        # SIEM plugin (lazy initialization, enabled via IW_ELK_URL)
+        self._siem_shipper: Any | None = None
+
+    def _get_siem_shipper(self) -> Any | None:
+        """Lazy initialization of SIEM shipper."""
+        if self._siem_shipper is None:
+            from inferwall.plugins.siem import create_shipper
+
+            self._siem_shipper = create_shipper()
+        return self._siem_shipper
 
     def _init_classifier(self) -> object | None:
         """Try to initialize classifier engine with downloaded models."""
@@ -179,9 +190,6 @@ class Pipeline:
         except Exception:
             logger.debug("Semantic engine init failed", exc_info=True)
             return None
-
-        # ELK shipper for SIEM testing
-        self._elk = ElkShipper()
 
     @property
     def signature_count(self) -> int:
@@ -357,10 +365,12 @@ class Pipeline:
             request_id=request_id,
         )
 
-        # Ship scan log to ELK testing facility (fire-and-forget)
-        if self._elk.enabled:
+        # Ship scan log to SIEM if enabled (fire-and-forget)
+        shipper = self._get_siem_shipper()
+        if shipper is not None and shipper.enabled:
             import time as _time
-            self._elk.ship_sync(
+
+            shipper.ship_sync(
                 {
                     "log_type": "scan",
                     "timestamp": _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime()),

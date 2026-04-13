@@ -100,7 +100,7 @@ jobs:
       - name: Build inferwall-core wheel
         uses: PyO3/maturin-action@v1
         with:
-          args: --release --out dist --manifest-path crates/inferwall-core/Cargo.toml --find-interpreter
+          args: --release --out dist --manifest-path crates/inferwall-core/Cargo.toml -i python3.12
           manylinux: auto
 
       - name: Build inferwall wheel

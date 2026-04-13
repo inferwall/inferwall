@@ -121,29 +121,6 @@ block-beta
   style header fill:#0d1117,color:#fff
 ```
 
-| ATLAS Technique | Name | Signatures | Category |
-|---|---|---|---|
-| AML.T0051.000 | Direct Prompt Injection | 30 | Prompt Injection |
-| AML.T0051.001 | Indirect Prompt Injection | 10 | Prompt Injection |
-| AML.T0051.002 | Triggered Prompt Injection | 3 | Prompt Injection |
-| AML.T0054 | LLM Jailbreak | 20 | Prompt Injection |
-| AML.T0068 | LLM Prompt Obfuscation | 18 | Prompt Injection |
-| AML.T0065 | LLM Prompt Crafting | 10 | Prompt Injection |
-| AML.T0056 | Meta Prompt Extraction | 6 | System Prompt |
-| AML.T0057 | LLM Data Leakage | 16 | Data Leakage |
-| AML.T0055 | Unsecured Credentials | 6 | Data Leakage |
-| AML.T0048.002 | External Harms: Societal | 3 | Content Safety |
-| AML.T0048.003 | External Harms: User Harm | 6 | Content Safety |
-| AML.T0024 | Exfiltration via Inference API | 1 | System Prompt |
-| AML.T0069 | Discover LLM System Info | 1 | System Prompt |
-| AML.T0053 | AI Agent Tool Invocation | 3 | Agentic |
-| AML.T0080 | AI Agent Context Poisoning | 1 | Agentic |
-| AML.T0086 | Exfiltration via Agent Tool | 1 | Agentic |
-| AML.T0102 | Generate Malicious Commands | 2 | Agentic |
-| AML.T0105 | Escape to Host | 2 | Agentic |
-| AML.T0043.001 | Black-Box Optimization | 1 | Prompt Injection |
-| AML.T0070 | RAG Poisoning | 1 | Prompt Injection |
-
 > Coverage based on [MITRE ATLAS v5.5](https://atlas.mitre.org/) (March 2026). Each signature declares its ATLAS mapping in `meta.atlas`. See [Signature Catalog](docs/SIGNATURE_CATALOG.md) for the full mapping.
 
 ## Installation

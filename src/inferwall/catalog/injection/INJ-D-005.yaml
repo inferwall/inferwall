@@ -8,6 +8,7 @@ meta:
   subcategory: direct
   technique: multi-turn-escalation
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0051.000", "AML.T0051.002"]
   severity: high
   confidence: medium
   performance_cost: low

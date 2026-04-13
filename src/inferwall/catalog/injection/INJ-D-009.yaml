@@ -8,6 +8,7 @@ meta:
   subcategory: direct
   technique: authority-impersonation
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0051.000"]
   severity: high
   confidence: high
   performance_cost: low

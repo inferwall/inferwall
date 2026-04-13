@@ -50,6 +50,102 @@ result = inferwall.scan_output("Your API key is sk-1234...")
 - **Three deployment modes**: SDK, API server, reverse proxy
 - **API key authentication** with scan/admin role separation
 
+## MITRE ATLAS Coverage
+
+InferenceWall maps all 100 detection signatures to the [MITRE ATLAS](https://atlas.mitre.org/) framework (Adversarial Threat Landscape for AI Systems). ATLAS is the AI/ML counterpart to MITRE ATT&CK — a knowledge base of adversary tactics and techniques targeting AI systems.
+
+InferenceWall implements these ATLAS mitigations:
+- **AML.M0015** Adversarial Input Detection — detect and block atypical queries
+- **AML.M0020** Generative AI Guardrails — safety filters between model and user
+- **AML.M0006** Ensemble Methods — multi-engine detection (heuristic + classifier + semantic + LLM judge)
+
+### Technique Coverage
+
+```mermaid
+block-beta
+  columns 4
+
+  block:header:4
+    columns 4
+    h1["MITRE ATLAS Coverage"]
+  end
+
+  block:injection:4
+    columns 4
+    t1["AML.T0051.000\nDirect Injection\n30 sigs"]
+    t2["AML.T0051.001\nIndirect Injection\n10 sigs"]
+    t3["AML.T0054\nLLM Jailbreak\n20 sigs"]
+    t4["AML.T0068\nPrompt Obfuscation\n18 sigs"]
+  end
+
+  block:extraction:4
+    columns 4
+    t5["AML.T0056\nMeta Prompt Extraction\n6 sigs"]
+    t6["AML.T0065\nPrompt Crafting\n10 sigs"]
+    t7["AML.T0057\nLLM Data Leakage\n16 sigs"]
+    t8["AML.T0055\nUnsecured Credentials\n6 sigs"]
+  end
+
+  block:safety:4
+    columns 4
+    t9["AML.T0048.002\nSocietal Harm\n3 sigs"]
+    t10["AML.T0048.003\nUser Harm\n6 sigs"]
+    t11["AML.T0024\nTraining Data Exfil\n1 sig"]
+    t12["AML.T0069\nSystem Info Discovery\n1 sig"]
+  end
+
+  block:agentic:4
+    columns 4
+    t13["AML.T0053\nAgent Tool Invocation\n3 sigs"]
+    t14["AML.T0080\nAgent Context Poisoning\n1 sig"]
+    t15["AML.T0105\nEscape to Host\n2 sigs"]
+    t16["AML.T0086\nAgent Exfiltration\n1 sig"]
+  end
+
+  style t1 fill:#1a7f37,color:#fff
+  style t2 fill:#1a7f37,color:#fff
+  style t3 fill:#1a7f37,color:#fff
+  style t4 fill:#1a7f37,color:#fff
+  style t5 fill:#2da44e,color:#fff
+  style t6 fill:#2da44e,color:#fff
+  style t7 fill:#1a7f37,color:#fff
+  style t8 fill:#2da44e,color:#fff
+  style t9 fill:#57ab5a,color:#fff
+  style t10 fill:#2da44e,color:#fff
+  style t11 fill:#7ee787,color:#000
+  style t12 fill:#7ee787,color:#000
+  style t13 fill:#57ab5a,color:#fff
+  style t14 fill:#7ee787,color:#000
+  style t15 fill:#57ab5a,color:#fff
+  style t16 fill:#7ee787,color:#000
+  style header fill:#0d1117,color:#fff
+```
+
+| ATLAS Technique | Name | Signatures | Category |
+|---|---|---|---|
+| AML.T0051.000 | Direct Prompt Injection | 30 | Prompt Injection |
+| AML.T0051.001 | Indirect Prompt Injection | 10 | Prompt Injection |
+| AML.T0051.002 | Triggered Prompt Injection | 3 | Prompt Injection |
+| AML.T0054 | LLM Jailbreak | 20 | Prompt Injection |
+| AML.T0068 | LLM Prompt Obfuscation | 18 | Prompt Injection |
+| AML.T0065 | LLM Prompt Crafting | 10 | Prompt Injection |
+| AML.T0056 | Meta Prompt Extraction | 6 | System Prompt |
+| AML.T0057 | LLM Data Leakage | 16 | Data Leakage |
+| AML.T0055 | Unsecured Credentials | 6 | Data Leakage |
+| AML.T0048.002 | External Harms: Societal | 3 | Content Safety |
+| AML.T0048.003 | External Harms: User Harm | 6 | Content Safety |
+| AML.T0024 | Exfiltration via Inference API | 1 | System Prompt |
+| AML.T0069 | Discover LLM System Info | 1 | System Prompt |
+| AML.T0053 | AI Agent Tool Invocation | 3 | Agentic |
+| AML.T0080 | AI Agent Context Poisoning | 1 | Agentic |
+| AML.T0086 | Exfiltration via Agent Tool | 1 | Agentic |
+| AML.T0102 | Generate Malicious Commands | 2 | Agentic |
+| AML.T0105 | Escape to Host | 2 | Agentic |
+| AML.T0043.001 | Black-Box Optimization | 1 | Prompt Injection |
+| AML.T0070 | RAG Poisoning | 1 | Prompt Injection |
+
+> Coverage based on [MITRE ATLAS v5.5](https://atlas.mitre.org/) (March 2026). Each signature declares its ATLAS mapping in `meta.atlas`. See [Signature Catalog](docs/SIGNATURE_CATALOG.md) for the full mapping.
+
 ## Installation
 
 ### From PyPI

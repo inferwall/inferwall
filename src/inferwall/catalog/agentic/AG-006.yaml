@@ -7,6 +7,7 @@ meta:
   category: agentic
   subcategory: exfiltration
   technique: agent-exfiltration-detection
+  atlas: ["AML.T0086"]
   severity: high
   confidence: high
   performance_cost: low

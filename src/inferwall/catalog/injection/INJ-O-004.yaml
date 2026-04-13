@@ -8,6 +8,7 @@ meta:
   subcategory: obfuscation
   technique: payload-splitting
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0068", "AML.T0051.000"]
   severity: high
   confidence: medium
   performance_cost: low

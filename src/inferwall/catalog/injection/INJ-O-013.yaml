@@ -8,6 +8,7 @@ meta:
   subcategory: obfuscation
   technique: whitespace-encoding
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0068"]
   severity: medium
   confidence: medium
   performance_cost: low

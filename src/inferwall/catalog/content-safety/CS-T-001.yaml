@@ -7,6 +7,7 @@ meta:
   category: content-safety
   subcategory: toxicity
   technique: hate-speech-detection
+  atlas: ["AML.T0048.002"]
   severity: critical
   confidence: high
   performance_cost: low

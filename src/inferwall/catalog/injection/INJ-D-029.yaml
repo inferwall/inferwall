@@ -8,6 +8,7 @@ meta:
   subcategory: direct
   technique: coercion-threat-detection
   owasp_llm: LLM01
+  atlas: ["AML.T0051.000"]
   severity: critical
   confidence: high
   performance_cost: low

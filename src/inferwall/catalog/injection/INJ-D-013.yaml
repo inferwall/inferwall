@@ -8,6 +8,7 @@ meta:
   subcategory: direct
   technique: academic-framing
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0054", "AML.T0051.000"]
   severity: low
   confidence: medium
   performance_cost: low

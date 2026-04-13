@@ -8,6 +8,7 @@ meta:
   subcategory: indirect
   technique: alt-text-injection
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0051.001"]
   severity: high
   confidence: high
   performance_cost: low

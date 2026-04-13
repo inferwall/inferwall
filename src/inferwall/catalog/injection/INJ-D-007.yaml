@@ -8,6 +8,7 @@ meta:
   subcategory: direct
   technique: translation-bypass
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0068", "AML.T0051.000"]
   severity: medium
   confidence: medium
   performance_cost: low

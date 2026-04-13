@@ -7,6 +7,7 @@ meta:
   category: agentic
   subcategory: command-injection
   technique: shell-injection-detection
+  atlas: ["AML.T0105", "AML.T0102"]
   severity: critical
   confidence: high
   performance_cost: low

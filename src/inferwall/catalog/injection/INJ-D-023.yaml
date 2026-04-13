@@ -8,6 +8,7 @@ meta:
   subcategory: direct
   technique: dual-response
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0054"]
   severity: medium
   confidence: high
   performance_cost: low

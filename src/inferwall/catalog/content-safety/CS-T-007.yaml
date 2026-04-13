@@ -7,6 +7,7 @@ meta:
   category: content-safety
   subcategory: toxicity
   technique: drug-manufacturing-detection
+  atlas: ["AML.T0048.003"]
   severity: high
   confidence: high
   performance_cost: low

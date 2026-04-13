@@ -8,6 +8,7 @@ meta:
   subcategory: semantic
   technique: hypothetical-framing-attack
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0054", "AML.T0065"]
   severity: high
   confidence: high
   performance_cost: medium

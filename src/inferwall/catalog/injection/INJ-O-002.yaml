@@ -8,6 +8,7 @@ meta:
   subcategory: obfuscation
   technique: rot13-substitution
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0068"]
   severity: medium
   confidence: medium
   performance_cost: low

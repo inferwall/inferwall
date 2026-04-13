@@ -7,6 +7,7 @@ meta:
   category: content-safety
   subcategory: bias
   technique: stereotypical-output-detection
+  atlas: ["AML.T0048.002"]
   severity: medium
   confidence: medium
   performance_cost: low

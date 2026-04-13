@@ -7,6 +7,7 @@ meta:
   category: system-prompt
   subcategory: probing
   technique: model-architecture-probing
+  atlas: ["AML.T0069"]
   severity: low
   confidence: medium
   performance_cost: low

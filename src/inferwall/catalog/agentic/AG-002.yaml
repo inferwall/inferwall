@@ -7,6 +7,7 @@ meta:
   category: agentic
   subcategory: agent-injection
   technique: recursive-agent-injection-detection
+  atlas: ["AML.T0080"]
   severity: critical
   confidence: high
   performance_cost: low

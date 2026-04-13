@@ -7,6 +7,7 @@ meta:
   category: agentic
   subcategory: tool-abuse
   technique: tool-manipulation-detection
+  atlas: ["AML.T0053"]
   severity: high
   confidence: high
   performance_cost: low

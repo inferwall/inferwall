@@ -8,6 +8,7 @@ meta:
   subcategory: semantic
   technique: social-engineering-for-data
   owasp_llm: "LLM01:2025"
+  atlas: ["AML.T0057", "AML.T0065"]
   severity: high
   confidence: high
   performance_cost: medium

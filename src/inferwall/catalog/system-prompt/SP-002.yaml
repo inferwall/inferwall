@@ -7,6 +7,7 @@ meta:
   category: system-prompt
   subcategory: leakage
   technique: confidentiality-marker-detection
+  atlas: ["AML.T0056"]
   severity: high
   confidence: high
   performance_cost: low

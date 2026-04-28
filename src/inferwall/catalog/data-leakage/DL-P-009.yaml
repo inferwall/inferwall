@@ -1,0 +1,31 @@
+# License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+signature:
+  id: DL-P-009
+  name: Cryptocurrency Wallet Addresses
+  version: "1.0.0"
+meta:
+  category: data-leakage
+  subcategory: pii
+  technique: crypto-wallet-address-detection
+  atlas: ["AML.T0057"]
+  severity: medium
+  confidence: high
+  performance_cost: low
+  tags: [pii, crypto, wallet-address, blockchain, data-leakage]
+detection:
+  engine: heuristic
+  direction: output
+  patterns:
+    - type: regex
+      value: "\\b0x[a-fA-F0-9]{40}\\b"
+    - type: regex
+      value: "\\b(?:[13][a-km-zA-HJ-NP-Z1-9]{25,34}|[bB][cC]1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71})\\b"
+    - type: regex
+      value: "\\b[1-9A-HJ-NP-Za-km-z]{32,44}\\b"
+  condition: any
+scoring:
+  anomaly_points: 6
+tuning:
+  enabled: true
+  default_enabled: true
+  default_action: enforce

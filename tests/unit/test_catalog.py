@@ -79,6 +79,7 @@ EXPECTED_SIGS = {
     "DL-P-006",
     "DL-P-007",
     "DL-P-008",
+    "DL-P-009",
     # Data leakage — secrets (M3)
     "DL-S-004",
     "DL-S-005",
@@ -137,11 +138,11 @@ class TestCatalogLoads:
     def test_catalog_directory_exists(self) -> None:
         assert CATALOG_DIR.exists()
 
-    def test_all_70_signatures_load(self) -> None:
+    def test_all_catalog_signatures_load(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)
         sigs = loader.load()
-        assert len(sigs) == 100, (
-            f"Expected 100, got {len(sigs)}. Errors: {loader.errors}"
+        assert len(sigs) == 101, (
+            f"Expected 101, got {len(sigs)}. Errors: {loader.errors}"
         )
         assert len(loader.errors) == 0
 
@@ -156,7 +157,7 @@ class TestCatalogLoads:
         loader.load()
         groups = loader.group_by_engine()
         assert "heuristic" in groups
-        assert len(groups["heuristic"]) == 75
+        assert len(groups["heuristic"]) == 76
         assert "classifier" in groups
         assert len(groups["classifier"]) == 11
         assert "semantic" in groups
@@ -178,7 +179,7 @@ class TestCatalogLoads:
         output_sigs = [
             s for s in loader.load() if s.detection.direction.value == "output"
         ]
-        assert len(output_sigs) == 17
+        assert len(output_sigs) == 18
 
     def test_anomaly_points_in_valid_range(self) -> None:
         loader = SignatureLoader(CATALOG_DIR)

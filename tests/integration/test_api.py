@@ -35,7 +35,7 @@ class TestHealthEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "healthy"
-        assert data["signature_count"] == 100
+        assert data["signature_count"] == 101
 
     def test_health_live(self, client: TestClient) -> None:
         response = client.get("/v1/health/live")

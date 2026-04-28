@@ -56,7 +56,7 @@ class TestThreeLayerMerge:
         """Default load_merged picks up shipped catalog."""
         loader = SignatureLoader()
         sigs = loader.load_merged()
-        assert len(sigs) == 100
+        assert len(sigs) == 101
         assert len(loader.errors) == 0
 
     def test_custom_sigs_override_shipped(
@@ -78,7 +78,7 @@ class TestThreeLayerMerge:
             sigs = loader.load_merged()
 
             # Should still have same count (override, not add)
-            assert len(sigs) == 100
+            assert len(sigs) == 101
 
             # The overridden sig should have new points
             sig = loader.get_by_id("INJ-D-001")
@@ -101,8 +101,8 @@ class TestThreeLayerMerge:
             loader = SignatureLoader()
             sigs = loader.load_merged()
 
-            # 100 shipped + 1 custom
-            assert len(sigs) == 101
+            # 101 shipped + 1 custom
+            assert len(sigs) == 102
 
             custom = loader.get_by_id("CUSTOM-001")
             assert custom is not None
@@ -134,7 +134,7 @@ class TestThreeLayerMerge:
         try:
             loader = SignatureLoader()
             sigs = loader.load_merged()
-            assert len(sigs) == 100  # Just shipped
+            assert len(sigs) == 101  # Just shipped
         finally:
             os.environ.pop("IW_SIGNATURES_DIR", None)
 

@@ -142,7 +142,7 @@ InferenceWall uses a **three-layer catalog merge** system that lets you customiz
 
 Place custom signature YAML files in `~/.inferwall/signatures/`. These are merged with the shipped catalog at startup:
 
-1. **Shipped catalog** (read-only, inside the pip package) — the built-in 100 signatures
+1. **Shipped catalog** (read-only, inside the pip package) — the built-in 101 signatures
 2. **Custom signatures** (`~/.inferwall/signatures/`) — your additions and overrides
 3. **Override by ID** — a custom signature with the same ID as a shipped one replaces it entirely
 

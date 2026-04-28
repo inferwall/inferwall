@@ -1,6 +1,6 @@
 # InferenceWall Signature Catalog
 
-**Version**: 0.1.6 — **Total**: 100 signatures across 5 categories
+**Version**: 0.1.6 — **Total**: 101 signatures across 5 categories
 
 ## Summary
 
@@ -8,7 +8,7 @@
 |----------|-------|-------------|-----------|
 | Prompt Injection | 67 | heuristic (45), classifier (7), semantic (10), composite (5) | input |
 | Content Safety | 9 | classifier (6), heuristic (3) | input/output |
-| Data Leakage | 14 | heuristic (14) | output |
+| Data Leakage | 15 | heuristic (15) | output |
 | System Prompt | 4 | heuristic (4) | input/output |
 | Agentic | 6 | heuristic (6) | input |
 
@@ -16,7 +16,7 @@
 
 | Profile | Engines | Signatures Used | Latency |
 |---------|---------|----------------|---------|
-| Lite | Heuristic (Rust) | 75 heuristic | <1ms |
+| Lite | Heuristic (Rust) | 76 heuristic | <1ms |
 | Standard | + DeBERTa + DistilBERT + FAISS | + 11 classifier + 10 semantic | ~500ms |
 | Full | + LLM Judge | + composite (ambiguous only) | ~5s |
 
@@ -47,6 +47,7 @@
 | DL-P-006 | Date of Birth Patterns | heuristic | output | data-leakage | medium | medium | 4 | AML.T0057 |
 | DL-P-007 | IP Addresses | heuristic | output | data-leakage | low | high | 3 | AML.T0057 |
 | DL-P-008 | Medical Record Numbers | heuristic | output | data-leakage | high | high | 8 | AML.T0057 |
+| DL-P-009 | Cryptocurrency Wallet Addresses | heuristic | output | data-leakage | medium | high | 6 | AML.T0057 |
 | DL-S-001 | API Keys | heuristic | output | data-leakage | critical | high | 12 | AML.T0057, AML.T0055 |
 | DL-S-002 | Connection Strings | heuristic | output | data-leakage | critical | high | 12 | AML.T0057, AML.T0055 |
 | DL-S-003 | JWT Tokens | heuristic | output | data-leakage | high | high | 8 | AML.T0057, AML.T0055 |

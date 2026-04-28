@@ -308,13 +308,13 @@ flowchart LR
 
 ## Signature Catalog
 
-The firewall ships with **100 detection signatures** across 5 categories:
+The firewall ships with **101 detection signatures** across 5 categories:
 
 | Category | Count | Engines | Direction |
 |----------|-------|---------|-----------|
 | Prompt Injection | 67 | heuristic (45), classifier (7), semantic (10), composite (5) | input |
 | Content Safety | 9 | classifier (6), heuristic (3) | input/output |
-| Data Leakage | 14 | heuristic (14) | output |
+| Data Leakage | 15 | heuristic (15) | output |
 | Agentic | 6 | heuristic (6) | input |
 | System Prompt | 4 | heuristic (4) | input/output |
 

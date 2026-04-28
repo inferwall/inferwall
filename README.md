@@ -6,7 +6,7 @@
 [![Tests](https://img.shields.io/badge/tests-161%20passed-brightgreen)](https://github.com/inferwall/inferwall/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/pypi/pyversions/inferwall)](https://pypi.org/project/inferwall/)
 [![Downloads](https://img.shields.io/pypi/dm/inferwall)](https://pypi.org/project/inferwall/)
-[![Signatures](https://img.shields.io/badge/signatures-100-blue)](docs/SIGNATURE_CATALOG.md)
+[![Signatures](https://img.shields.io/badge/signatures-101-blue)](docs/SIGNATURE_CATALOG.md)
 
 **AI application firewall for LLM-powered apps.**
 
@@ -41,7 +41,7 @@ result = inferwall.scan_output("Your API key is sk-1234...")
 
 ## Features
 
-- **100 detection signatures** across 5 categories (injection, content safety, data leakage, system prompt, agentic)
+- **101 detection signatures** across 5 categories (injection, content safety, data leakage, system prompt, agentic)
 - **Rust-powered heuristic engine** — <0.3ms p99 for pattern matching
 - **ML engines** — ONNX classifier (DeBERTa/DistilBERT) + FAISS semantic similarity
 - **Semantic detection engine** — FAISS + MiniLM embeddings for paraphrased attack detection
@@ -52,7 +52,7 @@ result = inferwall.scan_output("Your API key is sk-1234...")
 
 ## MITRE ATLAS Coverage
 
-InferenceWall maps all 100 detection signatures to the [MITRE ATLAS](https://atlas.mitre.org/) framework (Adversarial Threat Landscape for AI Systems). ATLAS is the AI/ML counterpart to MITRE ATT&CK — a knowledge base of adversary tactics and techniques targeting AI systems.
+InferenceWall maps all 101 detection signatures to the [MITRE ATLAS](https://atlas.mitre.org/) framework (Adversarial Threat Landscape for AI Systems). ATLAS is the AI/ML counterpart to MITRE ATT&CK — a knowledge base of adversary tactics and techniques targeting AI systems.
 
 InferenceWall implements these ATLAS mitigations:
 - **AML.M0015** Adversarial Input Detection — detect and block atypical queries
